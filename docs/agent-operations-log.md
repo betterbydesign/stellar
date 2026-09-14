@@ -4,6 +4,12 @@ Append concise entries for meaningful implementation sessions. Record the behavi
 
 ## Session Log
 
+### 2026-09-14 — Initial local editor PRDs
+
+Created six local implementation PRDs and a dependency/dispatch index for the first source-backed browser editor proof. Followed the harness PRD template and ExecPlan lifecycle, assigned bounded agent ownership and required real preview/source/reopen evidence. M1 starts with a registered trusted Astro fixture and prepares for the parent product's broader company-site milestone; it does not replace the WP/ACF POC or claim hosted/HTML support.
+
+SOL high source and cross-PRD review informed the boundary between pure patch preparation, runner writes and browser selection. Resolved shared definitions for token targets/aliases, authored reset fallback and revision/idempotency/reconnect behavior. Template coverage, all-document checks and strict harness verification passed; no app code, dependency, company repository or external task changed. The [M1 index](prds/README.md) points to the first implementation handoff. This session created local planning files without committing or publishing them.
+
 ### 2026-09-14 — Integrate the bootstrap into main
 
 The user authorized merging and publishing the completed bootstrap to `main`. The fetched remote main had no intervening changes, and the bootstrap worktree was clean. Applied the configured squash strategy and retained the original bootstrap branch and its two commits for provenance. This authorization supersedes the earlier session's local-only boundary; it does not add site deployment or company-repository changes. The application is unchanged from the validated bootstrap; only the current-work pointer and this integration record changed during merge preparation.

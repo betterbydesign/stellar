@@ -361,6 +361,8 @@ Pilot success measures: time from brief to reviewed first page, time from approv
 
 ## 13. Delivery sequence and epic map
 
+The [initial local editor PRDs (M1)](prds/README.md) break bootstrap slices 2–3 into agent-sized work: contracts/fixture, project runner, source engine, canvas/selection, style inspector and durable history. This trusted-local Astro proof precedes integration with the company-site Milestone A below. It uses bounded CSS/token edits and does not claim full R01/R04/R06/R07/R08, HTML support, hosted isolation or the WP/ACF release workflow.
+
 No calendar estimates are assigned yet; source editing and runtime/hosting proofs should determine them. Each epic becomes a smaller PRD or decision record before detailed tasks are created.
 
 | Epic | Deliverable | Dependencies | Exit evidence |
