@@ -28,6 +28,8 @@ Studio opens a real page from one of the two registered Astro working copies. Us
 
 Choose **Interact** to follow page links and use the site normally. Selecting a link in Inspect mode does not navigate. Returning to Inspect restores a still-valid selection; changing the page, session, preview generation or source revision clears an old editable selection until Studio validates it again.
 
+If a style change is still pending, leaving with **All projects**, Stellar’s project link or the browser Back button opens a decision before leaving. Choose **Keep editing** to stay in Studio, or finish the change with the available Apply or Discard action. A history operation whose result is still being resolved also holds navigation until its outcome is known.
+
 ## Troubleshooting
 
 | Symptom | What to do |

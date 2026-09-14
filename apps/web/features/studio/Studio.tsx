@@ -8,6 +8,7 @@ import { PROTOCOL_VERSION } from "@stellar/contracts";
 import { Inspector } from "../inspector/Inspector";
 import { HistoryControls } from "../history/HistoryControls";
 import { acceptFrameMessage, isFrameHello, previewOrigin } from "./bridge";
+import { installStudioBackGuard } from "./history-guard";
 import { closeSession, getProject, getSession, listPages, openSession, restartSession, sourceModel, StudioApiError } from "./api";
 import styles from "./studio.module.css";
 
@@ -167,6 +168,7 @@ export function Studio({ projectId }: { projectId: string }) {
     initializedFrameIdRef.current = null;
   }, []);
   const acceptNavigation = useCallback(async () => !historyBlockedRef.current && (!guardRef.current || await guardRef.current()), []);
+  useEffect(() => installStudioBackGuard(window, acceptNavigation, () => router.replace("/projects")), [acceptNavigation, router]);
   const goPage = useCallback(async (nextPageId: string): Promise<boolean> => {
     if (nextPageId === pageId) return true;
     if (!pages.some((item) => item.id === nextPageId) || !await acceptNavigation()) return false;
@@ -307,7 +309,6 @@ export function Studio({ projectId }: { projectId: string }) {
     if (receipt.projectId !== projectId || !session) return;
     if (selectedRef.current && pageId) pendingRemapRef.current = { projectId, pageId, anchor: selectedRef.current.target.anchor };
     invalidate();
-    setRefreshCount((current) => current + 1);
     void getSession(projectId, session.id).then((latest) => {
       // A reconciled save may belong to a previous, now-expired session. Only
       // the current authenticated session establishes fresh source authority.
@@ -316,6 +317,9 @@ export function Studio({ projectId }: { projectId: string }) {
           (current.sourceRevision !== latest.sourceRevision || current.state !== latest.state || current.previewGeneration !== latest.previewGeneration)
           ? latest : current);
         setModelRefreshCount((count) => count + 1);
+        // A reconciled receipt can report a revision the shell already knows;
+        // in that case the state key will not reload the iframe by itself.
+        if (latest.sourceRevision === session.sourceRevision) setRefreshCount((count) => count + 1);
       }
     }).catch((cause: unknown) => setError(errorText(cause)));
   }, [invalidate, pageId, projectId, session]);

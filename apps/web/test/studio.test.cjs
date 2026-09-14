@@ -3,6 +3,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const { PROTOCOL_VERSION, SourceModelSchema, exampleElementTarget, exampleTokenTarget } = require("@stellar/contracts");
 const { acceptFrameMessage, isFrameHello, previewOrigin } = require("../features/studio/bridge.ts");
+const { installStudioBackGuard } = require("../features/studio/history-guard.ts");
 
 const frameWindow = {};
 const model = SourceModelSchema.parse({
@@ -64,4 +65,67 @@ test("preview origin accepts only exact local preview hostname", () => {
   assert.equal(previewOrigin("http://user@localhost:4321/"), null);
   assert.equal(previewOrigin("http://localhost/"), null);
   assert.equal(previewOrigin("http://localhost:4321/?token=bad"), null);
+});
+
+function fakeBrowser(initialEntries) {
+  const listeners = new Set();
+  const entries = initialEntries.map((url) => ({ url, state: {} }));
+  let position = entries.length - 1;
+  const browser = {
+    location: { href: entries[position].url },
+    history: {
+      get length() { return entries.length; },
+      get state() { return entries[position].state; },
+      pushState(state, _title, url) {
+        entries.splice(position + 1);
+        entries.push({ state, url });
+        position = entries.length - 1;
+        browser.location.href = url;
+      },
+      go(delta) {
+        const next = position + delta;
+        if (next < 0 || next >= entries.length) return;
+        position = next;
+        browser.location.href = entries[position].url;
+        for (const listener of listeners) listener();
+      },
+      back() { this.go(-1); },
+    },
+    addEventListener(type, listener) { if (type === "popstate") listeners.add(listener); },
+    removeEventListener(type, listener) { if (type === "popstate") listeners.delete(listener); },
+  };
+  return browser;
+}
+
+test("browser Back waits for dirty draft resolution and repeated Back cannot skip it", async () => {
+  const browser = fakeBrowser(["http://127.0.0.1:3210/projects", "http://127.0.0.1:3210/projects/project-a/studio"]);
+  let resolveDraft;
+  let calls = 0;
+  const cleanup = installStudioBackGuard(browser, () => {
+    calls++;
+    return new Promise((resolve) => { resolveDraft = resolve; });
+  }, () => assert.fail("prior dashboard exists"));
+  browser.history.back();
+  browser.history.back();
+  assert.equal(calls, 1);
+  assert.equal(browser.location.href, "http://127.0.0.1:3210/projects/project-a/studio");
+  resolveDraft(false); // Keep editing.
+  await Promise.resolve();
+  assert.equal(browser.location.href, "http://127.0.0.1:3210/projects/project-a/studio");
+  browser.history.back();
+  assert.equal(calls, 2);
+  resolveDraft(true); // Apply or Discard.
+  await Promise.resolve();
+  assert.equal(browser.location.href, "http://127.0.0.1:3210/projects");
+  cleanup();
+});
+
+test("browser Back from a deep link falls back to Projects after guard approval", async () => {
+  const browser = fakeBrowser(["http://127.0.0.1:3210/projects/project-a/studio"]);
+  let fallback = 0;
+  const cleanup = installStudioBackGuard(browser, async () => true, () => { fallback++; });
+  browser.history.back();
+  await Promise.resolve();
+  assert.equal(fallback, 1);
+  cleanup();
 });
