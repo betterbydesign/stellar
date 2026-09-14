@@ -130,7 +130,10 @@ export function transitionEdit(state: EditState, action: EditAction): EditState 
       return { ...state, phase: "uncertain", notice: "The save is still pending. Check again before retrying." };
     case "reconcile-error":
       if (state.version !== action.version || state.phase !== "reconciling") return state;
-      return { ...state, phase: "uncertain", issue: action.error, notice: "Could not confirm the save yet. Check again." };
+      return { ...state, phase: "uncertain", issue: action.error,
+        notice: action.error.code === "UNKNOWN_TARGET"
+          ? "No saved result was found. Retry only the original save request if this session and source are unchanged."
+          : "Could not confirm the save yet. Check again." };
     case "context-changed":
       if (!state.draft || state.draft.contextKey === action.contextKey) return state;
       // A write may already have happened. Its receipt must still be observed

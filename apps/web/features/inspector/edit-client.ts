@@ -43,7 +43,8 @@ async function csrfToken(): Promise<string> {
   return value.csrfToken;
 }
 
-async function requestJson<T>(url: string, parser: Parser<T>, options: RequestInit, ambiguous = false): Promise<T> {
+async function requestJson<T>(url: string, parser: Parser<T>, options: RequestInit, ambiguous = false,
+  expectedScope?: { projectId: string; sessionId: string; requestId: string }): Promise<T> {
   let response: Response;
   try {
     response = await fetch(url, { credentials: "same-origin", cache: "no-store", ...options });
@@ -54,7 +55,14 @@ async function requestJson<T>(url: string, parser: Parser<T>, options: RequestIn
   try { input = await response.json(); }
   catch { throw new EditApiError(unavailable, true); }
   const error = ErrorEnvelopeSchema.safeParse(input);
-  if (error.success) throw new EditApiError(error.data.error, error.data.error.code === "RUNNER_UNAVAILABLE");
+  if (error.success) {
+    if (response.status !== error.data.error.httpStatus) throw new EditApiError(invalid, ambiguous);
+    if (expectedScope && (error.data.projectId !== expectedScope.projectId ||
+      error.data.sessionId !== expectedScope.sessionId || error.data.requestId !== expectedScope.requestId))
+      throw new EditApiError(invalid);
+    throw new EditApiError(error.data.error,
+      ambiguous && (response.status >= 500 || error.data.error.code === "RUNNER_UNAVAILABLE"));
+  }
   const parsed = parser.safeParse(input);
   if (!response.ok || !parsed.success || !parsed.data) throw new EditApiError(invalid, ambiguous);
   return parsed.data;
@@ -89,7 +97,8 @@ export function applyEdit(request: ApplyChange): Promise<ApplyChangeResponse> {
 export function lookupEdit(projectId: string, sessionId: string, originalRequestId: string): Promise<RequestOutcome> {
   const requestId = newRequestId();
   const url = `${prefix(projectId, sessionId)}/changes/requests/${encodeURIComponent(originalRequestId)}?requestId=${encodeURIComponent(requestId)}`;
-  return requestJson(url, RequestOutcomeSchema, { method: "GET" }).then((response) => {
+  return requestJson(url, RequestOutcomeSchema, { method: "GET" }, false,
+    { projectId, sessionId, requestId }).then((response) => {
     if (response.projectId !== projectId || response.sessionId !== sessionId ||
       response.requestId !== requestId || response.originalRequestId !== originalRequestId)
       throw new EditApiError(invalid);

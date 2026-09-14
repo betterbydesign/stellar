@@ -7,7 +7,7 @@ const {
 } = require("@stellar/contracts");
 const { initialEditState, transitionEdit } = require("../features/inspector/edit-state.ts");
 const { parseLocalValue, parseTokenValue, isLocalCommandAllowed } = require("../features/inspector/values.ts");
-const { applyEdit, EditApiError } = require("../features/inspector/edit-client.ts");
+const { applyEdit, EditApiError, lookupEdit } = require("../features/inspector/edit-client.ts");
 
 function draft(command = examplePrepareChange.command) {
   return {
@@ -91,7 +91,7 @@ test("a definite failed apply can be reviewed again without reusing the old appl
   assert.equal(state.proposal, null);
 });
 
-test("malformed or mismatched apply response is uncertain after request dispatch", async () => {
+test("malformed, mismatched and 5xx apply responses are uncertain after request dispatch", async () => {
   const priorWindow = global.window;
   const priorFetch = global.fetch;
   global.window = { sessionStorage: { getItem: () => "csrf-token", setItem: () => {} } };
@@ -109,8 +109,46 @@ test("malformed or mismatched apply response is uncertain after request dispatch
     assert.equal(calls[0].init.headers["x-stellar-csrf"], "csrf-token");
     global.fetch = async () => Response.json({ ...exampleApplyResponse, requestId: "another-request" });
     await assert.rejects(applyEdit(request), (error) => error instanceof EditApiError && error.uncertain);
+    global.fetch = async () => Response.json({ protocolVersion: "stellar.editor.v1", projectId: "project-a",
+      sessionId: "session-a", requestId: "apply-1", status: "error",
+      error: { code: "NOT_READY", httpStatus: 503, recoverable: true, message: "The preview is not ready yet." } },
+    { status: 503 });
+    await assert.rejects(applyEdit(request), (error) => error instanceof EditApiError && error.uncertain);
   } finally {
     global.window = priorWindow;
     global.fetch = priorFetch;
   }
+});
+
+test("missing outcome permits only original-request retry and rejects mismatched lookup scope", async () => {
+  let state = transitionEdit(initialEditState, { type: "draft", draft: draft() });
+  const version = state.version;
+  state = transitionEdit(state, { type: "prepare-start", requestId: "prepare-1", version });
+  state = transitionEdit(state, { type: "prepare-result", requestId: "prepare-1", version,
+    result: { ...examplePrepareResponse, requestId: "prepare-1" } });
+  state = transitionEdit(state, { type: "apply-start", requestId: "apply-1", version });
+  state = transitionEdit(state, { type: "apply-error", requestId: "apply-1", version,
+    error: { code: "NOT_READY", httpStatus: 503, recoverable: true, message: "The preview is not ready yet." }, uncertain: true });
+  state = transitionEdit(state, { type: "reconcile-start", version });
+  state = transitionEdit(state, { type: "reconcile-error", version,
+    error: { code: "UNKNOWN_TARGET", httpStatus: 404, recoverable: true, message: "The selected target is no longer available." } });
+  assert.equal(state.phase, "uncertain");
+  assert.equal(state.applyRequestId, "apply-1");
+  assert.match(state.notice, /original save request/);
+  assert.equal(transitionEdit(state, { type: "apply-start", requestId: "apply-2", version }), state);
+  state = transitionEdit(state, { type: "apply-start", requestId: "apply-1", version });
+  assert.equal(state.phase, "saving");
+
+  const priorFetch = global.fetch;
+  global.fetch = async (url) => {
+    const requestId = new URL(url, "http://127.0.0.1").searchParams.get("requestId");
+    return Response.json({ protocolVersion: "stellar.editor.v1", projectId: "project-other",
+      sessionId: "session-a", requestId, status: "error",
+      error: { code: "UNKNOWN_TARGET", httpStatus: 404, recoverable: true,
+        message: "The selected target is no longer available." } }, { status: 404 });
+  };
+  try {
+    await assert.rejects(lookupEdit("project-a", "session-a", "apply-1"),
+      (error) => error instanceof EditApiError && error.detail.code === "INVALID_REQUEST");
+  } finally { global.fetch = priorFetch; }
 });

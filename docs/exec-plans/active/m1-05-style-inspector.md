@@ -46,7 +46,7 @@ Own `apps/web/features/inspector/**`, its tests/styles, this plan, `docs/user-gu
 - `npm run build:contracts`: passed.
 - `npm run typecheck --workspace=@stellar/web`: passed after inspector implementation.
 - `cd apps/web && ../../node_modules/.bin/eslint features/inspector test/inspector.test.cjs`: passed.
-- `node --conditions=react-server -r ./apps/web/test/register.cjs --test apps/web/test/inspector.test.cjs`: 5 tests passed.
+- `node --conditions=react-server -r ./apps/web/test/register.cjs --test apps/web/test/inspector.test.cjs`: 6 tests passed after browser-feedback fixes.
 - `npm run verify:docs`: passed after the guide and handoff were added.
 - `npm run build`: passed, including packages, Next and Astro fixture.
 - `npm run verify`: harness, docs, lint, typecheck, contracts and editor-core passed; runner tests hit this sandbox's `listen EPERM 127.0.0.1` restriction. The coordinator will run the combined suite with loopback permission.

@@ -34,7 +34,9 @@
 .provenance dd { margin: 0; overflow-wrap: anywhere; }
 .form { display: grid; gap: .55rem; margin: .7rem 0; }
 .field { display: grid; flex: 1; min-width: 6.5rem; gap: .3rem; }
-.field span { font-weight: 600; }
+.field label { font-weight: 600; }
+.sourceDetails { margin-top: .35rem; color: var(--muted); font-size: .78rem; }
+.sourceDetails summary { cursor: pointer; width: fit-content; }
 .field input, .field select { width: 100%; padding: .5rem; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: .3rem; font: inherit; }
 .field input[aria-invalid="true"] { border-color: var(--accent); }
 .warning { padding: .65rem; background: var(--badge); color: var(--ink); border-left: 3px solid var(--accent); line-height: 1.45; }

@@ -139,6 +139,7 @@ export function Inspector(props: InspectorProps) {
       draft.contextKey !== contextRef.current || draft.sessionId !== sessionId ||
       draft.expectedRevision !== sourceRevision || !sourceCurrent) return false;
     busy.current = true;
+    setCheckedPending(false);
     const requestId = before.applyRequestId ?? newRequestId();
     const version = before.version;
     send({ type: "apply-start", requestId, version });
@@ -177,7 +178,9 @@ export function Inspector(props: InspectorProps) {
       }
       return next.phase === "idle";
     } catch (error) {
-      send({ type: "reconcile-error", version, error: apiError(error).detail });
+      const failure = apiError(error);
+      send({ type: "reconcile-error", version, error: failure.detail });
+      setCheckedPending(failure.detail.code === "UNKNOWN_TARGET");
       return false;
     } finally { busy.current = false; }
   }
@@ -287,8 +290,12 @@ export function Inspector(props: InspectorProps) {
       <p className={styles.eyebrow}>Style inspector</p>
       <h2>{selectedTarget?.anchor ?? "Select an element"}</h2>
       {selectedTarget && <p className={styles.meta}>{selectedTarget.source.file} · {pageId}</p>}
-      <p className={styles.meta}>Viewport {viewportWidth}px · Revision {sourceRevision}</p>
-      <p className={styles.meta}>Preview generation {previewGeneration}</p>
+      <p className={styles.meta}>Viewport {viewportWidth}px</p>
+      <details className={styles.sourceDetails}>
+        <summary>Source details</summary>
+        <p className={styles.meta}>Revision {sourceRevision}</p>
+        <p className={styles.meta}>Preview generation {previewGeneration}</p>
+      </details>
     </div>
 
     {!selectedTarget ? <p className={styles.empty}>Select a source-linked element in the canvas to inspect its supported styles.</p> : <>
@@ -421,13 +428,16 @@ export function Inspector(props: InspectorProps) {
 
 function SourceProvenance({ control, computed }: { control: StyleControl; computed?: string }) {
   const authored = control.authoredValue;
+  const fallbackValue = (control as StyleControl & { fallbackValue?: StyleControl["resolvedValue"] | null }).fallbackValue;
+  const reference = authored ?? fallbackValue;
   return <dl className={styles.provenance}>
     <div><dt>Ownership</dt><dd>{control.provenance}</dd></div>
-    <div><dt>Authored here</dt><dd>{formatValue(authored)}</dd></div>
-    <div><dt>Token reference</dt><dd>{authored?.kind === "token" ? authored.name : "None"}</dd></div>
+    <div><dt>Owned override</dt><dd>{formatValue(authored)}</dd></div>
+    <div><dt>Authored fallback</dt><dd>{formatValue(fallbackValue ?? null)}</dd></div>
+    <div><dt>Token reference</dt><dd>{reference?.kind === "token" ? reference.name : "None"}</dd></div>
     <div><dt>Source resolved</dt><dd>{formatValue(control.resolvedValue)}</dd></div>
     <div><dt>Browser computed</dt><dd>{computed ?? "Not reported by preview"}</dd></div>
-    <div><dt>Fallback</dt><dd>{control.fallback.file} · {control.fallback.selector}</dd></div>
+    <div><dt>Fallback source</dt><dd>{control.fallback.file} · {control.fallback.selector}</dd></div>
     <div><dt>Override</dt><dd>{control.override.file} · {control.override.selector}</dd></div>
   </dl>;
 }
