@@ -11,7 +11,7 @@ export function installStudioBackGuard(
   const hadPreviousEntry = existingMarker
     ? previousState?.stellarStudioHadPrevious === true
     : browser.history.length > 1;
-  const arm = () => browser.history.pushState({ ...browser.history.state, stellarStudioGuard: marker }, "", studioUrl);
+  const arm = () => browser.history.pushState({ ...browser.history.state, stellarStudioGuard: marker, stellarStudioHadPrevious: hadPreviousEntry }, "", studioUrl);
   // A reload or remount may already be on the sentinel entry. Reuse it rather
   // than stacking another same-URL entry that would trap Back in Studio.
   if (!existingMarker) browser.history.pushState({ ...browser.history.state, stellarStudioGuard: marker, stellarStudioHadPrevious: hadPreviousEntry }, "", studioUrl);

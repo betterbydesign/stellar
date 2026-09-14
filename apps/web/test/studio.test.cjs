@@ -154,3 +154,16 @@ test("deep-link remount retains fallback behavior instead of navigating to an un
   assert.equal(fallback, 1);
   second();
 });
+
+test("Keep editing then reload preserves the dashboard as the Back destination", async () => {
+  const browser = fakeBrowser(["http://127.0.0.1:3210/projects", "http://127.0.0.1:3210/projects/project-a/studio"]);
+  const first = installStudioBackGuard(browser, async () => false, () => assert.fail("dashboard exists"));
+  browser.history.back();
+  await Promise.resolve();
+  first();
+  const second = installStudioBackGuard(browser, async () => true, () => assert.fail("dashboard exists"));
+  browser.history.back();
+  await Promise.resolve();
+  assert.equal(browser.location.href, "http://127.0.0.1:3210/projects");
+  second();
+});
