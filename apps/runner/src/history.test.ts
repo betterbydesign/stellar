@@ -77,6 +77,8 @@ test("multi-file history is LIFO, durable, idempotent and keeps token impact sha
   assert.deepEqual(listed.entries.map((entry) => entry.entryId), [style.receiptId, token.receiptId]);
   assert.deepEqual(listed.entries[1]?.impact.pageIds, ["home", "contact"]);
   assert.match(listed.entries[0]?.display?.timestamp ?? "", /^\d{4}-/);
+  assert.equal(listed.entries[0]?.display?.target, "home-hero-title");
+  assert.equal(listed.entries[1]?.display?.target, "--lab-color-action-base");
   assert.equal(listed.canUndo, true);
   assert.equal(listed.canRedo, false);
 

@@ -236,7 +236,7 @@ export const HistoryEntrySchema = z.strictObject({
   entryId: OpaqueIdSchema, receipt: ChangeReceiptSchema, command: CommandSchema,
   state: z.enum(["applied", "undone"]), impact: ImpactSchema,
   display: z.strictObject({
-    timestamp: z.iso.datetime(), before: z.string().max(160), after: z.string().max(160),
+    timestamp: z.iso.datetime(), before: z.string().max(160), after: z.string().max(160), target: z.string().min(1).max(160).optional(),
   }).optional(),
 });
 export type HistoryEntry = z.infer<typeof HistoryEntrySchema>;

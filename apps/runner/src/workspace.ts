@@ -40,13 +40,13 @@ type WrittenOperation = AppliedOperation | HistoryOperation;
 type Operation = PreparedOperation | WrittenOperation;
 const writtenPatch = (operation: WrittenOperation): SourcePatch => operation.kind === "apply" ? operation.proposal.sourcePatch : operation.patch;
 
-function displayFor(proposal: ChangeProposal): NonNullable<HistoryEntry["display"]> {
+function displayFor(proposal: ChangeProposal, target: string): NonNullable<HistoryEntry["display"]> {
   const patch = proposal.sourcePatch;
   const before = proposal.command.type === "style.reset"
     ? patch.expectedOldText.replace(/^.*?:\s*/, "").replace(/;\s*$/, "").trim()
     : patch.expectedOldText.trim() || "Inherited";
   const after = proposal.command.type === "style.reset" ? "Inherited" : patch.replacementText.trim();
-  return { timestamp: new Date().toISOString(), before: before.slice(0, 160), after: after.slice(0, 160) };
+  return { timestamp: new Date().toISOString(), before: before.slice(0, 160), after: after.slice(0, 160), target: target.slice(0, 160) };
 }
 
 const id = (value: unknown): value is string => IdentifierSchema.safeParse(value).success;
@@ -421,11 +421,14 @@ export class WorkspaceRuntime {
       sessionId: this.session!.id, requestId: request.requestId, proposalId: proposal.proposalId,
       operation: "apply", targetId: proposal.targetId, oldRevision: this.ledger.revision,
       newRevision: newId("revision"), changedFile: file };
+    const modelTarget = model.targets.find((item) => item.targetId === proposal.targetId);
+    const targetLabel = modelTarget?.kind === "token-definition" ? modelTarget.tokenName :
+      modelTarget?.kind === "element" ? modelTarget.anchor : proposal.targetId;
     const record: AppliedOperation = { version: 1, kind: "apply", operatorId: this.operatorId,
       sessionId: this.session!.id, requestId: request.requestId, intentHash, status: "intent",
       proposal, sequence: ++this.nextSequence, receipt, beforeBase64: Buffer.from(before).toString("base64"),
       afterBase64: Buffer.from(after).toString("base64"), beforeFingerprint: this.ledger.fingerprint, afterFingerprint,
-      display: displayFor(proposal) };
+      display: displayFor(proposal, targetLabel) };
     if (!existing) await this.storeOperation(record);
     if (this.faultPoint === "after-intent") throw new Error("Injected interruption after durable intent");
     // Recheck immediately before atomic replacement; an uncooperative external writer can still race rename.

@@ -194,7 +194,7 @@ export function HistoryControls({ projectId, sessionId, sourceRevision, previewG
         <div className={styles.panel}>
           <p className={styles.revision}>Revision {history?.projectRevision.slice(0, 12) ?? "loading"}</p>
           {history?.entries.length ? <ol className={styles.list}>{history.entries.slice(-6).reverse().map((entry) => <li key={entry.entryId}>
-            <strong>{changeLabel(entry)}</strong><span>{entry.state}</span>
+            <strong>{entry.display?.target ? `${entry.display.target} · ${changeLabel(entry)}` : changeLabel(entry)}</strong><span>{entry.state}</span>
             <small>{entry.receipt.changedFile} · {entry.impact.anchors.join(", ")}</small>
             <small>{summary(entry.display?.before)} → {summary(entry.display?.after)}</small>
             <time dateTime={entry.display?.timestamp}>{entry.display?.timestamp ? new Date(entry.display.timestamp).toLocaleString() : "Time unavailable"}</time>
