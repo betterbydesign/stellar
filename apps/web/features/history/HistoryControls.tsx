@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  ApplyChangeResponseSchema, ErrorEnvelopeSchema, HistoryResponseSchema, PROTOCOL_VERSION, RequestOutcomeSchema,
+  ApplyChangeResponseSchema, ErrorEnvelopeSchema, HistoryResponseSchema, PROTOCOL_VERSION,
   type ChangeReceipt, type HistoryResponse,
 } from "@stellar/contracts";
-import { availableEntry, changeLabel, historyShortcut, type HistoryAction } from "./history-logic";
+import { availableEntry, changeLabel, historyOutcome, historyShortcut, type HistoryAction } from "./history-logic";
 import styles from "./history.module.css";
 
 export type HistoryControlsProps = {
@@ -64,19 +64,12 @@ export function HistoryControls({ projectId, sessionId, sourceRevision, previewG
       credentials: "same-origin", cache: "no-store",
     });
     const value: unknown = await response.json();
-    const failure = ErrorEnvelopeSchema.safeParse(value);
-    if (failure.success && failure.data.error.code === "UNKNOWN_TARGET" && failure.data.projectId === projectId &&
-      failure.data.sessionId === sessionId && failure.data.requestId === lookup) return "unchanged";
-    const parsed = RequestOutcomeSchema.safeParse(value);
-    if (!response.ok || !parsed.success || parsed.data.projectId !== projectId || parsed.data.sessionId !== sessionId ||
-      parsed.data.requestId !== lookup || parsed.data.originalRequestId !== requestId || parsed.data.operation !== action)
-      throw new Error("The save result is unknown. Check it again before editing.");
-    if (parsed.data.status === "applied" && (parsed.data.receipt.sessionId !== sessionId || parsed.data.receipt.operation !== action))
-      throw new Error("The save result is unknown. Check it again before editing.");
-    if (parsed.data.status === "applied") return parsed.data.receipt;
-    if (parsed.data.status === "unchanged") return "unchanged";
-    if (parsed.data.status === "conflicted") return "conflicted";
-    return "pending";
+    const outcome = response.ok ? historyOutcome(value, { projectId, sessionId, lookupRequestId: lookup,
+      originalRequestId: requestId, action }) : null;
+    // UNKNOWN_TARGET is not an unchanged result: a timed-out POST may still
+    // arrive after this lookup and commit under its original request ID.
+    if (outcome === null) throw new Error("The save result is unknown. Check it again before editing.");
+    return outcome;
   }, [base, projectId, sessionId]);
 
   const acceptReceipt = useCallback(async (receipt: ChangeReceipt) => {

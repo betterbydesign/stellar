@@ -1,6 +1,24 @@
-import type { HistoryResponse } from "@stellar/contracts";
+import { RequestOutcomeSchema, type ChangeReceipt, type HistoryResponse } from "@stellar/contracts";
 
 export type HistoryAction = "undo" | "redo";
+export type HistoryOutcome = ChangeReceipt | "unchanged" | "pending" | "conflicted";
+export type HistoryLookupScope = { projectId: string; sessionId: string; lookupRequestId: string; originalRequestId: string; action: HistoryAction };
+
+/** The lookup envelope is scoped to this session; its receipt may predate a restart. */
+export function historyOutcome(value: unknown, scope: HistoryLookupScope): HistoryOutcome | null {
+  const parsed = RequestOutcomeSchema.safeParse(value);
+  if (!parsed.success) return null;
+  const result = parsed.data;
+  if (result.projectId !== scope.projectId || result.sessionId !== scope.sessionId ||
+    result.requestId !== scope.lookupRequestId || result.originalRequestId !== scope.originalRequestId ||
+    result.operation !== scope.action) return null;
+  if (result.status === "applied") {
+    if (result.receipt.projectId !== scope.projectId || result.receipt.requestId !== scope.originalRequestId ||
+      result.receipt.operation !== scope.action) return null;
+    return result.receipt;
+  }
+  return result.status;
+}
 type Shortcut = {
   key: string; metaKey: boolean; ctrlKey: boolean; altKey: boolean; shiftKey: boolean;
   defaultPrevented: boolean; target: EventTarget | null;
