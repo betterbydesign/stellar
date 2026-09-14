@@ -8,6 +8,7 @@ const {
 const { initialEditState, transitionEdit } = require("../features/inspector/edit-state.ts");
 const { parseLocalValue, parseTokenValue, isLocalCommandAllowed } = require("../features/inspector/values.ts");
 const { applyEdit, EditApiError, lookupEdit } = require("../features/inspector/edit-client.ts");
+const { canRetryPendingApply, parsePendingApply, pendingApplyAgeExpired, pendingApplyKey } = require("../features/inspector/pending-apply.ts");
 
 function draft(command = examplePrepareChange.command) {
   return {
@@ -151,4 +152,27 @@ test("missing outcome permits only original-request retry and rejects mismatched
     await assert.rejects(lookupEdit("project-a", "session-a", "apply-1"),
       (error) => error instanceof EditApiError && error.detail.code === "INVALID_REQUEST");
   } finally { global.fetch = priorFetch; }
+});
+
+test("pending apply marker stores only bounded logical identity and never grants stale retry authority", async () => {
+  const request = { protocolVersion: "stellar.editor.v1", projectId: "project-a", sessionId: "session-a",
+    requestId: "apply-1", proposalId: exampleProposal.proposalId, expectedRevision: exampleProposal.baseRevision };
+  const marker = { version: 1, createdAt: 1000, request, pageId: "home",
+    targetId: exampleElementTarget.targetId, anchor: exampleElementTarget.anchor, kind: "local" };
+  assert.deepEqual(parsePendingApply(JSON.stringify(marker), "project-a", 1001), marker);
+  assert.equal(parsePendingApply(JSON.stringify({ ...marker, request: { ...request, projectId: "project-b" } }), "project-a", 1001), null);
+  assert.equal(parsePendingApply(JSON.stringify({ ...marker, createdAt: 1002 }), "project-a", 1001), null);
+  assert.equal(parsePendingApply(JSON.stringify({ ...marker, sourcePatch: "secret" }), "project-a", 1001).sourcePatch, undefined);
+  assert.equal(pendingApplyAgeExpired(marker, 1000 + 8 * 60 * 60 * 1000 + 1), true);
+  const model = { projectId: "project-a", sessionId: "session-a", pageId: "home", projectRevision: request.expectedRevision,
+    targets: [exampleElementTarget] };
+  const scope = { projectId: "project-a", sessionId: "session-a", pageId: "home", sourceRevision: request.expectedRevision, model };
+  assert.equal(canRetryPendingApply(marker, scope), true);
+  assert.equal(canRetryPendingApply(marker, { ...scope, sessionId: "session-b" }), false);
+  assert.equal(canRetryPendingApply(marker, { ...scope, sourceRevision: "new-revision" }), false);
+  assert.equal(canRetryPendingApply(marker, { ...scope, model: null }), false);
+  assert.equal(canRetryPendingApply(marker, { ...scope, model: { ...model, targets: [] } }), false);
+  const one = await pendingApplyKey("operator-a", "project-a");
+  const two = await pendingApplyKey("operator-b", "project-a");
+  assert.notEqual(one, two);
 });

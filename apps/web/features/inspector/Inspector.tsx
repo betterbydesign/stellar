@@ -9,6 +9,7 @@ import {
 import { applyEdit, EditApiError, lookupEdit, newRequestId, prepareEdit } from "./edit-client";
 import { LocalEditForm, TokenEditForm } from "./EditForms";
 import { hasPendingEdit, initialEditState, transitionEdit, type EditAction, type EditDraft, type EditState } from "./edit-state";
+import { canRetryPendingApply, parsePendingApply, pendingApplyAgeExpired, pendingApplyKey, type PendingApplyMarker } from "./pending-apply";
 import { formatValue, isLocalCommandAllowed, isTokenCommandAllowed, propertyLabel, readOnlyExplanation } from "./values";
 import styles from "./Inspector.module.css";
 
@@ -48,6 +49,10 @@ function apiError(error: unknown): EditApiError {
     message: "The local runner is unavailable." }, true);
 }
 
+function removePendingMarker(key: string) {
+  try { window.sessionStorage.removeItem(key); } catch { /* Storage may be unavailable. */ }
+}
+
 export function Inspector(props: InspectorProps) {
   const {
     projectId, sessionId, pageId, sourceRevision, previewGeneration, model,
@@ -60,11 +65,25 @@ export function Inspector(props: InspectorProps) {
   const stateRef = useRef(state);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [checkedPending, setCheckedPending] = useState(false);
+  const [recovered, setRecovered] = useState<{ key: string; marker: PendingApplyMarker } | null>(null);
+  const [recoveredScope, setRecoveredScope] = useState<string | null>(null);
+  const [recovering, setRecovering] = useState(true);
+  const [recoverNotice, setRecoverNotice] = useState<string | null>(null);
+  const [recoveryUnavailable, setRecoveryUnavailable] = useState(false);
+  const [recoveredMissing, setRecoveredMissing] = useState(false);
+  const [recoveredBusyState, setRecoveredBusyState] = useState(false);
   const dialogResolver = useRef<((allowed: boolean) => void) | null>(null);
   const dialogKeepButton = useRef<HTMLButtonElement>(null);
   const dialogElement = useRef<HTMLDivElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
   const busy = useRef(false);
+  const recoveredBusy = useRef(false);
+  const recoveredRef = useRef<{ key: string; marker: PendingApplyMarker } | null>(null);
+  const recoveringRef = useRef(true);
+  const recoveryUnavailableRef = useRef(false);
+  const recoveredScopeRef = useRef<string | null>(null);
+  const projectIdRef = useRef(projectId);
+  const pendingMarkerKeyRef = useRef<string | null>(null);
   const onReceiptRef = useRef(onReceipt);
   useEffect(() => { onReceiptRef.current = onReceipt; }, [onReceipt]);
 
@@ -78,12 +97,116 @@ export function Inspector(props: InspectorProps) {
       target.anchor === selectedTarget.anchor && target.pageId === selectedTarget.pageId);
   const draftStale = !!state.draft && state.draft.contextKey !== contextKey;
   const blocked = !!externallyBlocked || ["preparing", "saving", "reconciling", "uncertain"].includes(state.phase);
+  const recoveryBlocked = recovering || recovered !== null || recoveryUnavailable || recoveredScope !== projectId;
+  useEffect(() => { recoveredRef.current = recovered; }, [recovered]);
+  useEffect(() => { recoveringRef.current = recovering; }, [recovering]);
+  useEffect(() => { recoveryUnavailableRef.current = recoveryUnavailable; }, [recoveryUnavailable]);
+  useEffect(() => { recoveredScopeRef.current = recoveredScope; }, [recoveredScope]);
+  useEffect(() => { projectIdRef.current = projectId; }, [projectId]);
   const linkedTokens = selectedTarget && model
     ? model.targets.filter(isTokenTarget).filter((target) => selectedTarget.linkedTokenTargetIds.includes(target.targetId))
     : [];
   const controls = selectedTarget?.controls.filter((control) => control.scopeId === scope) ?? [];
   const activeControl = choice?.kind === "local" ? controls.find((control) => control.property === choice.property) : undefined;
   const activeToken = choice?.kind === "token" ? linkedTokens.find((target) => target.targetId === choice.targetId) : undefined;
+
+  useEffect(() => {
+    let active = true;
+    void (async () => {
+      try {
+        const operatorResponse = await fetch("/api/operator/session", { credentials: "same-origin", cache: "no-store" });
+        if (!operatorResponse.ok) throw new Error("Operator session unavailable");
+        const operator: unknown = await operatorResponse.json();
+        const csrf = typeof operator === "object" && operator !== null && "csrfToken" in operator &&
+          typeof operator.csrfToken === "string" ? operator.csrfToken : null;
+        if (!csrf) throw new Error("Operator session unavailable");
+        window.sessionStorage.setItem("stellar.csrf", csrf);
+        const key = await pendingApplyKey(csrf, projectId);
+        if (!active) return;
+        pendingMarkerKeyRef.current = key;
+        const raw = window.sessionStorage.getItem(key);
+        const marker = parsePendingApply(raw, projectId);
+        if (raw && !marker) removePendingMarker(key);
+        setRecovered(marker ? { key, marker } : null);
+        setRecoveredScope(projectId);
+        setRecoveryUnavailable(false);
+        setRecoveredMissing(false);
+      } catch {
+        if (active) {
+          setRecoveryUnavailable(true);
+          setRecoverNotice("Pending save recovery is unavailable. Reload before editing source.");
+        }
+      } finally { if (active) setRecovering(false); }
+    })();
+    return () => { active = false; pendingMarkerKeyRef.current = null; };
+  }, [projectId]);
+
+  async function checkRecovered() {
+    const pending = recovered;
+    if (!pending || recoveredBusy.current) return;
+    recoveredBusy.current = true;
+    setRecoveredBusyState(true);
+    setRecoverNotice("Checking the previous save…");
+    try {
+      const result = await lookupEdit(projectId, sessionId, pending.marker.request.requestId);
+      if (result.status === "applied") {
+        removePendingMarker(pending.key);
+        setRecovered(null);
+        setRecoveredMissing(false);
+        setRecoverNotice("Previous source save confirmed.");
+        onReceiptRef.current(result.receipt);
+      } else if (result.status === "unchanged" || result.status === "conflicted") {
+        removePendingMarker(pending.key);
+        setRecovered(null);
+        setRecoveredMissing(false);
+        setRecoverNotice(result.status === "conflicted"
+          ? "Previous save conflicted with newer source. Review the current source."
+          : "The previous request made no source change.");
+      } else {
+        setRecoveredMissing(false);
+        setRecoverNotice("The previous save is still pending. Check again before editing.");
+      }
+    } catch (error) {
+      const failure = apiError(error);
+      const absent = failure.detail.code === "UNKNOWN_TARGET";
+      setRecoveredMissing(absent);
+      setRecoverNotice(absent
+        ? "No saved result was found. You may retry only the original request if the source and session still match."
+        : "The previous save could not be confirmed. Check again before editing.");
+    } finally { recoveredBusy.current = false; setRecoveredBusyState(false); }
+  }
+
+  async function retryRecovered() {
+    const pending = recovered;
+    if (!pending || !recoveredMissing || recoveredBusy.current || externallyBlocked || pendingApplyAgeExpired(pending.marker) ||
+      !canRetryPendingApply(pending.marker, { projectId, sessionId, pageId, sourceRevision, model })) return;
+    recoveredBusy.current = true;
+    setRecoveredBusyState(true);
+    setRecoveredMissing(false);
+    setRecoverNotice("Retrying the original source request…");
+    try {
+      const result = await applyEdit(pending.marker.request);
+      if (result.status === "applied") {
+        removePendingMarker(pending.key);
+        setRecovered(null);
+        setRecoverNotice("Previous source save confirmed.");
+        onReceiptRef.current(result.receipt);
+      } else {
+        removePendingMarker(pending.key);
+        setRecovered(null);
+        setRecoverNotice("The previous request made no source change.");
+      }
+    } catch (error) {
+      const failure = apiError(error);
+      if (!failure.uncertain && failure.detail.code !== "STALE_REVISION") {
+        removePendingMarker(pending.key);
+        setRecovered(null);
+      }
+      setRecoverNotice(failure.uncertain
+        ? "The previous save is still uncertain. Check its outcome again."
+        : failure.detail.message);
+    } finally { recoveredBusy.current = false; setRecoveredBusyState(false); }
+  }
 
   function send(action: EditAction): EditState {
     const next = transitionEdit(stateRef.current, action);
@@ -94,7 +217,7 @@ export function Inspector(props: InspectorProps) {
 
   function makeDraft(command: Command | null, validationError: string | null,
     description: string, targetId: string, kind: "local" | "token", tokenName?: string) {
-    if (!selectedTarget || !sourceCurrent || blocked) return;
+    if (!selectedTarget || !sourceCurrent || blocked || recoveryBlocked) return;
     send({ type: "draft", draft: { contextKey, projectId, sessionId, pageId,
       anchor: selectedTarget.anchor, targetId, expectedRevision: sourceRevision,
       command, validationError, description, kind, tokenName } });
@@ -104,7 +227,7 @@ export function Inspector(props: InspectorProps) {
   async function prepare(): Promise<"ready" | "unchanged" | "failed"> {
     const before = stateRef.current;
     const draft = before.draft;
-    if (busy.current || externallyBlocked || !draft?.command || draft.validationError || !sourceCurrent ||
+    if (busy.current || externallyBlocked || recoveryBlocked || !draft?.command || draft.validationError || !sourceCurrent ||
       draft.contextKey !== contextRef.current ||
       !["draft", "failed"].includes(before.phase)) return "failed";
     busy.current = true;
@@ -135,19 +258,39 @@ export function Inspector(props: InspectorProps) {
     const proposal = before.proposal;
     const allowedPhase = before.phase === "ready-to-apply" ||
       (retry && before.phase === "uncertain" && checkedPending);
-    if (busy.current || externallyBlocked || !draft || !proposal || !allowedPhase ||
+    if (busy.current || externallyBlocked || recoveryBlocked || !draft || !proposal || !allowedPhase ||
       draft.contextKey !== contextRef.current || draft.sessionId !== sessionId ||
       draft.expectedRevision !== sourceRevision || !sourceCurrent) return false;
     busy.current = true;
     setCheckedPending(false);
     const requestId = before.applyRequestId ?? newRequestId();
     const version = before.version;
+    const request: ApplyChange = { protocolVersion: PROTOCOL_VERSION,
+      projectId: draft.projectId, sessionId: draft.sessionId, requestId,
+      proposalId: proposal.proposalId, expectedRevision: proposal.baseRevision };
+    let markerKey: string;
+    try {
+      const key = pendingMarkerKeyRef.current;
+      if (!key) throw new Error("Missing operator scope");
+      markerKey = key;
+      if (stateRef.current.version !== version || draft.contextKey !== contextRef.current ||
+        !sourceCurrent || sessionId !== request.sessionId || sourceRevision !== request.expectedRevision) {
+        busy.current = false;
+        return false;
+      }
+      const marker: PendingApplyMarker = { version: 1, createdAt: new Date().getTime(), request,
+        pageId: draft.pageId, targetId: draft.targetId, anchor: draft.anchor, kind: draft.kind };
+      window.sessionStorage.setItem(markerKey, JSON.stringify(marker));
+    } catch {
+      busy.current = false;
+      setRecoveryUnavailable(true);
+      setRecoverNotice("Pending save recovery is unavailable. Reload before editing source.");
+      return false;
+    }
     send({ type: "apply-start", requestId, version });
     try {
-      const request: ApplyChange = { protocolVersion: PROTOCOL_VERSION,
-        projectId: draft.projectId, sessionId: draft.sessionId, requestId,
-        proposalId: proposal.proposalId, expectedRevision: proposal.baseRevision };
       const result = await applyEdit(request);
+      removePendingMarker(markerKey);
       const next = send({ type: "apply-result", requestId, version, result });
       if (result.status === "applied" && next.receipt?.receiptId === result.receipt.receiptId) {
         onReceiptRef.current(result.receipt);
@@ -156,6 +299,7 @@ export function Inspector(props: InspectorProps) {
       return next.phase === "idle";
     } catch (error) {
       const failure = apiError(error);
+      if (!failure.uncertain) removePendingMarker(markerKey);
       send({ type: "apply-error", requestId, version, error: failure.detail, uncertain: failure.uncertain });
       return false;
     } finally { busy.current = false; }
@@ -170,6 +314,9 @@ export function Inspector(props: InspectorProps) {
     send({ type: "reconcile-start", version });
     try {
       const result = await lookupEdit(projectId, sessionId, before.applyRequestId);
+      if (result.status === "applied" || result.status === "unchanged" || result.status === "conflicted") {
+        if (pendingMarkerKeyRef.current) removePendingMarker(pendingMarkerKeyRef.current);
+      }
       const next = send({ type: "reconcile-result", version, result });
       setCheckedPending(result.status === "pending");
       if (result.status === "applied" && next.receipt?.receiptId === result.receipt.receiptId) {
@@ -186,7 +333,8 @@ export function Inspector(props: InspectorProps) {
   }
 
   async function guardNavigation(): Promise<boolean> {
-    if (!hasPendingEdit(stateRef.current)) return true;
+    if (!hasPendingEdit(stateRef.current) && !recoveringRef.current && !recoveredRef.current && !recoveryUnavailableRef.current && recoveredScopeRef.current === projectIdRef.current) return true;
+    if (recoveringRef.current || recoveredRef.current || recoveryUnavailableRef.current || recoveredScopeRef.current !== projectIdRef.current) return false;
     if (dialogResolver.current) return false;
     return new Promise<boolean>((resolve) => {
       dialogResolver.current = resolve;
@@ -209,7 +357,7 @@ export function Inspector(props: InspectorProps) {
   }, []);
   useEffect(() => {
     const beforeUnload = (event: BeforeUnloadEvent) => {
-      if (!hasPendingEdit(stateRef.current)) return;
+      if (!hasPendingEdit(stateRef.current) && !recoveringRef.current && !recoveredRef.current && !recoveryUnavailableRef.current) return;
       event.preventDefault();
       event.returnValue = "";
     };
@@ -257,7 +405,7 @@ export function Inspector(props: InspectorProps) {
 
   function reviewCurrentSource() {
     const previous = stateRef.current.draft;
-    if (externallyBlocked || !previous?.command || !selectedTarget || !sourceCurrent || !model ||
+    if (externallyBlocked || recoveryBlocked || !previous?.command || !selectedTarget || !sourceCurrent || !model ||
       previous.projectId !== projectId || previous.pageId !== pageId || previous.anchor !== selectedTarget.anchor) return;
     let nextTargetId: string | null = null;
     const command = previous.command;
@@ -278,7 +426,7 @@ export function Inspector(props: InspectorProps) {
     send({ type: "draft", draft: updated });
   }
 
-  const canEdit = !!selectedTarget?.editable && !!sourceCurrent;
+  const canEdit = !!selectedTarget?.editable && !!sourceCurrent && !recoveryBlocked;
   const canReview = !!state.draft?.command && !state.draft.validationError &&
     !draftStale && canEdit && ["draft", "failed"].includes(state.phase);
   const canApply = state.phase === "ready-to-apply" && !draftStale && canEdit && !blocked;
@@ -297,6 +445,23 @@ export function Inspector(props: InspectorProps) {
         <p className={styles.meta}>Preview generation {previewGeneration}</p>
       </details>
     </div>
+
+    {recovering && <p className={styles.warning} role="status">Checking for a previous source save before editing…</p>}
+    {recoverNotice && <p className={styles.warning} role="status">{recoverNotice}</p>}
+    {recovered && <section className={styles.section} aria-label="Previous source save">
+      <h3>Previous save needs a result check</h3>
+      <p className={styles.meta}>Target {recovered.marker.anchor} · original request {recovered.marker.request.requestId}</p>
+      <p className={styles.hint}>Source editing is paused until the runner confirms this request&apos;s outcome.</p>
+      {pendingApplyAgeExpired(recovered.marker) && <p className={styles.warning}>This request is older than eight hours. Check its outcome; do not retry automatically.</p>}
+      <div className={styles.actions}>
+        <button type="button" className={styles.primaryButton} disabled={recoveredBusyState}
+          onClick={() => void checkRecovered()}>Check previous save</button>
+        {recoveredMissing && <button type="button" className={styles.secondaryButton}
+          disabled={recoveredBusyState || !!externallyBlocked || pendingApplyAgeExpired(recovered.marker) || !canRetryPendingApply(recovered.marker,
+            { projectId, sessionId, pageId, sourceRevision, model })}
+          onClick={() => void retryRecovered()}>Retry original save request</button>}
+      </div>
+    </section>}
 
     {!selectedTarget ? <p className={styles.empty}>Select a source-linked element in the canvas to inspect its supported styles.</p> : <>
       {externallyBlocked && <p className={styles.warning} role="status">A history change is being resolved. Style editing is paused until its outcome is known.</p>}
@@ -399,9 +564,11 @@ export function Inspector(props: InspectorProps) {
       <p className={styles.meta}>Target {state.receiptAnchor ?? receipt.targetId} · receipt {receipt.receiptId}</p>
       <p className={styles.meta}>{receipt.changedFile}</p>
       <p className={styles.meta}>Revision {receipt.oldRevision} → {receipt.newRevision}</p>
-      <p className={styles.hint}>{previewRevision === receipt.newRevision
-        ? "Preview confirmed at the saved revision."
-        : "Preview refresh is pending or unavailable. The source save is retained."}</p>
+      <p className={styles.hint}>{sourceRevision !== receipt.newRevision
+        ? "A newer source revision is active. This earlier save remains in history."
+        : previewRevision === receipt.newRevision
+          ? "Preview confirmed at the saved revision."
+          : "Preview refresh is pending or unavailable. The source save is retained."}</p>
     </section>}
 
     {dialogOpen && <div className={styles.dialogBackdrop}>
