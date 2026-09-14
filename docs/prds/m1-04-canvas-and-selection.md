@@ -1,6 +1,6 @@
 # M1-04 — Project shell, responsive canvas and source-linked selection
 
-Status: dependent on M1-02 and M1-03. Local identifier M1-04. Parent: [M1 index](README.md); a bounded subset of product R04/R06.
+Status: implemented and reviewed locally; integrated browser acceptance passed on 2026-09-14. Local identifier M1-04. See the [integration review](../handoffs/m1-editor-review.md) for evidence and limits. User visual review remains open.
 
 ## Overview
 
@@ -60,13 +60,13 @@ Coordinate the integration launch option and separate preview hostname with M1-0
 
 ## Acceptance Criteria
 
-- [ ] M1-04-A: Open both registered projects, select Home/Contact, retry a failed preview and reopen a stopped session using actual runner responses.
-- [ ] M1-04-B: The page renders at 390/768/1440 and an intermediate width with correct media behavior. Fit zoom and 100% maintain matching selection geometry.
-- [ ] M1-04-C: Clicking unique/nested elements resolves the correct page, source target and occurrence; unsupported/shared ambiguous cases remain read-only.
-- [ ] M1-04-D: Inspect/interact switching, page links, scroll, resize, keyboard selection and Escape behave consistently without changing site layout.
-- [ ] M1-04-E: Stale frame messages, wrong origins/windows, malformed payloads and mismatched projects/revisions cannot select an editable target or trigger a write.
-- [ ] M1-04-F: Reload/restart and rapid project/page switching cannot display stale editable state from a previous session.
-- [ ] M1-04-G: A clean fixture build and ordinary non-editor preview contain no editor markers, capabilities or injected bridge. Screenshot evidence identifies the source revision and widths.
+- [x] M1-04-A: Open both registered projects, select Home/Contact, retry a failed preview and reopen a stopped session using actual runner responses.
+- [x] M1-04-B: The page renders at 390/768/1440 and an intermediate width with correct media behavior. Fit zoom and 100% maintain matching selection geometry.
+- [x] M1-04-C: Clicking unique/nested elements resolves the correct page, source target and occurrence; unsupported/shared ambiguous cases remain read-only.
+- [x] M1-04-D: Inspect/interact switching, page links, scroll, resize, keyboard selection and Escape behave consistently without changing site layout.
+- [x] M1-04-E: Stale frame messages, wrong origins/windows, malformed payloads and mismatched projects/revisions cannot select an editable target or trigger a write.
+- [x] M1-04-F: Reload/restart and rapid project/page switching cannot display stale editable state from a previous session.
+- [x] M1-04-G: A clean fixture build and ordinary non-editor preview contain no editor markers, capabilities or injected bridge. Screenshot evidence identifies the source revision and widths.
 
 ## Testing Plan
 

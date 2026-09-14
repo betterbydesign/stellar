@@ -2,7 +2,7 @@
 import { pathToFileURL } from "node:url";
 import path from "node:path";
 
-const [root, astroEntrypoint, dependencyRoot, portText, integrationEntrypoint] = process.argv.slice(2);
+const [root, astroEntrypoint, dependencyRoot, portText, integrationEntrypoint, appOrigin] = process.argv.slice(2);
 const port = Number(portText);
 let server;
 
@@ -13,7 +13,7 @@ try {
     root,
     configFile: "astro.config.mjs",
     server: { host: "127.0.0.1", port },
-    integrations: integration ? [typeof integration === "function" ? integration() : integration] : [],
+    integrations: integration ? [typeof integration === "function" ? integration({ appOrigin: appOrigin === "-" ? undefined : appOrigin }) : integration] : [],
     vite: {
       server: {
         strictPort: true,

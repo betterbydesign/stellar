@@ -54,3 +54,5 @@ Own `apps/web/features/inspector/**`, its tests/styles, this plan, `docs/user-gu
 ## Outcomes & Retrospective
 
 Inspector implementation is ready for the M1-04 mount and integrated browser review. The coordinator owns final acceptance.
+
+Coordinator closeout, 2026-09-14: integrated production build and expanded real-browser acceptance passed. The final [integration review](../../handoffs/m1-editor-review.md) supersedes the intermediate pending integration gates above. User visual review remains open.

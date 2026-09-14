@@ -1,6 +1,6 @@
 # M1-06 — Durable history, recovery and the complete editor proof
 
-Status: dependent on M1-02 through M1-05. Local identifier M1-06. Parent: [M1 index](README.md); integrated exit evidence for this local milestone.
+Status: implemented and reviewed locally; integrated browser acceptance passed on 2026-09-14. Local identifier M1-06. See the [integration review](../handoffs/m1-editor-review.md) for evidence and limits. User visual review remains open.
 
 ## Overview
 
@@ -52,13 +52,13 @@ Validate the edited project with its ordinary build command after stopping Stell
 
 ## Acceptance Criteria
 
-- [ ] M1-06-A: Undo/redo local and shared-token edits updates source, preview and selection with new durable receipts and correct availability state.
-- [ ] M1-06-B: New edits after undo invalidate redo. Duplicate/lost-response undo requests do not apply twice. Observed newer source blocks stale undo/apply without overwriting it.
-- [ ] M1-06-C: Browser reload, preview restart, runner restart and project close/reopen preserve the final applied source and recoverable history; project A/B remain independent.
-- [ ] M1-06-D: Simulated interruption before/after source replacement recovers a matching receipt or reports the third-state conflict; no false saved state or duplicate edit occurs.
-- [ ] M1-06-E: The complete script below runs from a clean setup, with actual source assertions and browser evidence at the specified widths.
-- [ ] M1-06-F: The edited fixture builds/serves without Stellar, and output contains no editor instrumentation or capabilities.
-- [ ] M1-06-G: Root verification and production builds pass, the workflow video/screenshots and source diffs identify the tested revision, known limitations are documented and the user review handoff is ready.
+- [x] M1-06-A: Undo/redo local and shared-token edits updates source, preview and selection with new durable receipts and correct availability state.
+- [x] M1-06-B: New edits after undo invalidate redo. Duplicate/lost-response undo requests do not apply twice. Observed newer source blocks stale undo/apply without overwriting it.
+- [x] M1-06-C: Browser reload, preview restart, runner restart and project close/reopen preserve the final applied source and recoverable history; project A/B remain independent.
+- [x] M1-06-D: Simulated interruption before/after source replacement recovers a matching receipt or reports the third-state conflict; no false saved state or duplicate edit occurs.
+- [x] M1-06-E: The complete script below runs from a clean setup, with actual source assertions and browser evidence at the specified widths.
+- [x] M1-06-F: The edited fixture builds/serves without Stellar, and output contains no editor instrumentation or capabilities.
+- [x] M1-06-G: Root verification and production builds pass, the workflow video/screenshots and source diffs identify the tested revision, known limitations are documented and the user review handoff is ready.
 
 ## Testing Plan
 

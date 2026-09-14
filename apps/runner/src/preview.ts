@@ -31,7 +31,7 @@ export class PreviewProcess {
   private logTail = "";
   port: number | null = null;
 
-  constructor(readonly project: RegisteredProject, readonly seed: string, readonly data: string, readonly onUnexpectedExit: () => void) {}
+  constructor(readonly project: RegisteredProject, readonly seed: string, readonly data: string, readonly onUnexpectedExit: () => void, readonly appOrigin?: string) {}
 
   async start(fixedPort?: number): Promise<string> {
     if (this.cancelled) throw new PreviewError("STOPPED");
@@ -50,7 +50,7 @@ export class PreviewProcess {
     const home = path.join(this.data, "worker-home");
     await mkdir(home, { recursive: true, mode: 0o700 });
     if (this.cancelled) throw new PreviewError("STOPPED");
-    const child = spawn(process.execPath, [worker, this.project.root, astroEntrypoint, dependencyRoot, String(port), integration], {
+    const child = spawn(process.execPath, [worker, this.project.root, astroEntrypoint, dependencyRoot, String(port), integration, this.appOrigin ?? "-"], {
       cwd: this.project.root,
       detached: true,
       stdio: ["ignore", "pipe", "pipe", "ipc"],

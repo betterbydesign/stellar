@@ -22,4 +22,6 @@ If dependencies are missing, stop the launcher, run `npm run fixture:install` fr
 
 ## Development checks
 
-From the root, run `npm run verify`, `npm run build`, then `npm run verify:local`. The last check connects the production application to a temporary runner, opens both real Astro copies, saves a CSS change and verifies it survives a runner restart. It cleans up its temporary copies and leaves your ordinary local workspace intact.
+From the root, run `npm run verify`, `npm run build`, then `npm run verify:local`. The runner check connects the production application to a temporary runner, opens both real Astro copies, saves a CSS change and verifies it survives a runner restart. It cleans up its temporary copies and leaves your ordinary local workspace intact.
+
+For browser verification, install Chromium with `npx playwright install chromium`, then run `npm run verify:editor` after the production build. It opens both copies, exercises responsive source editing and recovery, and writes screenshots, a workflow video and source evidence under `output/playwright/m1-editor`. The suite uses temporary copies rather than your `.stellar-local` work.

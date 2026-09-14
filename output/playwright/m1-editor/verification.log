@@ -1,0 +1,647 @@
+
+> stellar@0.0.0 verify
+> npm run verify:harness && npm run verify:docs && npm run lint && npm run typecheck && npm run test && npm run verify:fixture
+
+
+> stellar@0.0.0 verify:harness
+> node scripts/check-harness-profile.mjs && node scripts/check-harness-drift.mjs --strict
+
+Harness profile: valid schema, paths, package scripts, and CI commands.
+Harness drift check — consumer repo at /Users/scottfoster/git/stellar
+
+Checks run: denied strings, absolute local paths, denied paths, relative links, forbidden lockfiles, vendored skills are pinned, closeout commands agree across hosts, profile invariants (harness.json), harness files against the template lock
+OK — no hard failures and no drift.
+
+> stellar@0.0.0 verify:docs
+> node scripts/check-docs.mjs --all
+
+Docs check — consumer repo at /Users/scottfoster/git/stellar
+
+note: --all: tracked Markdown (77) and untracked commit candidates (3).
+
+Markdown files scanned: 80
+Checks run: placeholders, secrets, absolute local paths, relative links
+OK — no findings.
+
+> stellar@0.0.0 lint
+> npm run lint --workspaces --if-present && eslint scripts/check-fixture.mjs scripts/verify-local-runner.mjs test/fixture.test.mjs eslint.config.mjs test/editor-e2e
+
+
+> @stellar/runner@0.1.0 lint
+> eslint src
+
+
+> @stellar/web@0.0.0 lint
+> eslint app lib features test next.config.ts
+
+
+> @stellar/contracts@0.1.0 lint
+> eslint src
+
+
+> @stellar/editor-core@0.1.0 lint
+> eslint src
+
+
+> stellar@0.0.0 typecheck
+> npm run build:packages && npm run typecheck --workspaces --if-present
+
+
+> stellar@0.0.0 build:packages
+> npm run build:contracts && npm run build --workspace=@stellar/editor-core && npm run build --workspace=@stellar/runner
+
+
+> stellar@0.0.0 build:contracts
+> npm run build --workspace=@stellar/contracts
+
+
+> @stellar/contracts@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/editor-core@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/runner@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/runner@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @stellar/web@0.0.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully
+
+> @stellar/contracts@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @stellar/editor-core@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> stellar@0.0.0 test
+> npm run build:packages && npm run test --workspace=@stellar/contracts && npm run test --workspace=@stellar/editor-core && npm run test --workspace=@stellar/runner && npm run test --workspace=@stellar/web && npm run test --workspace=@stellar/astro-editor-integration && node --test test/*.test.mjs
+
+
+> stellar@0.0.0 build:packages
+> npm run build:contracts && npm run build --workspace=@stellar/editor-core && npm run build --workspace=@stellar/runner
+
+
+> stellar@0.0.0 build:contracts
+> npm run build --workspace=@stellar/contracts
+
+
+> @stellar/contracts@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/editor-core@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/runner@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/contracts@0.1.0 test
+> npm run build && node --test dist/*.test.js
+
+
+> @stellar/contracts@0.1.0 build
+> tsc -p tsconfig.json
+
+TAP version 13
+# Subtest: every exported example validates
+ok 1 - every exported example validates
+  ---
+  duration_ms: 2.862125
+  type: 'test'
+  ...
+# Subtest: standalone controls and token definitions reject incoherent type, scope and bounds
+ok 2 - standalone controls and token definitions reject incoherent type, scope and bounds
+  ---
+  duration_ms: 0.805916
+  type: 'test'
+  ...
+# Subtest: manifest rejects unknown fields, hostile paths, invalid renderer and responsive scope
+ok 3 - manifest rejects unknown fields, hostile paths, invalid renderer and responsive scope
+  ---
+  duration_ms: 1.8765
+  type: 'test'
+  ...
+# Subtest: manifest rejects cycles, missing and wrong-type token references, owner and impact mismatches
+ok 4 - manifest rejects cycles, missing and wrong-type token references, owner and impact mismatches
+  ---
+  duration_ms: 1.26575
+  type: 'test'
+  ...
+# Subtest: prepare checks project, session, revision, target kind and rule-bound values
+ok 5 - prepare checks project, session, revision, target kind and rule-bound values
+  ---
+  duration_ms: 2.149625
+  type: 'test'
+  ...
+# Subtest: mobile edit scope is explicit and may fall back to a base rule
+ok 6 - mobile edit scope is explicit and may fall back to a base rule
+  ---
+  duration_ms: 0.283917
+  type: 'test'
+  ...
+# Subtest: token.set checks the concrete target and approved bounds
+ok 7 - token.set checks the concrete target and approved bounds
+  ---
+  duration_ms: 0.599458
+  type: 'test'
+  ...
+# Subtest: apply, history and preview validation bind to current scope and revision
+ok 8 - apply, history and preview validation bind to current scope and revision
+  ---
+  duration_ms: 1.941041
+  type: 'test'
+  ...
+# Subtest: responses keep status and nested scope coherent; errors have stable HTTP semantics
+ok 9 - responses keep status and nested scope coherent; errors have stable HTTP semantics
+  ---
+  duration_ms: 1.36475
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 109.4375
+
+> @stellar/editor-core@0.1.0 test
+> npm run build && node --test dist/*.test.js
+
+
+> @stellar/editor-core@0.1.0 build
+> tsc -p tsconfig.json
+
+TAP version 13
+# Subtest: read preserves bytes, resolves authored source keys and refuses repeated component instances
+ok 1 - read preserves bytes, resolves authored source keys and refuses repeated component instances
+  ---
+  duration_ms: 61.299583
+  type: 'test'
+  ...
+# Subtest: base and mobile edits change one declaration, reset it and keep neighboring bytes
+ok 2 - base and mobile edits change one declaration, reset it and keep neighboring bytes
+  ---
+  duration_ms: 76.559333
+  type: 'test'
+  ...
+# Subtest: token leaf change leaves aliases intact, scoped duplicates separate, no-op unchanged
+ok 3 - token leaf change leaves aliases intact, scoped duplicates separate, no-op unchanged
+  ---
+  duration_ms: 44.920667
+  type: 'test'
+  ...
+# Subtest: invalid values, alias corruption, unsupported Astro and malformed CSS refuse edits
+ok 4 - invalid values, alias corruption, unsupported Astro and malformed CSS refuse edits
+  ---
+  duration_ms: 63.335167
+  type: 'test'
+  ...
+# Subtest: UTF-8 prefixes preserve exact byte offsets and inverse bytes
+ok 5 - UTF-8 prefixes preserve exact byte offsets and inverse bytes
+  ---
+  duration_ms: 18.990292
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1332.27275
+
+> @stellar/runner@0.1.0 test
+> npm run build && node --test dist/*.test.js
+
+
+> @stellar/runner@0.1.0 build
+> tsc -p tsconfig.json
+
+TAP version 13
+# Subtest: multi-file history is LIFO, durable, idempotent and keeps token impact shared
+ok 1 - multi-file history is LIFO, durable, idempotent and keeps token impact shared
+  ---
+  duration_ms: 2958.054708
+  type: 'test'
+  ...
+# Subtest: new apply cuts redo, external source drift blocks history, and 21 edits remain undoable
+ok 2 - new apply cuts redo, external source drift blocks history, and 21 edits remain undoable
+  ---
+  duration_ms: 5824.904792
+  type: 'test'
+  ...
+# Subtest: interrupted undo reconciles before and after source replacement
+ok 3 - interrupted undo reconciles before and after source replacement
+  ---
+  duration_ms: 6233.1185
+  type: 'test'
+  ...
+# Subtest: two independent copies preserve seed and reject source symlink escape
+ok 4 - two independent copies preserve seed and reject source symlink escape
+  ---
+  duration_ms: 41.751834
+  type: 'test'
+  ...
+# Subtest: manifest byte drift rotates revision but refuses cached edit rules
+ok 5 - manifest byte drift rotates revision but refuses cached edit rules
+  ---
+  duration_ms: 66.129584
+  type: 'test'
+  ...
+# Subtest: real Astro readiness, duplicate open, locked-down /@fs/, close and generation rotation
+ok 6 - real Astro readiness, duplicate open, locked-down /@fs/, close and generation rotation
+  ---
+  duration_ms: 2495.578792
+  type: 'test'
+  ...
+# Subtest: occupied preview port cannot be mistaken for our ready worker and retry recovers
+ok 7 - occupied preview port cannot be mistaken for our ready worker and retry recovers
+  ---
+  duration_ms: 4275.810084
+  type: 'test'
+  ...
+# Subtest: closing during startup never leaves a late Astro listener
+ok 8 - closing during startup never leaves a late Astro listener
+  ---
+  duration_ms: 790.788084
+  type: 'test'
+  ...
+# Subtest: compiler failure and missing pinned dependencies remain failed until repaired
+ok 9 - compiler failure and missing pinned dependencies remain failed until repaired
+  ---
+  duration_ms: 2394.540625
+  type: 'test'
+  ...
+# Subtest: real engine writes once, stale external edit rejects, receipts reconcile after new session
+ok 10 - real engine writes once, stale external edit rejects, receipts reconcile after new session
+  ---
+  duration_ms: 2389.181708
+  type: 'test'
+  ...
+# Subtest: write-ahead recovery distinguishes before, after, and third-state bytes
+ok 11 - write-ahead recovery distinguishes before, after, and third-state bytes
+  ---
+  duration_ms: 8790.7865
+  type: 'test'
+  ...
+# Subtest: queued apply rechecks session after close wins the project lock
+ok 12 - queued apply rechecks session after close wins the project lock
+  ---
+  duration_ms: 992.490333
+  type: 'test'
+  ...
+# Subtest: HTTP runner requires bearer and stable operator, rejects browser origin
+ok 13 - HTTP runner requires bearer and stable operator, rejects browser origin
+  ---
+  duration_ms: 66.218666
+  type: 'test'
+  ...
+# Subtest: one runner owns a data directory and a dead owner's lease can be reclaimed
+ok 14 - one runner owns a data directory and a dead owner's lease can be reclaimed
+  ---
+  duration_ms: 161.737666
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24340.129375
+
+> @stellar/web@0.0.0 test
+> node --conditions=react-server -r ./test/register.cjs --test test/*.test.cjs
+
+TAP version 13
+# Subtest: launcher config fails closed on unsafe host, mode, secret and preview URL
+ok 1 - launcher config fails closed on unsafe host, mode, secret and preview URL
+  ---
+  duration_ms: 0.755667
+  type: 'test'
+  ...
+# Subtest: bootstrap is one-use under concurrent requests and cookie is signed and expiring
+ok 2 - bootstrap is one-use under concurrent requests and cookie is signed and expiring
+  ---
+  duration_ms: 14.49675
+  type: 'test'
+  ...
+# Subtest: broker sends one authenticated loopback RPC and normalizes runner errors
+ok 3 - broker sends one authenticated loopback RPC and normalizes runner errors
+  ---
+  duration_ms: 2.728416
+  type: 'test'
+  ...
+# Subtest: restart accepts a new coherent session ID but other reads retain the requested session scope
+ok 4 - restart accepts a new coherent session ID but other reads retain the requested session scope
+  ---
+  duration_ms: 0.667291
+  type: 'test'
+  ...
+# Subtest: all project reads require operator and mutations require exact Origin plus CSRF
+ok 5 - all project reads require operator and mutations require exact Origin plus CSRF
+  ---
+  duration_ms: 3.900583
+  type: 'test'
+  ...
+# Subtest: NextURL loopback normalization preserves exact incoming Host and Origin gates
+ok 6 - NextURL loopback normalization preserves exact incoming Host and Origin gates
+  ---
+  duration_ms: 0.325917
+  type: 'test'
+  ...
+# Subtest: history broker checks command receipt operation and request scope
+ok 7 - history broker checks command receipt operation and request scope
+  ---
+  duration_ms: 0.56325
+  type: 'test'
+  ...
+# Subtest: history POST requires operator, exact origin and CSRF before forwarding
+ok 8 - history POST requires operator, exact origin and CSRF before forwarding
+  ---
+  duration_ms: 2.09725
+  type: 'test'
+  ...
+# Subtest: history shortcuts respect native editing and map platform redo
+ok 9 - history shortcuts respect native editing and map platform redo
+  ---
+  duration_ms: 0.66625
+  type: 'test'
+  ...
+# Subtest: history controls use only server-designated visible stack entries
+ok 10 - history controls use only server-designated visible stack entries
+  ---
+  duration_ms: 0.171708
+  type: 'test'
+  ...
+# Subtest: history lookup accepts a prior-session receipt but rejects mismatched scope and missing outcomes
+ok 11 - history lookup accepts a prior-session receipt but rejects mismatched scope and missing outcomes
+  ---
+  duration_ms: 2.146667
+  type: 'test'
+  ...
+# Subtest: missing history may retry only the original command in the same session, revision, and stack position
+ok 12 - missing history may retry only the original command in the same session, revision, and stack position
+  ---
+  duration_ms: 0.683542
+  type: 'test'
+  ...
+# Subtest: all 5xx history responses retain the original request for reconciliation
+ok 13 - all 5xx history responses retain the original request for reconciliation
+  ---
+  duration_ms: 0.39025
+  type: 'test'
+  ...
+# Subtest: pending history marker persists only scoped command metadata and rejects stale or malformed state
+ok 14 - pending history marker persists only scoped command metadata and rejects stale or malformed state
+  ---
+  duration_ms: 5.534209
+  type: 'test'
+  ...
+# Subtest: local and concrete token controls reject invalid values before API calls
+ok 15 - local and concrete token controls reject invalid values before API calls
+  ---
+  duration_ms: 0.851292
+  type: 'test'
+  ...
+# Subtest: late prepare response cannot replace a changed draft or authorize a stale proposal
+ok 16 - late prepare response cannot replace a changed draft or authorize a stale proposal
+  ---
+  duration_ms: 0.368083
+  type: 'test'
+  ...
+# Subtest: uncertain apply preserves request identity and blocks new drafts or discard until reconciliation
+ok 17 - uncertain apply preserves request identity and blocks new drafts or discard until reconciliation
+  ---
+  duration_ms: 0.152583
+  type: 'test'
+  ...
+# Subtest: a definite failed apply can be reviewed again without reusing the old apply request ID
+ok 18 - a definite failed apply can be reviewed again without reusing the old apply request ID
+  ---
+  duration_ms: 0.079666
+  type: 'test'
+  ...
+# Subtest: malformed, mismatched and 5xx apply responses are uncertain after request dispatch
+ok 19 - malformed, mismatched and 5xx apply responses are uncertain after request dispatch
+  ---
+  duration_ms: 9.863292
+  type: 'test'
+  ...
+# Subtest: missing outcome permits only original-request retry and rejects mismatched lookup scope
+ok 20 - missing outcome permits only original-request retry and rejects mismatched lookup scope
+  ---
+  duration_ms: 0.762625
+  type: 'test'
+  ...
+# Subtest: pending apply marker stores only bounded logical identity and never grants stale retry authority
+ok 21 - pending apply marker stores only bounded logical identity and never grants stale retry authority
+  ---
+  duration_ms: 4.6855
+  type: 'test'
+  ...
+# Subtest: reconciled reload receipt remains visible while source and preview refresh independently
+ok 22 - reconciled reload receipt remains visible while source and preview refresh independently
+  ---
+  duration_ms: 0.250875
+  type: 'test'
+  ...
+# Subtest: current exact frame selection resolves only against current source model
+ok 23 - current exact frame selection resolves only against current source model
+  ---
+  duration_ms: 0.895958
+  type: 'test'
+  ...
+# Subtest: wrong origin, window, scope, route and stale revision cannot select
+ok 24 - wrong origin, window, scope, route and stale revision cannot select
+  ---
+  duration_ms: 0.997583
+  type: 'test'
+  ...
+# Subtest: malformed frame payload and spoofed target cannot select
+ok 25 - malformed frame payload and spoofed target cannot select
+  ---
+  duration_ms: 0.291042
+  type: 'test'
+  ...
+# Subtest: hello only reveals a route from the exact frame
+ok 26 - hello only reveals a route from the exact frame
+  ---
+  duration_ms: 0.1595
+  type: 'test'
+  ...
+# Subtest: preview origin accepts only exact local preview hostname
+ok 27 - preview origin accepts only exact local preview hostname
+  ---
+  duration_ms: 0.122084
+  type: 'test'
+  ...
+# Subtest: browser Back waits for dirty draft resolution and repeated Back cannot skip it
+ok 28 - browser Back waits for dirty draft resolution and repeated Back cannot skip it
+  ---
+  duration_ms: 0.4895
+  type: 'test'
+  ...
+# Subtest: browser Back from a deep link falls back to Projects after guard approval
+ok 29 - browser Back from a deep link falls back to Projects after guard approval
+  ---
+  duration_ms: 0.082125
+  type: 'test'
+  ...
+# Subtest: remount and reload reuse the existing Studio sentinel
+ok 30 - remount and reload reuse the existing Studio sentinel
+  ---
+  duration_ms: 0.211125
+  type: 'test'
+  ...
+# Subtest: deep-link remount retains fallback behavior instead of navigating to an unknown prior entry
+ok 31 - deep-link remount retains fallback behavior instead of navigating to an unknown prior entry
+  ---
+  duration_ms: 0.260834
+  type: 'test'
+  ...
+# Subtest: Keep editing then reload preserves the dashboard as the Back destination
+ok 32 - Keep editing then reload preserves the dashboard as the Back destination
+  ---
+  duration_ms: 0.307542
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 336.732916
+
+> @stellar/astro-editor-integration@0.1.0 test
+> node --test test/*.test.mjs
+
+TAP version 13
+# Subtest: only an explicit local app origin and Astro dev command inject the editor
+ok 1 - only an explicit local app origin and Astro dev command inject the editor
+  ---
+  duration_ms: 0.593167
+  type: 'test'
+  ...
+# Subtest: same-preview navigation announces its new route without trusting a foreign parent
+ok 2 - same-preview navigation announces its new route without trusting a foreign parent
+  ---
+  duration_ms: 2.331791
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 39.097167
+TAP version 13
+# Subtest: --all scans untracked Markdown and accepts structural source citations
+ok 1 - --all scans untracked Markdown and accepts structural source citations
+  ---
+  duration_ms: 82.675084
+  type: 'test'
+  ...
+# Subtest: structural links do not hide query secrets, explicit tokens, or unrelated entropy
+ok 2 - structural links do not hide query secrets, explicit tokens, or unrelated entropy
+  ---
+  duration_ms: 68.669542
+  type: 'test'
+  ...
+# Subtest: fixture manifest agrees with actual authored source
+ok 3 - fixture manifest agrees with actual authored source
+  ---
+  duration_ms: 84.949625
+  type: 'test'
+  ...
+# Subtest: schema-valid CSS identity cannot silently select a different element
+ok 4 - schema-valid CSS identity cannot silently select a different element
+  ---
+  duration_ms: 33.575667
+  type: 'test'
+  ...
+# Subtest: missing fallback and additional token definition fail source validation
+ok 5 - missing fallback and additional token definition fail source validation
+  ---
+  duration_ms: 23.557458
+  type: 'test'
+  ...
+# Subtest: alias source must retain the manifest's declared reference
+ok 6 - alias source must retain the manifest's declared reference
+  ---
+  duration_ms: 27.698
+  type: 'test'
+  ...
+# Subtest: CSS media identity includes the actual authored condition
+ok 7 - CSS media identity includes the actual authored condition
+  ---
+  duration_ms: 22.144083
+  type: 'test'
+  ...
+# Subtest: source symlink cannot escape the fixture root
+ok 8 - source symlink cannot escape the fixture root
+  ---
+  duration_ms: 20.999125
+  type: 'test'
+  ...
+# Subtest: Stellar profile validates; unsupported integration and branch claims fail
+ok 9 - Stellar profile validates; unsupported integration and branch claims fail
+  ---
+  duration_ms: 98.299041
+  type: 'test'
+  ...
+# Subtest: profile file check identifies missing declared artifacts
+ok 10 - profile file check identifies missing declared artifacts
+  ---
+  duration_ms: 0.945166
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1280.682708
+
+> stellar@0.0.0 verify:fixture
+> npm run build:contracts && node scripts/check-fixture.mjs
+
+
+> stellar@0.0.0 build:contracts
+> npm run build --workspace=@stellar/contracts
+
+
+> @stellar/contracts@0.1.0 build
+> tsc -p tsconfig.json
+
+Fixture source validation passed: 2 pages, 11 targets, 15 style rules.

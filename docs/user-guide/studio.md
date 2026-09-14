@@ -42,7 +42,9 @@ If a style change is still pending, leaving with **All projects**, Stellar’s p
 ## Related guides
 
 - [Connect to local projects](local-projects.md)
+- [Edit styles](style-inspector.md)
+- [Undo, redo and source history](source-history.md)
 
 ## Last reviewed
 
-September 14, 2026 — M1-04 local implementation and coordinator browser acceptance in progress.
+September 14, 2026 — integrated local implementation and coordinator browser acceptance passed; user visual review is available.

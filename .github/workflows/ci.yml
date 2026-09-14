@@ -35,3 +35,5 @@ jobs:
       - run: npm run verify
       - run: npm run build
       - run: npm run verify:local
+      - run: npx playwright install --with-deps chromium
+      - run: npm run verify:editor

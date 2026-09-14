@@ -37,3 +37,13 @@ The company Astro and WordPress checkouts are unchanged. There was no push, PR, 
 ## 2026-09-14 — Foundation commit and next editor wave
 
 The user authorized committing all current M1-01–03 changes and launching SOL high subagents for M1-04, plus independent M1-05/06 work. The completed foundation already passed the recorded 41 tests, package/app/fixture builds, authenticated live acceptance and browser checks in the previous implementation session. The screenshot correctly shows the remaining bootstrap home page; M1-04 owns its replacement. Local tracking and scope are recorded in [Decision 003](decisions/003-local-m1-delivery-and-tracking.md). No ClickUp, Macroscope, remote CI, push, merge or deployment is claimed.
+
+### 2026-09-14 — Complete the local Studio editor wave
+
+Committed the preserved M1-01–03 foundation as `29cac07`. Three SOL high agents implemented M1-04 canvas, M1-05 style controls and M1-06 history in isolated worktrees; the coordinator integrated and reviewed their commits on `codex/m1-02-project-runner`. Projects replaces the bootstrap entry. Studio opens actual Astro copies, supports responsive source selection, local/base/mobile/reset/shared-token commands, and durable guarded undo/redo.
+
+Integration review fixed preference hydration, same-preview navigation, revision refresh ordering, browser Back draft loss, 5xx uncertainty, missing-result retry identity, recovery across reload, fallback provenance and recovered receipt display. Decisions 003/004, subsystem guides, local PRD acceptance, completed plans and the [review handoff](handoffs/m1-editor-review.md) record the boundaries and evidence. ClickUp/Macroscope remain null; user visual review is ready and distinct from implementation review.
+
+Final root verification passed 72 tests plus harness/docs/lint/typechecks/fixture checks. Production package/Next/Astro builds and the real authenticated API acceptance passed. The expanded browser proof passed with 13 screenshots, a video, exact source diffs/receipts and zero browser exceptions. It covered both copies, four widths, failed compilation/retry, geometry/keyboard/navigation, invalid input/duplicate Apply, base/mobile/reset/token writes, Undo/Redo, reload/restart, uncertain Apply/Undo recovery, retained save with failed preview, stale rejection and independent edited build after stopping Stellar. The coordinator inspected desktop/narrow screenshots.
+
+All requested work is committed locally. No company checkout, external task, remote CI, push, PR, merge or deployment changed. The next product work follows user review of the local editor and the existing company WP/ACF POC; broader CMS, IA, hosted accounts, agents, HTML and structural composition remain explicit follow-ons.

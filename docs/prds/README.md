@@ -1,6 +1,6 @@
 # Initial editor milestone: M1
 
-Status: M1-01 through M1-03 are implemented and reviewed locally; included in the authorized foundation commit. M1-04 through M1-06 are the next implementation wave. These are local PRD identifiers, not ClickUp task IDs. Follow the root [harness workflow](../../WORKFLOW.md) and the [PRD template](../templates/prd.md) when implementing them.
+Status: M1-01 through M1-06 are implemented and reviewed locally. The integrated browser proof passed on 2026-09-14; see the [review and evidence](../handoffs/m1-editor-review.md). User visual review is ready. These are local identifiers; ClickUp and Macroscope remain unconfigured.
 
 M1 proves this workflow: open a registered project, view a real Astro page, switch viewport width, select an element, inspect its style source, apply a supported local style or shared-token change, undo/redo, then close and reopen without losing the change. The code on disk is authoritative. A CSS change that exists only in an iframe or browser storage does not pass.
 
@@ -58,15 +58,15 @@ Use this dispatch structure, substituting the selected PRD path and a real task 
 
 ## Milestone exit checklist
 
-- [ ] Both registered fixture copies open; edits in one never affect the other or the fixture seed.
-- [ ] Home and Contact render through Astro at 390, 768 and 1440 CSS pixels, plus an intermediate width; one frame is actively editable.
-- [ ] Clicking a supported element selects the correct source-backed target and exposes provenance and scope.
-- [ ] A local override, reset and shared-token change alter source and the rendered page with the expected scope; shared impact is reviewed.
-- [ ] Browser reload, preview restart and workspace reopen retain applied source. Lost responses and duplicate requests do not repeat an edit.
-- [ ] Undo/redo works; a stale edit or stale undo cannot overwrite an observed newer source revision.
-- [ ] Unsupported or ambiguous source stays intact; invalid messages, targets and project/session combinations cannot trigger a write.
-- [ ] The edited fixture builds and serves outside Stellar without editor markers, bridge code or a Stellar runtime dependency.
-- [ ] Evidence and source-preservation tests pass. Known limits are recorded and the user can review the workflow.
+- [x] Both registered fixture copies open; edits in one never affect the other or the fixture seed.
+- [x] Home and Contact render through Astro at 390, 768 and 1440 CSS pixels, plus an intermediate width; one frame is actively editable.
+- [x] Clicking a supported element selects the correct source-backed target and exposes provenance and scope.
+- [x] A local override, reset and shared-token change alter source and the rendered page with the expected scope; shared impact is reviewed.
+- [x] Browser reload, preview restart and workspace reopen retain applied source. Lost responses and duplicate requests do not repeat an edit.
+- [x] Undo/redo works; a stale edit or stale undo cannot overwrite an observed newer source revision.
+- [x] Unsupported or ambiguous source stays intact; invalid messages, targets and project/session combinations cannot trigger a write.
+- [x] The edited fixture builds and serves outside Stellar without editor markers, bridge code or a Stellar runtime dependency.
+- [x] Evidence and source-preservation tests pass. Known limits are recorded and the user can review the workflow.
 
 ## Follow-on work kept explicit
 

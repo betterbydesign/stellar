@@ -50,7 +50,7 @@
     ],
     "audit": null,
     "schema": null,
-    "notes": "Tests include contracts, source preservation, real Astro runner/recovery, operator broker, fixture and harness checks. Build includes the independent Astro fixture. Run npm run fixture:install after npm ci, then npm run verify:local after the production build for real authenticated app-to-runner acceptance. Dependency audit and a committed application database schema are not configured."
+    "notes": "Tests include contracts, source preservation, real Astro runner/recovery, operator broker, fixture and harness checks. Build includes the independent Astro fixture. Run npm run fixture:install after npm ci, then npm run verify:local after the production build for real authenticated app-to-runner acceptance. Dependency audit and a committed application database schema are not configured. Browser editor acceptance runs with npm run verify:editor after build and Playwright Chromium installation; it produces local screenshots, video, source changes and an independent edited-site build."
   },
   "branches": {
     "integration": "main",
@@ -106,7 +106,9 @@
           "npm run fixture:install",
           "npm run verify",
           "npm run build",
-          "npm run verify:local"
+          "npm run verify:local",
+          "npx playwright install --with-deps chromium",
+          "npm run verify:editor"
         ],
         "required": false,
         "notes": "Matches the locally defined job display name. Remote runs and required branch rules have not been verified."

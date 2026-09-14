@@ -38,7 +38,7 @@ This is Stellar's repo-owned lifecycle contract. `harness.json` records the actu
 - Documentation-only changes: run `verify.docsOnly`, including the shipped docs scan and profile validation.
 - Code changes: run applicable `verify.lint`, `verify.typecheck`, and `verify.test`.
 - User-facing or release-sensitive changes: run `verify.build` when practical.
-- CI's `Verify` job runs `npm ci`, `npm run fixture:install`, `npm run verify`, `npm run build`, and `npm run verify:local`. `ci.jobs[].required` is false because branch rules have not been verified.
+- CI's `Verify` job runs `npm ci`, `npm run fixture:install`, `npm run verify`, `npm run build`, `npm run verify:local`, `npx playwright install --with-deps chromium`, and `npm run verify:editor`. `ci.jobs[].required` is false because branch rules have not been verified.
 - Record actual command results in the final response and active ExecPlan. Say why a command could not run.
 
 ## Review

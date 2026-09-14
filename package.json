@@ -16,9 +16,9 @@
     "dev": "npm run dev --workspace=@stellar/web --",
     "build": "npm run build:packages && npm run build --workspace=@stellar/web && npm run build:fixture",
     "start": "npm run start --workspace=@stellar/web --",
-    "lint": "npm run lint --workspaces --if-present && eslint scripts/check-fixture.mjs scripts/verify-local-runner.mjs test/fixture.test.mjs eslint.config.mjs",
+    "lint": "npm run lint --workspaces --if-present && eslint scripts/check-fixture.mjs scripts/verify-local-runner.mjs test/fixture.test.mjs eslint.config.mjs test/editor-e2e",
     "typecheck": "npm run build:packages && npm run typecheck --workspaces --if-present",
-    "test": "npm run build:packages && npm run test --workspace=@stellar/contracts && npm run test --workspace=@stellar/editor-core && npm run test --workspace=@stellar/runner && npm run test --workspace=@stellar/web && node --test test/*.test.mjs",
+    "test": "npm run build:packages && npm run test --workspace=@stellar/contracts && npm run test --workspace=@stellar/editor-core && npm run test --workspace=@stellar/runner && npm run test --workspace=@stellar/web && npm run test --workspace=@stellar/astro-editor-integration && node --test test/*.test.mjs",
     "verify:docs": "node scripts/check-docs.mjs --all",
     "verify:harness": "node scripts/check-harness-profile.mjs && node scripts/check-harness-drift.mjs --strict",
     "verify": "npm run verify:harness && npm run verify:docs && npm run lint && npm run typecheck && npm run test && npm run verify:fixture",
@@ -28,13 +28,15 @@
     "verify:fixture": "npm run build:contracts && node scripts/check-fixture.mjs",
     "build:packages": "npm run build:contracts && npm run build --workspace=@stellar/editor-core && npm run build --workspace=@stellar/runner",
     "dev:local": "npm run build:packages && npm run launch --workspace=@stellar/runner",
-    "verify:local": "node scripts/verify-local-runner.mjs"
+    "verify:local": "node scripts/verify-local-runner.mjs",
+    "verify:editor": "node test/editor-e2e/run.mjs"
   },
   "devDependencies": {
+    "@astrojs/compiler": "4.0.0",
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
-    "@astrojs/compiler": "4.0.0",
-    "postcss": "8.5.28",
-    "eslint": "10.10.0"
+    "eslint": "10.10.0",
+    "playwright": "1.63.0",
+    "postcss": "8.5.28"
   }
 }

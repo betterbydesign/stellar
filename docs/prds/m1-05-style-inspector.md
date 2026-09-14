@@ -1,6 +1,6 @@
 # M1-05 — Contextual styles, token impact and apply feedback
 
-Status: dependent on M1-03 and M1-04. Local identifier M1-05. Parent: [M1 index](README.md); bounded parts of product R04/R06/R07.
+Status: implemented and reviewed locally; integrated browser acceptance passed on 2026-09-14. Local identifier M1-05. See the [integration review](../handoffs/m1-editor-review.md) for evidence and limits. User visual review remains open.
 
 ## Overview
 
@@ -54,14 +54,14 @@ Use the runner's real preview refresh/reparse behavior. If temporary draft styli
 
 ## Acceptance Criteria
 
-- [ ] M1-05-A: Select a supported target and see authored/token/computed/inherited provenance, current viewport and explicit write scope.
-- [ ] M1-05-B: A local color/spacing change applies through the server and changes only its allowed declaration/target; project B and the fixture seed stay unchanged.
-- [ ] M1-05-C: A mobile-only override affects the declared mobile condition while base/desktop stays correct; selecting a viewport alone never creates a rule.
-- [ ] M1-05-D: Reset removes an override and restores the existing system value. Token references remain intact unless the chosen supported command intentionally changes them.
-- [ ] M1-05-E: Shared-token editing shows scope and affected Home/Contact usage before Apply; both routes reflect the durable source change afterward.
-- [ ] M1-05-F: Invalid values, unsupported or ambiguous targets and stale proposals fail without source mutation. Recoverable failures preserve the draft and explain the next action.
-- [ ] M1-05-G: Lost responses, double clicks and page/project/selection changes cannot repeat a write, apply to another target or falsely claim saved state.
-- [ ] M1-05-H: Keyboard use, desktop/mobile preview inspection and source-diff evidence demonstrate the real apply loop, including successful save with failed preview refresh.
+- [x] M1-05-A: Select a supported target and see authored/token/computed/inherited provenance, current viewport and explicit write scope.
+- [x] M1-05-B: A local color/spacing change applies through the server and changes only its allowed declaration/target; project B and the fixture seed stay unchanged.
+- [x] M1-05-C: A mobile-only override affects the declared mobile condition while base/desktop stays correct; selecting a viewport alone never creates a rule.
+- [x] M1-05-D: Reset removes an override and restores the existing system value. Token references remain intact unless the chosen supported command intentionally changes them.
+- [x] M1-05-E: Shared-token editing shows scope and affected Home/Contact usage before Apply; both routes reflect the durable source change afterward.
+- [x] M1-05-F: Invalid values, unsupported or ambiguous targets and stale proposals fail without source mutation. Recoverable failures preserve the draft and explain the next action.
+- [x] M1-05-G: Lost responses, double clicks and page/project/selection changes cannot repeat a write, apply to another target or falsely claim saved state.
+- [x] M1-05-H: Keyboard use, desktop/mobile preview inspection and source-diff evidence demonstrate the real apply loop, including successful save with failed preview refresh.
 
 ## Testing Plan
 

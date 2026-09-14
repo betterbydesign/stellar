@@ -7,9 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint app lib test next.config.ts",
+    "lint": "eslint app lib features test next.config.ts",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "node --conditions=react-server -r ./test/register.cjs --test test/broker.test.cjs"
+    "test": "node --conditions=react-server -r ./test/register.cjs --test test/*.test.cjs"
   },
   "dependencies": {
     "next": "16.3.5",
