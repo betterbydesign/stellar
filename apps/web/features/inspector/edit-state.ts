@@ -73,7 +73,8 @@ export function transitionEdit(state: EditState, action: EditAction): EditState 
     case "prepare-start":
       if (!state.draft?.command || state.version !== action.version ||
         !["draft", "failed"].includes(state.phase)) return state;
-      return { ...state, phase: "preparing", prepareRequestId: action.requestId, issue: null, notice: "Checking source change…" };
+      return { ...state, phase: "preparing", prepareRequestId: action.requestId,
+        proposal: null, applyRequestId: null, issue: null, notice: "Checking source change…" };
     case "prepare-result":
       if (state.version !== action.version || state.phase !== "preparing" ||
         state.prepareRequestId !== action.requestId || !state.draft) return state;

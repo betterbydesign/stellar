@@ -1,0 +1,13 @@
+# Editing styles in the local studio
+
+Stellar's local inspector works with the two reviewed Astro fixture copies opened by the local launcher. Changes are written to the selected copy's source. The fixture seed and the other project copy are separate. This local adapter runs reviewed project code on your computer; it is not a hosted sandbox.
+
+Select an element in Inspect mode. The inspector shows its source anchor, page, file and current revision. Choose **Base** or **Mobile ≤767px** as the *editing scope*. The preview width does not change that scope. If Mobile is chosen at a wider preview width, use **View mobile width** to see where that rule is active.
+
+Choose a supported local property to see its authored value, token reference, source-resolved value, browser-computed observation when the preview reports one, and the fallback and override source locations. Enter an allowed hex color, bounded length with an offered unit, or an allowed token reference. The field becomes an **unsaved draft**. **Review change** asks the runner for a one-file source patch; inspect the before/after text and declared impact, then choose **Apply to source**. A saved message appears only after the runner returns a durable receipt. Its old/new revisions and changed file remain visible even if the preview refresh is delayed or fails.
+
+**Reset owned override** is available only when the selected source control has an authored local override. It removes that override and reveals the separate authored fallback; it does not delete a design-system declaration. Shared tokens are a different edit. Select a linked concrete token definition, review its semantic aliases and the manifest's known affected routes/elements, then review and apply its base-only change. The impact list is bounded to declared uses and is not a complete global CSS analysis.
+
+If source changes before applying, the proposal is blocked. Refresh the source model and explicitly review the draft against the current target; it is never rebased and applied automatically. If a save response is lost, use **Check saved result** before making another edit. A pending outcome may be retried only with the same save request ID and still-valid session. The source receipt, not the iframe appearance, determines whether the edit saved.
+
+When a draft is pending, changing page, project, selected element or scope asks you to **Apply**, **Discard**, or **Keep editing**. An unresolved save cannot be discarded because it may already have reached the runner. Browser reload also warns while an edit remains pending. Read-only or ambiguous source targets explain why no write is offered.

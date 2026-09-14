@@ -76,6 +76,21 @@ test("uncertain apply preserves request identity and blocks new drafts or discar
   assert.equal(state.draft, null);
 });
 
+test("a definite failed apply can be reviewed again without reusing the old apply request ID", () => {
+  let state = transitionEdit(initialEditState, { type: "draft", draft: draft() });
+  const version = state.version;
+  state = transitionEdit(state, { type: "prepare-start", requestId: "prepare-1", version });
+  state = transitionEdit(state, { type: "prepare-result", requestId: "prepare-1", version,
+    result: { ...examplePrepareResponse, requestId: "prepare-1" } });
+  state = transitionEdit(state, { type: "apply-start", requestId: "apply-1", version });
+  state = transitionEdit(state, { type: "apply-error", requestId: "apply-1", version,
+    error: { code: "INVALID_VALUE", httpStatus: 422, recoverable: false, message: "Invalid value" }, uncertain: false });
+  assert.equal(state.phase, "failed");
+  state = transitionEdit(state, { type: "prepare-start", requestId: "prepare-1", version });
+  assert.equal(state.applyRequestId, null);
+  assert.equal(state.proposal, null);
+});
+
 test("malformed or mismatched apply response is uncertain after request dispatch", async () => {
   const priorWindow = global.window;
   const priorFetch = global.fetch;

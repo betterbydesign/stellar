@@ -33,7 +33,7 @@ Own `apps/web/features/inspector/**`, its tests/styles, this plan, `docs/user-gu
 
 ## Surprises & Discoveries
 
-- The M1-01 source model has authored/resolved/provenance values but the selection envelope has no browser computed style field. The inspector will distinguish those facts and avoid claiming a computed browser value.
+- The M1-01 source model has authored/resolved/provenance values. M1-03 later added bounded, optional browser computed styles to the selection envelope; the inspector labels them as observations, never source write authority.
 
 ## Decision Log
 
@@ -46,8 +46,11 @@ Own `apps/web/features/inspector/**`, its tests/styles, this plan, `docs/user-gu
 - `npm run build:contracts`: passed.
 - `npm run typecheck --workspace=@stellar/web`: passed after inspector implementation.
 - `cd apps/web && ../../node_modules/.bin/eslint features/inspector test/inspector.test.cjs`: passed.
-- `node --conditions=react-server -r ./apps/web/test/register.cjs --test apps/web/test/inspector.test.cjs`: 4 tests passed.
+- `node --conditions=react-server -r ./apps/web/test/register.cjs --test apps/web/test/inspector.test.cjs`: 5 tests passed.
+- `npm run verify:docs`: passed after the guide and handoff were added.
+- `npm run build`: passed, including packages, Next and Astro fixture.
+- `npm run verify`: harness, docs, lint, typecheck, contracts and editor-core passed; runner tests hit this sandbox's `listen EPERM 127.0.0.1` restriction. The coordinator will run the combined suite with loopback permission.
 
 ## Outcomes & Retrospective
 
-Pending implementation and integrated browser review.
+Inspector implementation is ready for the M1-04 mount and integrated browser review. The coordinator owns final acceptance.

@@ -108,7 +108,7 @@ export function Inspector(props: InspectorProps) {
       draft.contextKey !== contextRef.current ||
       !["draft", "failed"].includes(before.phase)) return "failed";
     busy.current = true;
-    const requestId = before.prepareRequestId ?? newRequestId();
+    const requestId = newRequestId();
     const version = before.version;
     send({ type: "prepare-start", requestId, version });
     try {
@@ -203,6 +203,15 @@ export function Inspector(props: InspectorProps) {
       dialogResolver.current?.(false);
       dialogResolver.current = null;
     };
+  }, []);
+  useEffect(() => {
+    const beforeUnload = (event: BeforeUnloadEvent) => {
+      if (!hasPendingEdit(stateRef.current)) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", beforeUnload);
+    return () => window.removeEventListener("beforeunload", beforeUnload);
   }, []);
   useEffect(() => {
     if (dialogOpen) {
@@ -371,7 +380,8 @@ export function Inspector(props: InspectorProps) {
         {canApply && <button type="button" className={styles.primaryButton} onClick={() => void apply()}>Apply to source</button>}
         {state.phase === "uncertain" && <button type="button" className={styles.primaryButton} onClick={() => void reconcile()}>Check saved result</button>}
         {state.phase === "uncertain" && checkedPending && draftStale === false && state.draft.sessionId === sessionId &&
-          <button type="button" className={styles.secondaryButton} onClick={() => void apply(true)}>Retry same save request</button>}
+          <button type="button" className={styles.secondaryButton} disabled={!!externallyBlocked || !sourceCurrent}
+            onClick={() => void apply(true)}>Retry same save request</button>}
         {!(["saving", "uncertain", "reconciling"].includes(state.phase)) &&
           <button type="button" className={styles.secondaryButton} onClick={() => send({ type: "discard" })}>Discard draft</button>}
       </div>
@@ -399,8 +409,9 @@ export function Inspector(props: InspectorProps) {
           <button type="button" ref={dialogKeepButton} className={styles.secondaryButton} onClick={() => closeDialog(false)}>Keep editing</button>
           {!(["saving", "uncertain", "reconciling"].includes(state.phase)) && <button type="button" className={styles.secondaryButton}
             onClick={() => { send({ type: "discard" }); closeDialog(true); }}>Discard</button>}
-          <button type="button" className={styles.primaryButton} disabled={blocked || draftStale || !!state.draft?.validationError ||
-            (state.phase === "conflict" || state.phase === "saving" || state.phase === "reconciling")}
+          <button type="button" className={styles.primaryButton} disabled={state.phase !== "uncertain" &&
+            (blocked || draftStale || !!state.draft?.validationError ||
+              state.phase === "conflict" || state.phase === "saving" || state.phase === "reconciling")}
             onClick={() => void dialogApply()}>{state.phase === "ready-to-apply" ? "Apply" : state.phase === "uncertain" ? "Check outcome" : "Review for Apply"}</button>
         </div>
       </div>
