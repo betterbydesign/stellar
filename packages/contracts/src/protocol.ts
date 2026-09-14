@@ -121,7 +121,7 @@ export const StyleControlSchema = z.strictObject({
   valueType: z.enum(["color", "length"]), allowedUnits: z.array(z.enum(["px", "rem"])),
   min: z.number().finite().nullable(), max: z.number().finite().nullable(),
   allowedTokenNames: z.array(TokenNameSchema),
-  authoredValue: StyleValueSchema.nullable(), resolvedValue: StyleValueSchema.nullable(),
+  authoredValue: StyleValueSchema.nullable(), fallbackValue: StyleValueSchema.nullable().optional(), resolvedValue: StyleValueSchema.nullable(),
   provenance: z.enum(["override", "fallback", "token", "inherited"]),
   fallback: CssDeclarationRefSchema, override: CssDeclarationRefSchema,
 }).refine((control) => {
@@ -139,6 +139,8 @@ export const StyleControlSchema = z.strictObject({
   } else if (!control.allowedUnits.length || control.min === null || control.max === null || control.min > control.max) return false;
   if (control.authoredValue?.kind === "token" && !control.allowedTokenNames.includes(control.authoredValue.name)) return false;
   if (control.authoredValue && control.authoredValue.kind !== "token" && control.authoredValue.kind !== control.valueType) return false;
+  if (control.fallbackValue?.kind === "token" && !control.allowedTokenNames.includes(control.fallbackValue.name)) return false;
+  if (control.fallbackValue && control.fallbackValue.kind !== "token" && control.fallbackValue.kind !== control.valueType) return false;
   if (control.resolvedValue && control.resolvedValue.kind !== control.valueType) return false;
   return true;
 }, "Style control type, scope, bounds or declaration mismatch");

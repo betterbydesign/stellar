@@ -22,4 +22,5 @@ test("history controls use only server-designated visible stack entries", () => 
   assert.equal(availableEntry({ ...exampleHistory, undoEntryId: "missing" }, "undo"), null);
   assert.equal(availableEntry({ ...exampleHistory, entries: exampleHistory.entries.map((entry) => ({ ...entry, state: "undone" })) }, "undo"), null);
   assert.equal(changeLabel(exampleHistory.entries[0]), "background-color · base");
+  assert.equal(changeLabel({ ...exampleHistory.entries[0], command: { type: "token.set", value: { kind: "color", hex: "#123456" } } }), "Shared token · base");
 });

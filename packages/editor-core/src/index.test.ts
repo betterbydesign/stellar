@@ -38,6 +38,15 @@ test("read preserves bytes, resolves authored source keys and refuses repeated c
   const model = await modelFor(snapshot);
   const cta = element(model, "home-primary-cta");
   assert.equal(cta.readOnlyReason, null);
+  const basePadding = cta.controls.find((control) => control.property === "padding-inline" && control.scopeId === "base");
+  const mobilePadding = cta.controls.find((control) => control.property === "padding-inline" && control.scopeId === "mobile");
+  assert.deepEqual(basePadding?.authoredValue, null);
+  assert.deepEqual(basePadding?.fallbackValue, { kind: "token", name: "--lab-space-button" });
+  assert.deepEqual(basePadding?.resolvedValue, { kind: "length", amount: 1.25, unit: "rem" });
+  assert.deepEqual(mobilePadding?.fallbackValue, { kind: "token", name: "--lab-space-button" });
+  assert.deepEqual(mobilePadding?.authoredValue, { kind: "length", amount: 1.5, unit: "rem" });
+  assert.deepEqual(token(model, "--lab-space-action").aliases, ["--lab-space-button"]);
+  assert.equal(element(model, "home-hero-title").controls[0]?.fallbackValue, null);
   assert.equal(resolveSourceSelection(model, { sourceKey: cta.targetId, anchor: cta.anchor, occurrenceId: "one" })?.targetId, cta.targetId);
   assert.equal(resolveSourceSelection(model, { sourceKey: cta.targetId, anchor: "wrong", occurrenceId: "one" }), null);
   assert.equal(element(model, "home-feature-clarity").readOnlyReason, "repeated-component");

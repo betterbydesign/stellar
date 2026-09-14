@@ -248,10 +248,13 @@ export async function createSourceModel(input: SourceModelInput): Promise<Source
       }
       if (!chosen || (chosen.kind === "token" && rule.allowedTokenNames.includes(chosen.name) && !token) || (override.declaration && !overrideValue)) { reason ??= chosen?.kind === "token" ? "unknown-token" : "unsupported-source"; continue; }
       if (chosen.kind !== "token" && chosen.kind !== rule.valueType) { reason ??= "unsupported-source"; continue; }
+      const exposedFallback = fallbackValue?.kind === "token" ?
+        rule.allowedTokenNames.includes(fallbackValue.name) ? fallbackValue : null :
+        fallbackValue?.kind === rule.valueType ? fallbackValue : null;
       controls.push({
         property: rule.property, scopeId: rule.scopeId, valueType: rule.valueType, allowedUnits: rule.allowedUnits,
         min: rule.min, max: rule.max, allowedTokenNames: rule.allowedTokenNames,
-        authoredValue: overrideValue, resolvedValue: chosen.kind === "token" ? token?.value ?? null : chosen,
+        authoredValue: overrideValue, fallbackValue: exposedFallback, resolvedValue: chosen.kind === "token" ? token?.value ?? null : chosen,
         provenance: override.declaration ? "override" : fallbackValue?.kind === "token" ? "token" : "fallback",
         fallback: rule.fallback, override: rule.override,
       });

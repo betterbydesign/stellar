@@ -28,6 +28,6 @@ export function availableEntry(history: HistoryResponse | null, action: HistoryA
 
 export function changeLabel(entry: HistoryResponse["entries"][number]): string {
   const command = entry.command;
-  if (command.type === "token.set") return "Shared token";
+  if (command.type === "token.set") return "Shared token · base";
   return `${command.property} · ${command.scopeId}`;
 }

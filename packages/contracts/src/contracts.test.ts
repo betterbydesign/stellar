@@ -80,6 +80,9 @@ test("standalone controls and token definitions reject incoherent type, scope an
   assert.equal(StyleControlSchema.safeParse({ ...control, override: { ...control.override, selector: control.fallback.selector } }).success, false);
   assert.equal(StyleControlSchema.safeParse({ ...control, allowedTokenNames: ["--lab-color-action", "--lab-color-action"] }).success, false);
   assert.equal(StyleControlSchema.safeParse({ ...control, authoredValue: { kind: "token", name: "--unapproved" } }).success, false);
+  assert.equal(StyleControlSchema.safeParse({ ...control, fallbackValue: { kind: "token", name: "--lab-color-action" } }).success, true);
+  assert.equal(StyleControlSchema.safeParse({ ...control, fallbackValue: { kind: "token", name: "--unapproved" } }).success, false);
+  assert.equal(StyleControlSchema.safeParse({ ...control, fallbackValue: { kind: "length", amount: 1, unit: "rem" } }).success, false);
   assert.equal(TokenDefinitionTargetSchema.safeParse(exampleTokenTarget).success, true);
   assert.equal(TokenDefinitionTargetSchema.safeParse({ ...exampleTokenTarget, authoredValue: { kind: "token", name: "--lab-color-action" } }).success, false);
   assert.equal(TokenDefinitionTargetSchema.safeParse({ ...exampleTokenTarget, allowedUnits: ["px"], min: 0, max: 3 }).success, false);
