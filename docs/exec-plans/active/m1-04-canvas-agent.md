@@ -31,10 +31,12 @@ The user requested the first real Stellar Studio on `codex/m1-04-canvas` in `/pr
 - 2026-09-14: Read intake, PRD, handoff, contracts, runner seam, fixture, and design references. Agreed inspector and history prop seams with their owners.
 - 2026-09-14: Implemented the project dashboard, Studio shell, exact-width iframe, frame handshake, source-target validation, Astro development injection, and user/architecture documentation. Inspector and history render through separately owned feature imports.
 - 2026-09-14: Follow-up hardening added strict preview URL parsing, full fit scaling at narrow widths, history-busy interaction lock, a reachable iframe refresh action and CSRF rehydration for a deep-linked tab.
+- 2026-09-14: Combined browser run reported a hydration mismatch after reloading with a saved 390 px width. Studio now renders deterministic defaults first, restores saved preferences after hydration and writes them back only after restoration. The coordinator will rerun the real browser reload gate.
 
 ## Surprises & Discoveries
 
 - The runner starts the trusted integration for managed previews but supplies no session scope to it. The frame must obtain the scope through a parent-window handshake after the shell has the fresh server model.
+- Reading sessionStorage in a client component state initializer differs between server rendering and hydration. Preference restoration must occur after the first render, with persistence held until the saved values have been read.
 
 ## Decision Log
 

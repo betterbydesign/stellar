@@ -24,7 +24,7 @@ export function ProjectList() {
   return <main className={styles.projectsPage}>
     <header className={styles.projectsHeader}>
       <span className={styles.brand}>Stellar<span aria-hidden="true">✳</span></span>
-      <span className={styles.modeBadge}><span className={styles.statusDot} /> Local studio</span>
+      <span className={`${styles.modeBadge} ${error ? styles.modeBadgeError : projects === null ? styles.modeBadgePending : ""}`} role="status"><span className={styles.statusDot} /> {error ? "Connection needed" : projects === null ? "Connecting…" : "Local workspace connected"}</span>
     </header>
     <section className={styles.projectsIntro}>
       <p className={styles.eyebrow}>Workspace / Sites</p>
@@ -39,7 +39,7 @@ export function ProjectList() {
             : <div className={styles.projectGrid}>{projects.map((workspace, index) => <Link className={styles.projectCard} href={`/projects/${encodeURIComponent(workspace.project.id)}/studio`} key={workspace.id}>
               <span className={styles.cardTop}><span className={styles.cardNumber}>0{index + 1} / SITE</span><span aria-hidden="true">↗</span></span>
               <span className={styles.cardArtwork} aria-hidden="true"><span className={styles.artRingOne} /><span className={styles.artRingTwo} /><span className={styles.artLetter}>f<span>.</span></span></span>
-              <span className={styles.cardBottom}><span><strong>{workspace.project.name}</strong><small>{workspace.label} · {workspace.project.pageCount} pages · {workspace.project.renderer.toUpperCase()}</small></span><span className={styles.cardArrow} aria-hidden="true">→</span></span>
+              <span className={styles.cardBottom}><span><strong>{workspace.project.name}</strong><small>{workspace.label} · {workspace.project.pageCount} pages · {workspace.project.renderer.toUpperCase()} · Ready to open</small></span><span className={styles.cardArrow} aria-hidden="true">→</span></span>
             </Link>)}</div>}
     </section>
     <footer className={styles.projectsFooter}><span>Stellar / local editor preview</span><span>Source stays in your local working copy</span></footer>

@@ -35,13 +35,13 @@ export function Studio({ projectId }: { projectId: string }) {
   const [selected, setSelected] = useState<Selected | null>(null);
   const [diagnostic, setDiagnostic] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [mode, setMode] = useState<Mode>(() => preferred(`stellar.mode.${projectId}`, "inspect") === "interact" ? "interact" : "inspect");
-  const [width, setWidth] = useState(() => {
-    const candidate = Number(preferred(`stellar.width.${projectId}`, "1440"));
-    return Number.isInteger(candidate) && candidate >= WIDTH_MIN && candidate <= WIDTH_MAX ? candidate : 1440;
-  });
-  const [widthInput, setWidthInput] = useState(() => String(Number(preferred(`stellar.width.${projectId}`, "1440")) || 1440));
-  const [scaleMode, setScaleMode] = useState<ScaleMode>(() => preferred(`stellar.scale.${projectId}`, "fit") === "actual" ? "actual" : "fit");
+  // Server and first client render must agree; restore browser-only preferences
+  // after hydration before writing any defaults back to sessionStorage.
+  const [mode, setMode] = useState<Mode>("inspect");
+  const [width, setWidth] = useState(1440);
+  const [widthInput, setWidthInput] = useState("1440");
+  const [scaleMode, setScaleMode] = useState<ScaleMode>("fit");
+  const [preferencesLoaded, setPreferencesLoaded] = useState(false);
   const [availableWidth, setAvailableWidth] = useState(900);
   const [pagesOpen, setPagesOpen] = useState(false);
   const [inspectorOpen, setInspectorOpen] = useState(false);
@@ -70,6 +70,20 @@ export function Studio({ projectId }: { projectId: string }) {
   useEffect(() => { selectedRef.current = selected; }, [selected]);
   useLayoutEffect(() => { activeScopeRef.current = activeScope; }, [activeScope]);
   useEffect(() => {
+    let active = true;
+    queueMicrotask(() => {
+      if (!active) return;
+      const savedWidth = Number(preferred(`stellar.width.${projectId}`, "1440"));
+      const nextWidth = Number.isInteger(savedWidth) && savedWidth >= WIDTH_MIN && savedWidth <= WIDTH_MAX ? savedWidth : 1440;
+      setWidth(nextWidth);
+      setWidthInput(String(nextWidth));
+      setMode(preferred(`stellar.mode.${projectId}`, "inspect") === "interact" ? "interact" : "inspect");
+      setScaleMode(preferred(`stellar.scale.${projectId}`, "fit") === "actual" ? "actual" : "fit");
+      setPreferencesLoaded(true);
+    });
+    return () => { active = false; };
+  }, [projectId]);
+  useEffect(() => {
     const warn = (event: BeforeUnloadEvent) => {
       if (historyBlockedRef.current) { event.preventDefault(); event.returnValue = ""; }
     };
@@ -78,9 +92,9 @@ export function Studio({ projectId }: { projectId: string }) {
   }, []);
   const registerGuard = useCallback((guard: (() => Promise<boolean>) | null) => { guardRef.current = guard; }, []);
   const registerHistoryBlocked = useCallback((blocked: boolean) => { historyBlockedRef.current = blocked; setHistoryBlocked(blocked); }, []);
-  useEffect(() => { window.sessionStorage.setItem(`stellar.width.${projectId}`, String(width)); }, [projectId, width]);
-  useEffect(() => { window.sessionStorage.setItem(`stellar.mode.${projectId}`, mode); }, [projectId, mode]);
-  useEffect(() => { window.sessionStorage.setItem(`stellar.scale.${projectId}`, scaleMode); }, [projectId, scaleMode]);
+  useEffect(() => { if (preferencesLoaded) window.sessionStorage.setItem(`stellar.width.${projectId}`, String(width)); }, [preferencesLoaded, projectId, width]);
+  useEffect(() => { if (preferencesLoaded) window.sessionStorage.setItem(`stellar.mode.${projectId}`, mode); }, [preferencesLoaded, projectId, mode]);
+  useEffect(() => { if (preferencesLoaded) window.sessionStorage.setItem(`stellar.scale.${projectId}`, scaleMode); }, [preferencesLoaded, projectId, scaleMode]);
 
   useEffect(() => {
     const run = ++runRef.current;

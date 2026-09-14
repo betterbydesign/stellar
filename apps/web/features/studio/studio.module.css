@@ -8,6 +8,8 @@
 .projectsHeader { min-height:70px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); }
 .projectsHeader .brand { color:var(--studio-navy); }
 .modeBadge { display:inline-flex; align-items:center; gap:.65rem; background:var(--badge); color:#167167; border:1px solid #c8e3dc; border-radius:999px; padding:.52rem .85rem; font-size:.72rem; font-weight:700; }
+.modeBadgePending { color:#836a3d; background:#f7f0df; border-color:#eadbbd; }
+.modeBadgeError { color:#934c42; background:#f8eae7; border-color:#ead0c9; }
 .projectsIntro { padding:clamp(2.2rem,5vw,4.5rem) 0 1.8rem; display:flex; flex-wrap:wrap; align-items:end; column-gap:3rem; row-gap:.35rem; }
 .projectsIntro .eyebrow { width:100%; }
 .projectsIntro h1 { margin:.18rem 0 0; font-family:Georgia,"Times New Roman",serif; font-size:clamp(2.8rem,5.5vw,5.4rem); line-height:.98; letter-spacing:-.055em; font-weight:400; }
