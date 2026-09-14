@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apex Studio — Workbench · Design Mode (Artifact Workspace)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      --font-sans:"Inter",ui-sans-serif,system-ui,sans-serif;
+      --font-mono:"Geist Mono",ui-monospace,monospace;
+      --background:#f4f2ed; --foreground:#00203d; --card:#ffffff; --card-foreground:#00203d;
+      --popover:#ffffff; --primary:#0071ce; --brand:#0071ce; --primary-foreground:#ffffff;
+      --secondary:#eee9df; --muted:#eee9df; --muted-foreground:#5e6a72; --accent:#eee9df; --accent-foreground:#00203d;
+      --destructive:#8a3e31; --border:#e4dfd4; --input:#e4dfd4; --ring:#0071ce;
+      --sidebar:#00203d; --sidebar-foreground:#cee5f6; --sidebar-primary:#0071ce; --sidebar-primary-foreground:#ffffff;
+      --sidebar-accent:#003869; --sidebar-accent-foreground:#cee5f6; --sidebar-border:#1b3a55;
+      --sidebar-hover:rgba(206,229,246,0.08); --sidebar-muted:rgba(206,229,246,0.55);
+      --accent-teal:#14b8a6; --accent-teal-light:#5eead4;
+      --tool-scheduler:#2773be; --tool-design-system:#a855f7; --tool-social:#ec4899; --tool-agents:#f59e0b; --tool-connections:#6366f1;
+      --success:#22c55e; --warning:#f59e0b; --error:#8a3e31;
+      --radius-sm:6px; --radius-md:8px; --radius-lg:10px; --radius-xl:14px; --radius-2xl:16px;
+
+      /* client-site preview accent (Ridgeline — reads as a distinct site) */
+      --ridge-green:#2f5d43; --ridge-green-deep:#1f4230; --ridge-sand:#eef0e9;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { font-family: var(--font-sans); background: var(--background); color: var(--foreground); }
+
+    .mono { font-family: var(--font-mono); }
+    .eyebrow {
+      font-family: var(--font-mono); font-size: 10px; line-height: 1;
+      text-transform: uppercase; letter-spacing: .12em; color: var(--muted-foreground);
+    }
+
+    .scroll::-webkit-scrollbar { width: 8px; }
+    .scroll::-webkit-scrollbar-track { background: transparent; }
+    .scroll::-webkit-scrollbar-thumb { background: #ded8cc; border-radius: 8px; }
+    .scroll-dark::-webkit-scrollbar { width: 4px; }
+    .scroll-dark::-webkit-scrollbar-thumb { background: rgba(206,229,246,.14); border-radius: 4px; }
+
+    @keyframes teal-pulse {
+      0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(20,184,166,.5); }
+      50%     { opacity:.6; box-shadow:0 0 0 4px rgba(20,184,166,0); }
+    }
+    .teal-pulse { animation: teal-pulse 1.7s ease-in-out infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 1s linear infinite; }
+
+    .navy-tex {
+      background-color: var(--sidebar);
+      background-size: 100% 100%, 15px 15px, 15px 15px;
+    }
+    .nav-item { color: var(--sidebar-muted); }
+    .nav-item:hover { background: var(--sidebar-hover); color: var(--sidebar-foreground); }
+    .nav-active { background: var(--sidebar-accent); color: var(--sidebar-foreground); }
+  </style>
+</head>
+<body>
+  <!--
+    ============================================================================
+    SCREEN: Apex Studio Workbench — DESIGN MODE (Artifact Workspace)
+    ----------------------------------------------------------------------------
+    The chat shell with the composer's Chat/Design/Build toggle flipped to DESIGN.
+    Flipping to Design narrows the chat into a conversational "driver" (left) and
+    replaces the usual narrow Agent Context panel with a WIDE Artifact Workspace
+    (right) for the Open Design port — designing prototypes, decks, templates, and
+    design systems in-chat. The open artifact ("Ridgeline Landing — Hero", v3) is
+    rendered live in a Preview canvas; the agent is actively editing it (teal live).
+    ============================================================================
+  -->
+  <div class="flex flex-col h-screen w-screen overflow-hidden" style="min-width:1280px;">
+
+    <!-- ===================== GLOBAL TOP BAR ===================== -->
+    <header class="h-12 flex items-center px-4 shrink-0" style="background:var(--sidebar); border-bottom:1px solid rgba(0,0,0,.3);">
+      <div class="flex items-center gap-2.5" style="width:256px;">
+        <!-- logo: 20px hollow ice-blue ring w/ 6px blue dot -->
+        <span class="flex items-center justify-center rounded-full shrink-0" style="width:20px;height:20px;border:2px solid var(--sidebar-foreground);">
+          <span class="rounded-full" style="width:6px;height:6px;background:var(--brand);"></span>
+        </span>
+        <span class="font-semibold tracking-tight" style="color:#fff;font-size:14px;">Apex Studio</span>
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-1">
+        <button class="w-8 h-8 rounded-lg flex items-center justify-center" style="color:var(--sidebar-muted);" onmouseover="this.style.background='var(--sidebar-hover)'" onmouseout="this.style.background='transparent'"><i data-lucide="search" class="w-4 h-4"></i></button>
+        <button class="w-8 h-8 rounded-lg flex items-center justify-center relative" style="color:var(--sidebar-muted);" onmouseover="this.style.background='var(--sidebar-hover)'" onmouseout="this.style.background='transparent'">
+          <i data-lucide="bell" class="w-4 h-4"></i>
+          <span class="absolute rounded-full" style="top:7px;right:7px;width:6px;height:6px;background:var(--brand);"></span>
+        </button>
+        <div class="flex items-center gap-2 pl-2 ml-1">
+          <span class="flex items-center justify-center rounded-full font-semibold shrink-0" style="width:26px;height:26px;background:var(--sidebar-accent);color:var(--sidebar-foreground);font-size:11px;">SF</span>
+          <span style="color:var(--sidebar-foreground);font-size:12.5px;">Scott</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+
+      <!-- ===================== LEFT APP SIDEBAR ===================== -->
+      <aside class="flex flex-col shrink-0 navy-tex" style="width:256px;">
+        <!-- workspace switcher -->
+        <button class="m-3 mb-1.5 flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-left" onmouseover="this.style.background='var(--sidebar-hover)'" onmouseout="this.style.background='transparent'">
+          <span class="flex items-center justify-center rounded-md font-semibold shrink-0" style="width:32px;height:32px;background:var(--brand);color:#fff;font-size:12px;">AM</span>
+          <span class="min-w-0 flex-1">
+            <span class="block font-medium leading-tight truncate" style="color:#fff;font-size:13px;">Altitude Marketing</span>
+            <span class="block leading-tight" style="color:var(--sidebar-muted);font-size:11px;">Workspace</span>
+          </span>
+          <i data-lucide="chevrons-up-down" class="w-3.5 h-3.5" style="color:var(--sidebar-muted);"></i>
+        </button>
+
+        <nav class="flex-1 overflow-y-auto scroll-dark px-2 pb-3" style="font-size:13px;">
+          <div class="px-2 eyebrow mt-2 mb-1.5" style="color:var(--sidebar-muted);">Platform</div>
+          <a class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg cursor-pointer"><i data-lucide="square-pen" class="w-4 h-4"></i> New chat</a>
+          <a class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg cursor-pointer"><i data-lucide="folder" class="w-4 h-4"></i> Projects</a>
+          <a class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg cursor-pointer"><i data-lucide="users" class="w-4 h-4"></i> Clients</a>
+          <a class="nav-active flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg font-medium cursor-pointer"><i data-lucide="shapes" class="w-4 h-4"></i> Artifacts</a>
+          <a class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg cursor-pointer"><i data-lucide="bot" class="w-4 h-4"></i> Agents</a>
+          <a class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg cursor-pointer"><i data-lucide="workflow" class="w-4 h-4"></i> Workflows</a>
+          <a class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg cursor-pointer"><i data-lucide="wrench" class="w-4 h-4"></i> Tools</a>
+
+          <div class="px-2 eyebrow mt-4 mb-1.5" style="color:var(--sidebar-muted);">Recents</div>
+          <a class="flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg cursor-pointer" style="background:var(--sidebar-accent);color:var(--sidebar-foreground);"><i data-lucide="message-square-text" class="w-3.5 h-3.5" style="color:var(--sidebar-foreground);"></i> <span class="truncate">Ridgeline landing refresh</span></a>
+          <a class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg cursor-pointer"><i data-lucide="message-square-text" class="w-3.5 h-3.5"></i> <span class="truncate">Warco deck — Q3 story</span></a>
+          <a class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg cursor-pointer"><i data-lucide="message-square-text" class="w-3.5 h-3.5"></i> <span class="truncate">Elevate DS token pass</span></a>
+        </nav>
+
+        <div class="px-2 py-2" style="border-top:1px solid var(--sidebar-border);font-size:13px;">
+          <a class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg cursor-pointer"><i data-lucide="book-open" class="w-4 h-4"></i> Documentation</a>
+          <a class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg cursor-pointer"><i data-lucide="message-circle-question" class="w-4 h-4"></i> Feedback</a>
+          <a class="nav-item flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg cursor-pointer"><i data-lucide="settings" class="w-4 h-4"></i> Settings</a>
+        </div>
+      </aside>
+
+      <!-- ===================== CENTER CHAT COLUMN (narrower — driver) ===================== -->
+      <main class="flex-1 flex flex-col" style="min-width:440px;background:var(--background);">
+        <!-- chat header -->
+        <div class="h-16 px-4 flex items-center gap-2.5 shrink-0" style="border-bottom:1px solid var(--border);">
+          <button class="p-1.5 rounded-md" style="color:var(--muted-foreground);" onmouseover="this.style.background='rgba(0,0,0,.05)'" onmouseout="this.style.background='transparent'" title="Collapse chat"><i data-lucide="panel-left-close" class="w-4 h-4"></i></button>
+          <button class="flex items-center gap-1.5 px-2 py-1 rounded-md font-semibold" style="color:var(--foreground);font-size:14px;" onmouseover="this.style.background='rgba(0,0,0,.05)'" onmouseout="this.style.background='transparent'">
+            Ridgeline landing refresh
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5" style="color:var(--muted-foreground);"></i>
+          </button>
+          <!-- LIVE pill (teal only, pulsing dot) -->
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full mono" style="font-size:10px;background:color-mix(in srgb, var(--accent-teal) 12%, transparent);color:#0f766e;border:1px solid color-mix(in srgb, var(--accent-teal) 30%, transparent);">
+            <span class="rounded-full teal-pulse" style="width:6px;height:6px;background:var(--accent-teal);"></span> Live
+          </span>
+          <div class="ml-auto flex items-center gap-1">
+            <button class="p-1.5 rounded-md" style="color:var(--muted-foreground);" onmouseover="this.style.background='rgba(0,0,0,.05)'" onmouseout="this.style.background='transparent'"><i data-lucide="history" class="w-4 h-4"></i></button>
+            <button class="p-1.5 rounded-md" style="color:var(--muted-foreground);" onmouseover="this.style.background='rgba(0,0,0,.05)'" onmouseout="this.style.background='transparent'"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button>
+          </div>
+        </div>
+
+        <!-- message thread -->
+        <div class="flex-1 overflow-y-auto scroll px-6 py-5">
+          <div class="mx-auto space-y-5" style="max-width:600px;">
+            <!-- context divider -->
+            <div class="flex items-center gap-2" style="font-size:11px;color:var(--muted-foreground);">
+              <div class="flex-1 h-px" style="background:var(--border);"></div>
+              <span class="flex items-center gap-1.5"><i data-lucide="pen-tool" class="w-3 h-3"></i> Design mode · Ridgeline brand kit attached</span>
+              <div class="flex-1 h-px" style="background:var(--border);"></div>
+            </div>
+
+            <!-- user message -->
+            <div class="flex justify-end">
+              <div class="rounded-2xl px-4 py-2.5 leading-relaxed" style="max-width:82%;background:var(--brand);color:var(--primary-foreground);font-size:13.5px;border-bottom-right-radius:6px;">
+                Design a hero section for Ridgeline's new homepage — bold, outdoorsy, big headline + product shot.
+              </div>
+            </div>
+
+            <!-- ToolStatusStrip (above assistant turn) -->
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full mono" style="font-size:10px;background:color-mix(in srgb, var(--accent-teal) 10%, transparent);color:#0f766e;border:1px solid color-mix(in srgb, var(--accent-teal) 28%, transparent);">
+                <span class="rounded-full teal-pulse" style="width:6px;height:6px;background:var(--accent-teal);"></span> Running skill: prototype
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full mono" style="font-size:10px;background:var(--secondary);color:var(--muted-foreground);border:1px solid var(--border);">
+                <i data-lucide="check" class="w-3 h-3" style="color:var(--success);"></i> generated tokens
+              </span>
+            </div>
+
+            <!-- assistant message -->
+            <div style="font-size:13.5px;color:var(--foreground);" class="leading-relaxed">
+              <p class="mb-1 flex items-center gap-1.5" style="font-size:11px;color:var(--muted-foreground);">
+                <span class="inline-flex items-center justify-center rounded" style="width:16px;height:16px;background:var(--sidebar);color:#fff;"><i data-lucide="sparkles" class="w-2.5 h-2.5"></i></span>
+                Design Agent · 9:14 AM
+              </p>
+              I drafted a full-bleed hero for Ridgeline — a heavy display headline, a supporting line, a primary CTA, and a product shot block. It's pulling type and color from the Ridgeline brand kit on top of <b>Elevate DS</b>. Open it in the workspace to refine spacing or swap the product image.
+            </div>
+
+            <!-- inline artifact card -->
+            <div class="rounded-xl overflow-hidden" style="background:var(--card);border:1px solid var(--border);box-shadow:0 1px 2px rgba(15,27,42,.05);">
+              <div class="px-4 py-3.5 flex items-center gap-3.5 min-w-0">
+                <span class="flex items-center justify-center rounded-lg shrink-0" style="width:40px;height:40px;background:color-mix(in srgb, var(--tool-design-system) 12%, transparent);color:var(--tool-design-system);">
+                  <i data-lucide="pen-tool" class="w-4 h-4"></i>
+                </span>
+                <div class="leading-tight min-w-0 flex-1">
+                  <div class="font-medium tracking-tight truncate" style="font-size:14.5px;color:var(--foreground);">Ridgeline Landing — Hero</div>
+                  <div class="mt-0.5" style="font-size:12px;color:var(--muted-foreground);">Prototype · v3</div>
+                </div>
+                <a class="flex items-center gap-1 font-medium shrink-0 cursor-pointer" style="font-size:13px;color:var(--tool-design-system);">Open in workspace <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- composer -->
+        <div class="px-6 pb-5 shrink-0">
+          <div class="mx-auto" style="max-width:600px;">
+            <div class="rounded-2xl px-3 pt-2.5 pb-2" style="background:var(--card);border:1px solid var(--border);box-shadow:0 1px 2px rgba(15,27,42,.05);">
+              <!-- top row: segmented toggle + skill picker -->
+              <div class="flex items-center gap-2 mb-2">
+                <div class="flex items-center gap-0.5 rounded-lg p-0.5" style="background:var(--secondary);">
+                  <button class="flex items-center gap-1.5 px-2.5 py-1 rounded-md" style="font-size:12px;color:var(--muted-foreground);"><i data-lucide="message-square" class="w-3.5 h-3.5"></i> Chat</button>
+                  <button class="flex items-center gap-1.5 px-2.5 py-1 rounded-md font-semibold" style="font-size:12px;background:var(--card);color:var(--foreground);box-shadow:0 1px 2px rgba(15,27,42,.08);"><i data-lucide="pen-tool" class="w-3.5 h-3.5" style="color:var(--tool-design-system);"></i> Design</button>
+                  <button class="flex items-center gap-1.5 px-2.5 py-1 rounded-md" style="font-size:12px;color:color-mix(in srgb, var(--muted-foreground) 60%, transparent);"><i data-lucide="blocks" class="w-3.5 h-3.5"></i> Build</button>
+                </div>
+                <button class="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-lg" style="font-size:12px;background:color-mix(in srgb, var(--tool-design-system) 10%, transparent);color:var(--tool-design-system);border:1px solid color-mix(in srgb, var(--tool-design-system) 24%, transparent);">
+                  <i data-lucide="pen-tool" class="w-3.5 h-3.5"></i> Prototype <i data-lucide="chevron-down" class="w-3 h-3"></i>
+                </button>
+              </div>
+              <textarea rows="2" placeholder="Describe the design, or refine the current artifact…" class="w-full resize-none outline-none bg-transparent px-1 mb-2" style="font-size:13.5px;color:var(--foreground);"></textarea>
+              <!-- bottom row -->
+              <div class="flex items-center gap-1.5">
+                <button class="w-8 h-8 rounded-lg flex items-center justify-center" style="color:var(--muted-foreground);" onmouseover="this.style.background='var(--secondary)'" onmouseout="this.style.background='transparent'" title="Add context"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                <button class="flex items-center gap-1.5 px-2 py-1 rounded-md" style="font-size:12px;color:var(--muted-foreground);" onmouseover="this.style.background='var(--secondary)'" onmouseout="this.style.background='transparent'">Claude Sonnet <i data-lucide="chevron-down" class="w-3 h-3"></i></button>
+                <button class="ml-auto w-8 h-8 rounded-lg flex items-center justify-center" style="background:var(--brand);color:var(--primary-foreground);"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
+              </div>
+            </div>
+            <p class="text-center mt-2" style="font-size:10px;color:color-mix(in srgb, var(--muted-foreground) 75%, transparent);">Design mode edits the open artifact. AI can make mistakes.</p>
+          </div>
+        </div>
+      </main>
+
+      <!-- ===================== RIGHT ARTIFACT WORKSPACE (wide) ===================== -->
+      <aside class="flex flex-col shrink-0 overflow-hidden" style="width:600px;background:var(--card);border-left:1px solid var(--border);">
+
+        <!-- workspace header -->
+        <div class="px-5 pt-4 pb-3.5 shrink-0" style="border-bottom:1px solid var(--border);">
+          <div class="flex items-center justify-between mb-2.5">
+            <div class="eyebrow flex items-center gap-1.5">
+              <span class="rounded-full" style="width:4px;height:4px;background:color-mix(in srgb, var(--foreground) 30%, transparent);"></span>
+              Artifact Workspace
+            </div>
+            <!-- current-artifact indicator (teal — agent editing this open artifact) -->
+            <span class="inline-flex items-center gap-1.5 mono" style="font-size:10px;color:#0f766e;">
+              <span class="rounded-full teal-pulse" style="width:6px;height:6px;background:var(--accent-teal);"></span> editing
+            </span>
+          </div>
+          <!-- title row -->
+          <div class="flex items-center gap-2.5">
+            <h2 class="font-bold tracking-tight leading-tight" style="font-size:20px;color:var(--foreground);">Ridgeline Landing — Hero</h2>
+            <span class="px-2 py-0.5 rounded-full font-medium mono uppercase" style="font-size:10px;letter-spacing:.06em;background:color-mix(in srgb, var(--tool-design-system) 12%, transparent);color:var(--tool-design-system);border:1px solid color-mix(in srgb, var(--tool-design-system) 26%, transparent);">Prototype</span>
+            <span class="px-2 py-0.5 rounded-full mono" style="font-size:10px;background:var(--secondary);color:var(--muted-foreground);border:1px solid var(--border);">v3</span>
+            <div class="ml-auto flex items-center gap-1">
+              <button class="w-7 h-7 rounded-lg flex items-center justify-center" style="border:1px solid var(--border);background:var(--card);color:var(--muted-foreground);" title="Pop out to full window"><i data-lucide="maximize-2" class="w-3.5 h-3.5"></i></button>
+              <button class="w-7 h-7 rounded-lg flex items-center justify-center" style="border:1px solid var(--border);background:var(--card);color:var(--muted-foreground);" title="More"><i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- subtype / skill families row -->
+        <div class="px-5 py-2.5 flex items-center gap-1.5 shrink-0" style="border-bottom:1px solid var(--border);">
+          <button class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-medium" style="font-size:12px;background:color-mix(in srgb, var(--tool-design-system) 12%, transparent);color:var(--tool-design-system);border:1px solid color-mix(in srgb, var(--tool-design-system) 26%, transparent);"><i data-lucide="pen-tool" class="w-3.5 h-3.5"></i> Prototype</button>
+          <button class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg" style="font-size:12px;color:var(--muted-foreground);border:1px solid var(--border);background:var(--card);"><i data-lucide="presentation" class="w-3.5 h-3.5"></i> Deck</button>
+          <button class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg" style="font-size:12px;color:var(--muted-foreground);border:1px solid var(--border);background:var(--card);"><i data-lucide="layout-template" class="w-3.5 h-3.5"></i> Template</button>
+          <button class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg" style="font-size:12px;color:var(--muted-foreground);border:1px solid var(--border);background:var(--card);"><i data-lucide="component" class="w-3.5 h-3.5"></i> Design System</button>
+        </div>
+
+        <!-- tabs -->
+        <div class="px-5 shrink-0" style="border-bottom:1px solid var(--border);">
+          <div class="flex items-center gap-5">
+            <button class="py-2.5 font-semibold" style="font-size:13px;color:var(--foreground);border-bottom:2px solid var(--brand);margin-bottom:-1px;">Preview</button>
+            <button class="py-2.5" style="font-size:13px;color:var(--muted-foreground);">Source</button>
+            <button class="py-2.5" style="font-size:13px;color:var(--muted-foreground);">Versions</button>
+          </div>
+        </div>
+
+        <!-- preview toolbar -->
+        <div class="px-5 py-2.5 flex items-center shrink-0" style="border-bottom:1px solid var(--border);background:color-mix(in srgb, var(--secondary) 40%, transparent);">
+          <div class="flex items-center gap-0.5 rounded-lg p-0.5" style="background:var(--secondary);">
+            <button class="flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium" style="font-size:11.5px;background:var(--card);color:var(--foreground);box-shadow:0 1px 2px rgba(15,27,42,.08);"><i data-lucide="monitor" class="w-3.5 h-3.5"></i> Desktop</button>
+            <button class="flex items-center gap-1.5 px-2.5 py-1 rounded-md" style="font-size:11.5px;color:var(--muted-foreground);"><i data-lucide="tablet" class="w-3.5 h-3.5"></i> Tablet</button>
+            <button class="flex items-center gap-1.5 px-2.5 py-1 rounded-md" style="font-size:11.5px;color:var(--muted-foreground);"><i data-lucide="smartphone" class="w-3.5 h-3.5"></i> Mobile</button>
+          </div>
+          <div class="ml-auto flex items-center gap-1.5">
+            <button class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-medium" style="font-size:12px;border:1px solid var(--border);background:var(--card);color:var(--foreground);"><i data-lucide="wand-2" class="w-3.5 h-3.5" style="color:var(--tool-design-system);"></i> Refine</button>
+            <button class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-medium" style="font-size:12px;border:1px solid var(--border);background:var(--card);color:var(--foreground);"><i data-lucide="download" class="w-3.5 h-3.5"></i> Export <i data-lucide="chevron-down" class="w-3 h-3" style="color:var(--muted-foreground);"></i></button>
+          </div>
+        </div>
+
+        <!-- preview canvas -->
+        <div class="flex-1 overflow-y-auto scroll" style="background:color-mix(in srgb, var(--secondary) 55%, transparent);">
+          <div class="p-5">
+            <!-- browser chrome frame -->
+            <div class="rounded-xl overflow-hidden mx-auto" style="max-width:540px;background:var(--card);border:1px solid var(--border);box-shadow:0 14px 40px rgba(15,27,42,.13);">
+              <div class="flex items-center gap-2 px-3.5 py-2.5" style="background:color-mix(in srgb, var(--secondary) 60%, transparent);border-bottom:1px solid var(--border);">
+                <span class="flex items-center gap-1.5">
+                  <span class="rounded-full" style="width:9px;height:9px;background:#e06c60;"></span>
+                  <span class="rounded-full" style="width:9px;height:9px;background:#e6b34d;"></span>
+                  <span class="rounded-full" style="width:9px;height:9px;background:#63b56b;"></span>
+                </span>
+                <div class="flex-1 flex items-center justify-center">
+                  <div class="flex items-center gap-1.5 px-3 py-1 rounded-md mono" style="font-size:10.5px;background:var(--card);color:var(--muted-foreground);border:1px solid var(--border);min-width:180px;justify-content:center;">
+                    <i data-lucide="lock" class="w-2.5 h-2.5"></i> ridgeline.com
+                  </div>
+                </div>
+                <i data-lucide="rotate-cw" class="w-3.5 h-3.5" style="color:var(--muted-foreground);"></i>
+              </div>
+
+              <!-- RENDERED CLIENT HERO (Ridgeline — forest-green accent) -->
+              <div style="background:linear-gradient(160deg, var(--ridge-sand) 0%, #ffffff 62%);">
+                <!-- mini site nav -->
+                <div class="flex items-center gap-3 px-6 pt-5">
+                  <span class="flex items-center gap-2 font-bold tracking-tight" style="font-size:14px;color:var(--ridge-green-deep);">
+                    <i data-lucide="mountain" class="w-4 h-4"></i> Ridgeline
+                  </span>
+                  <span class="ml-auto flex items-center gap-4" style="font-size:11px;color:var(--ridge-green-deep);opacity:.8;">
+                    <span>Gear</span><span>Trails</span><span>Stories</span>
+                  </span>
+                  <span class="px-2.5 py-1 rounded-full font-semibold" style="font-size:10.5px;background:var(--ridge-green);color:#fff;">Shop</span>
+                </div>
+
+                <div class="px-6 pt-8 pb-9">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full mono uppercase" style="font-size:9.5px;letter-spacing:.1em;background:color-mix(in srgb, var(--ridge-green) 12%, transparent);color:var(--ridge-green-deep);">
+                    <i data-lucide="tent-tree" style="width:11px;height:11px;"></i> New · Fall collection
+                  </span>
+                  <h1 class="font-bold tracking-tight mt-3" style="font-size:34px;line-height:1.05;color:var(--ridge-green-deep);">Built for the<br/>backcountry.</h1>
+                  <p class="mt-3" style="font-size:13px;line-height:1.55;color:#41564a;max-width:340px;">Packs, shells, and boots tested where the trail ends. Gear that carries the weight so you can carry on.</p>
+                  <div class="flex items-center gap-3 mt-5">
+                    <button class="px-4 py-2 rounded-lg font-semibold" style="font-size:12.5px;background:var(--ridge-green);color:#fff;">Shop the collection</button>
+                    <button class="flex items-center gap-1.5 font-semibold" style="font-size:12.5px;color:var(--ridge-green-deep);">Watch the film <i data-lucide="play" class="w-3.5 h-3.5"></i></button>
+                  </div>
+
+                  <!-- product shot block (soft gradient placeholder) -->
+                  <div class="mt-7 rounded-xl relative overflow-hidden flex items-center justify-center" style="height:150px;background:linear-gradient(135deg, var(--ridge-green-deep) 0%, var(--ridge-green) 55%, #6f9a7d 130%);">
+                    <div class="absolute inset-0" style="background-image:radial-gradient(circle at 78% 22%, rgba(255,255,255,.22), transparent 42%);"></div>
+                    <i data-lucide="backpack" style="width:44px;height:44px;color:rgba(255,255,255,.9);"></i>
+                    <span class="absolute px-2 py-1 rounded-md mono" style="bottom:10px;right:10px;font-size:9px;background:rgba(255,255,255,.9);color:var(--ridge-green-deep);">product-shot.png</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- edit annotation chip floating under preview -->
+            <div class="mx-auto mt-3 flex items-center justify-center gap-1.5" style="max-width:540px;font-size:11px;color:var(--muted-foreground);">
+              <i data-lucide="info" class="w-3 h-3"></i> Live preview — the agent is editing headline weight &amp; product block this turn.
+            </div>
+          </div>
+        </div>
+
+        <!-- footer strip: provenance + export split -->
+        <div class="px-5 py-3 flex items-center gap-3 shrink-0" style="border-top:1px solid var(--border);background:var(--card);">
+          <div class="flex items-center gap-1.5 flex-wrap min-w-0">
+            <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md mono" style="font-size:10px;background:var(--secondary);color:var(--muted-foreground);border:1px solid var(--border);"><i data-lucide="package" class="w-3 h-3"></i> From: Ridgeline brand kit</span>
+            <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md mono" style="font-size:10px;background:var(--secondary);color:var(--muted-foreground);border:1px solid var(--border);"><i data-lucide="component" class="w-3 h-3"></i> Design system: Elevate DS</span>
+            <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md mono" style="font-size:10px;background:var(--secondary);color:var(--muted-foreground);border:1px solid var(--border);"><i data-lucide="git-commit-horizontal" class="w-3 h-3"></i> 3 revisions</span>
+          </div>
+          <div class="ml-auto flex items-center rounded-lg shrink-0" style="border:1px solid var(--border);overflow:hidden;">
+            <span class="px-2.5 py-1.5 mono" style="font-size:10px;color:var(--muted-foreground);background:var(--card);">Export</span>
+            <button class="px-2.5 py-1.5 mono" style="font-size:10px;color:var(--foreground);background:var(--card);border-left:1px solid var(--border);">HTML</button>
+            <button class="px-2.5 py-1.5 mono" style="font-size:10px;color:var(--foreground);background:var(--card);border-left:1px solid var(--border);">PDF</button>
+            <button class="flex items-center gap-1 px-2.5 py-1.5 font-medium" style="font-size:10.5px;color:var(--tool-design-system);background:color-mix(in srgb, var(--tool-design-system) 8%, transparent);border-left:1px solid var(--border);"><i data-lucide="paintbrush" class="w-3 h-3"></i> Open in Theme Generator</button>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

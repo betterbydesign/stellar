@@ -11,3 +11,30 @@ release/
 *.pem
 *.key
 *.mobileprovision
+
+# Local research/browser sessions
+.playwright-mcp/
+output/playwright/browser-logs/
+
+# Harness ignore rules — append these to the consumer repo's .gitignore at install time,
+# and commit that before copying any other harness file. Git ignores only untracked
+# paths, so a rule added after the files are already tracked never takes effect.
+.env
+.env.local
+.env*.local
+.specstory/
+.cursor/hooks/state/
+.cursor/plans/
+.claude/settings.local.json
+.DS_Store
+*.tsbuildinfo
+# The pre-PR local review CLI (`review.localCli`) checks the branch out into a
+# worktree under the repo root. Untracked and unignored, it shows up in
+# `git status --short`, which IS the docs-only verification command.
+.worktrees/
+
+# Stellar workspace build output
+.next/
+next-env.d.ts
+coverage/
+!.env.example

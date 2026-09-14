@@ -1,0 +1,1275 @@
+{
+  "observedAt": "2026-09-13",
+  "baseId": "appctrC0fkefkHeK8",
+  "tables": [
+    {
+      "id": "tblyECInojqSB7WF2",
+      "name": "Pages",
+      "primaryFieldId": "fld1SHM0mmjN3ebSd",
+      "fields": [
+        {
+          "id": "fld1SHM0mmjN3ebSd",
+          "name": "UID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldz4p7tTRPdHFo5z",
+          "name": "Title",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldbHstUQNSkf6SI5",
+          "name": "Slug",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldd8U4FzYdSx4Jsa",
+          "name": "Parent",
+          "type": "singleSelect",
+          "choices": []
+        },
+        {
+          "id": "fldUqWbdh7rWILxWc",
+          "name": "Page Type",
+          "type": "singleSelect",
+          "choices": [
+            {
+              "id": "selA46uj3dnrrCdxJ",
+              "name": "Services"
+            },
+            {
+              "id": "selWNMXdaH14Tf7Yf",
+              "name": "Landing"
+            },
+            {
+              "id": "selLLDfnxkWrT9hm2",
+              "name": "Resource"
+            },
+            {
+              "id": "selDZBFS4PHXx0zcc",
+              "name": "Team Member"
+            },
+            {
+              "id": "sel9dTjauTChqBK49",
+              "name": "Other"
+            }
+          ]
+        },
+        {
+          "id": "flde26EnbIUe2f2J3",
+          "name": "Status",
+          "type": "singleSelect",
+          "choices": [
+            {
+              "id": "seljbaUcIrHJtEanX",
+              "name": "Draft"
+            },
+            {
+              "id": "selY2OSrlOdR8OZna",
+              "name": "In Review"
+            },
+            {
+              "id": "selShet6ifKnCFcMM",
+              "name": "Published"
+            }
+          ]
+        },
+        {
+          "id": "flduHIpjAB1YEUTK8",
+          "name": "HERO-EYEBROW",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldKvifSMud8nLfrw",
+          "name": "HERO-H1",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldPjZGXd5uHGcjid",
+          "name": "HERO-CONTENT",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldb0wWKlsOe0LE5Y",
+          "name": "CASE-HEAD",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldf9d94WQ11HsOl8",
+          "name": "CASE-1",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbl1A2Wyvbt1MDNfR",
+          "inverseLinkFieldId": "fldYO6JPecIAfj08Y",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldivbyIMQyV8OF1W",
+          "name": "CASE-2",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbl1A2Wyvbt1MDNfR",
+          "inverseLinkFieldId": "fldVcGOWmsBAne1wF",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldewG4rm4gzGlF7P",
+          "name": "SERV-HED-1",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldl9ILbTPjUXBg6L",
+          "name": "SERV-HED-2",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldpuGAWzgH0WlwPJ",
+          "name": "SERV-CONTENT",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldaMEP6BOKW1d7yb",
+          "name": "Approach",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblcLkCmQTDSQiwiy",
+          "inverseLinkFieldId": "fldhyySD0LzJe0xdd",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldVYivyThBxcZ1s2",
+          "name": "Services Team",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbl6qCic4efHL5mU7",
+          "inverseLinkFieldId": "fldMtjexLdjd2aQ0k",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldgiosmRRLbshC2b",
+          "name": "Niche Spaces",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblG7ni3msP6LVxFe",
+          "inverseLinkFieldId": "fldgBY8VbziBWQZfD",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fld3q1meT8UHRSpIK",
+          "name": "Testimonials",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblEm7TDpPgcXPwB9",
+          "inverseLinkFieldId": "fldcDaiig0VEMeMA7",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldSjYSrIIfV8mBiU",
+          "name": "Get Started",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbl5IROOFTJOuxwEP",
+          "inverseLinkFieldId": "flduSSBLiPXkyHmo2",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldx0CkZXXv7Qe6TG",
+          "name": "Team Profile Content",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblOlSg69mRVP8XDO",
+          "inverseLinkFieldId": "fldEu0xmRUkCvpVi8",
+          "prefersSingleRecordLink": true
+        },
+        {
+          "id": "fldDuOGTEbmCCAN11",
+          "name": "Section Registry",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblhxZu8Pd19KGs4i",
+          "inverseLinkFieldId": "fldUBqVpaR5PEvtAN",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fld0N9ht4pmQCwBYL",
+          "name": "Templates",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblo2P8qv6vplpaTk",
+          "inverseLinkFieldId": "fldD1zRyJvbubprA1",
+          "prefersSingleRecordLink": false
+        }
+      ]
+    },
+    {
+      "id": "tblhxZu8Pd19KGs4i",
+      "name": "Section Registry",
+      "primaryFieldId": "fldNy7mqUmcd6J5QN",
+      "fields": [
+        {
+          "id": "fldNy7mqUmcd6J5QN",
+          "name": "Name",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldAglf6aNwOnfa52",
+          "name": "Notes",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldkvQo3kYy13sZlg",
+          "name": "Assignee",
+          "type": "singleCollaborator"
+        },
+        {
+          "id": "fldFvwvIlefUk0X6o",
+          "name": "Status",
+          "type": "singleSelect",
+          "choices": [
+            {
+              "id": "selJdzLUCKQQToX8j",
+              "name": "Todo"
+            },
+            {
+              "id": "selPcIfFigeM5aYi7",
+              "name": "In progress"
+            },
+            {
+              "id": "selwuofHzzscC3Jth",
+              "name": "Done"
+            }
+          ]
+        },
+        {
+          "id": "fldrtqH5bLikHq2gB",
+          "name": "Attachments",
+          "type": "multipleAttachments"
+        },
+        {
+          "id": "fld9nYs9e3Xqe7blN",
+          "name": "Attachment Summary",
+          "type": "aiText"
+        },
+        {
+          "id": "fldMqeNuQKMcMjgVH",
+          "name": "Key",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldwgHBX51nd7kce8",
+          "name": "Figma File Key",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldpWKwjqsAsCdtVj",
+          "name": "Figma Node ID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldcGPSXL3th3rioP",
+          "name": "Figma URL",
+          "type": "formula"
+        },
+        {
+          "id": "fldf5hQHe5ZwYyJlq",
+          "name": "Reference Thumbnail",
+          "type": "multipleAttachments"
+        },
+        {
+          "id": "fldiGa3helvb2f9Gq",
+          "name": "Reference Updated",
+          "type": "dateTime"
+        },
+        {
+          "id": "fldwSzEtJmd6zb6OC",
+          "name": "Scope",
+          "type": "singleSelect",
+          "choices": [
+            {
+              "id": "sel0RJT1NqXivgbrU",
+              "name": "Per page"
+            },
+            {
+              "id": "selmubjFPx3dhpuXD",
+              "name": "Shared library"
+            },
+            {
+              "id": "selJqsJCtUeKDWQ2y",
+              "name": "Global"
+            }
+          ]
+        },
+        {
+          "id": "fldfQ78THCYUvPHAC",
+          "name": "Content Table",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldu5ZQYu1pZiZ9uS",
+          "name": "Content Table ID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldSMEk59o400cyZW",
+          "name": "Map Status",
+          "type": "singleSelect",
+          "choices": [
+            {
+              "id": "selQHGuU40R5HH5P0",
+              "name": "Verified"
+            },
+            {
+              "id": "selWKkDde76gWVOe9",
+              "name": "Drifted"
+            },
+            {
+              "id": "selNzOEFLJTeqtJVU",
+              "name": "Unmapped"
+            },
+            {
+              "id": "sel4ZQNOv1ZKxopLc",
+              "name": "Retired"
+            }
+          ]
+        },
+        {
+          "id": "fldT9HmJUaNENsL6J",
+          "name": "Last Verified",
+          "type": "dateTime"
+        },
+        {
+          "id": "fldTItOqB4Qm46o00",
+          "name": "ACF Layout Name",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fld771erzrb3gp1qh",
+          "name": "Astro Component",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldfkCiBdrNm2u6dI",
+          "name": "Slots",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblL2CZS3raLDwtkK",
+          "inverseLinkFieldId": "fldEtrELnvJbrMUfZ",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldUBqVpaR5PEvtAN",
+          "name": "Used On",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblyECInojqSB7WF2",
+          "inverseLinkFieldId": "fldDuOGTEbmCCAN11",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldhTr1tYQB0jwIRx",
+          "name": "Slot Count",
+          "type": "count"
+        },
+        {
+          "id": "fldyJRZrhn0fNufk7",
+          "name": "Gaps",
+          "type": "rollup"
+        },
+        {
+          "id": "fldCnTYB5qHE9siJD",
+          "name": "Copy Drifts",
+          "type": "rollup"
+        },
+        {
+          "id": "fld33uq8dN8J4OxgS",
+          "name": "Templates",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblo2P8qv6vplpaTk",
+          "inverseLinkFieldId": "fldRfDsqNTnbHtu0g",
+          "prefersSingleRecordLink": false
+        }
+      ]
+    },
+    {
+      "id": "tblboYkJY9gv4sFLV",
+      "name": "Approach Columns",
+      "primaryFieldId": "fldCANcA5oFZtrdUT",
+      "fields": [
+        {
+          "id": "fldCANcA5oFZtrdUT",
+          "name": "UID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldyRGZN3HutVnw1t",
+          "name": "Approach Section",
+          "type": "singleLineText"
+        },
+        {
+          "id": "flddPbSy7cVBtHIEr",
+          "name": "Column Title",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldbAVCNtYtxCBVB3",
+          "name": "Body",
+          "type": "richText"
+        },
+        {
+          "id": "fldafv5HmEf86aGqG",
+          "name": "Icon",
+          "type": "multipleAttachments"
+        }
+      ]
+    },
+    {
+      "id": "tblcLkCmQTDSQiwiy",
+      "name": "Approach Sections",
+      "primaryFieldId": "fldY0h6fB93Dx14TS",
+      "fields": [
+        {
+          "id": "fldY0h6fB93Dx14TS",
+          "name": "UID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldhyySD0LzJe0xdd",
+          "name": "Page",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblyECInojqSB7WF2",
+          "inverseLinkFieldId": "fldaMEP6BOKW1d7yb",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldlWdmV2TbN6wnET",
+          "name": "APPROACH-TITLE",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldNIvPdGjeci2d23",
+          "name": "APP-HEAD-1",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldE7odVlIG6hChMa",
+          "name": "APP-CONTENT-1",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldEIeiQx2FlrUqjt",
+          "name": "APP-HEAD-2",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldpjHVRQRCgEWH0u",
+          "name": "APP-CONTENT-2",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldycLv9Gy3pZLKse",
+          "name": "APP-HEAD-3",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldxXBbZW4XXeoKJN",
+          "name": "APP-CONTENT-3",
+          "type": "multilineText"
+        }
+      ]
+    },
+    {
+      "id": "tbl6qCic4efHL5mU7",
+      "name": "Services Team",
+      "primaryFieldId": "fldk43YhFBiAEdQId",
+      "fields": [
+        {
+          "id": "fldk43YhFBiAEdQId",
+          "name": "UID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldHwcaavGJICmv7F",
+          "name": "SERV-TEAM-HED",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldX4UO2029uXZJfy",
+          "name": "SERV-TEAM-CONTENT",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldp7mcgm1WrhLgDy",
+          "name": "SERV-TEAM-ROLE-1",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldVBCqAk3DoB6Kni",
+          "name": "SERV-TEAM-ROLE-2",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldA49P2Uv5mXNS0i",
+          "name": "SERV-TEAM-ROLE-3",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldi9vbm2YeFfsRNw",
+          "name": "SERV-TEAM-ROLE-4",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fld44VO06WOS57oY3",
+          "name": "SERV-TEAM-ROLE-1-IMAGE",
+          "type": "multipleAttachments"
+        },
+        {
+          "id": "fldz9FNsDWAvphFIN",
+          "name": "SERV-TEAM-ROLE-2-IMAGE",
+          "type": "multipleAttachments"
+        },
+        {
+          "id": "fld5L4wl9xvfgHchI",
+          "name": "SERV-TEAM-ROLE-3-IMAGE",
+          "type": "multipleAttachments"
+        },
+        {
+          "id": "fldDvnOavWrAxT9ca",
+          "name": "SERV-TEAM-ROLE-4-IMAGE",
+          "type": "multipleAttachments"
+        },
+        {
+          "id": "fldMtjexLdjd2aQ0k",
+          "name": "Pages",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblyECInojqSB7WF2",
+          "inverseLinkFieldId": "fldVYivyThBxcZ1s2",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldAeaMWAOGA6tkbb",
+          "name": "SERV-TEAM-ROLE-1-CONTENT",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldtkRonfkEUypMaZ",
+          "name": "SERV-TEAM-ROLE-2-CONTENT",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldncsF2d583gv1R3",
+          "name": "SERV-TEAM-ROLE-3-CONTENT",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldlS2PRaoUZpyBjm",
+          "name": "SERV-TEAM-ROLE-4-CONTENT",
+          "type": "multilineText"
+        }
+      ]
+    },
+    {
+      "id": "tbl1A2Wyvbt1MDNfR",
+      "name": "Case Studies",
+      "primaryFieldId": "fldwvKJ4jeYtfe7l2",
+      "fields": [
+        {
+          "id": "fldwvKJ4jeYtfe7l2",
+          "name": "UID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldVmnYHIzMXK50Ti",
+          "name": "CASE-CLIENT",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldZ3XKVKtgjAJ7M2",
+          "name": "CASE-SUMMARY",
+          "type": "richText"
+        },
+        {
+          "id": "flda78xnWREGkjFmX",
+          "name": "CASE-LONG-PROBLEM",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldUvwVIM26IHJGtg",
+          "name": "CASE-LONG-SOLUTION",
+          "type": "multilineText"
+        },
+        {
+          "id": "fld8w7VkKmHMUf2rE",
+          "name": "CASE-LONG-RESULTS",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldH6bd5dtZsh7cQt",
+          "name": "CASE-URL",
+          "type": "url"
+        },
+        {
+          "id": "fldrY1OrGZbXaj23A",
+          "name": "CASE-HEADSHOT",
+          "type": "multipleAttachments"
+        },
+        {
+          "id": "fldpMzaN0Mx4Wfrpr",
+          "name": "Pages",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldYO6JPecIAfj08Y",
+          "name": "Pages 2",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblyECInojqSB7WF2",
+          "inverseLinkFieldId": "fldf9d94WQ11HsOl8",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldVcGOWmsBAne1wF",
+          "name": "Pages 2 copy",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblyECInojqSB7WF2",
+          "inverseLinkFieldId": "fldivbyIMQyV8OF1W",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldm9G2A3udo3Or6T",
+          "name": "CASE-CONTEXT",
+          "type": "multipleAttachments"
+        },
+        {
+          "id": "fldOyzIjG9vGfTHPN",
+          "name": "Team Profiles",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblOlSg69mRVP8XDO",
+          "inverseLinkFieldId": "fldydClRDR8dJYcYu",
+          "prefersSingleRecordLink": false
+        }
+      ]
+    },
+    {
+      "id": "tblEm7TDpPgcXPwB9",
+      "name": "Testimonials",
+      "primaryFieldId": "fldPfb4KxDPjy8svu",
+      "fields": [
+        {
+          "id": "fldPfb4KxDPjy8svu",
+          "name": "UID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldhAtBOjA87j6Csv",
+          "name": "TEST-QUOTE",
+          "type": "richText"
+        },
+        {
+          "id": "fldvocg8HnAUCmC8l",
+          "name": "TEST-ATTRIBUTE",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldgQLXO1E0tHMtzC",
+          "name": "TEST-COMPANY",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldMoRjD24WT1i8eS",
+          "name": "TEST-LOGO",
+          "type": "multipleAttachments"
+        },
+        {
+          "id": "fldcDaiig0VEMeMA7",
+          "name": "Pages",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblyECInojqSB7WF2",
+          "inverseLinkFieldId": "fld3q1meT8UHRSpIK",
+          "prefersSingleRecordLink": false
+        }
+      ]
+    },
+    {
+      "id": "tblG7ni3msP6LVxFe",
+      "name": "Niche Spaces",
+      "primaryFieldId": "fldVHsNgvYhM262Lh",
+      "fields": [
+        {
+          "id": "fldVHsNgvYhM262Lh",
+          "name": "Name",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldzfkipGVyoXJemj",
+          "name": "SERV-NICHE-HED",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldPbyW1pEWXWmyfk",
+          "name": "SERV-NICHE-CONTENT",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldPkDCUo4XbPSzCl",
+          "name": "SERV-NICHE-HED-1",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldIA44SOsQG43a7O",
+          "name": "SERV-NICHE-CONTENT-1",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldkesuZhGg1R9LWf",
+          "name": "SERV-NICHE-HED-2",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldu6msjqKMNmPcqV",
+          "name": "SERV-NICHE-CONTENT-2",
+          "type": "multilineText"
+        },
+        {
+          "id": "fld9mJbUPCVTHbJRM",
+          "name": "SERV-NICHE-HED-3",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fld5eeVkt4B7XTvMc",
+          "name": "SERV-NICHE-CONTENT-3",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldgBY8VbziBWQZfD",
+          "name": "Pages",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblyECInojqSB7WF2",
+          "inverseLinkFieldId": "fldgiosmRRLbshC2b",
+          "prefersSingleRecordLink": false
+        }
+      ]
+    },
+    {
+      "id": "tbl5IROOFTJOuxwEP",
+      "name": "Get Started",
+      "primaryFieldId": "fldcNB2CuoP9GHCeB",
+      "fields": [
+        {
+          "id": "fldcNB2CuoP9GHCeB",
+          "name": "UID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldBUWGRBv5Lpq9J2",
+          "name": "START-SUBHED",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldmrJfSm061oqYZ6",
+          "name": "START-HED",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldIj4pOBR8RAMOIQ",
+          "name": "TXT-LINK",
+          "type": "url"
+        },
+        {
+          "id": "fldbVES0NWN9OdoEs",
+          "name": "MD-LINK",
+          "type": "url"
+        },
+        {
+          "id": "fldfKlXPBG5nh0K2R",
+          "name": "CSV-LINK",
+          "type": "url"
+        },
+        {
+          "id": "fldYTfoXP7nFUdPyz",
+          "name": "HTML-LINK",
+          "type": "url"
+        },
+        {
+          "id": "fldV2vSLfD2SGzauD",
+          "name": "START-CONTENT",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldue8JGuujGfee95",
+          "name": "START-CTA-LINE",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldrMpfRxIosnsAVs",
+          "name": "START-CTA-LINK",
+          "type": "url"
+        },
+        {
+          "id": "flduSSBLiPXkyHmo2",
+          "name": "Pages",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblyECInojqSB7WF2",
+          "inverseLinkFieldId": "fldSjYSrIIfV8mBiU",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldITgMQwddwh0yDX",
+          "name": "START-CTA-2-LINE",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fld3wlt6nEiedg5qA",
+          "name": "START-CTA-2-LINK",
+          "type": "url"
+        }
+      ]
+    },
+    {
+      "id": "tblCDEdqmJgttzdfw",
+      "name": "Clients-Logos",
+      "primaryFieldId": "fldafMVUpOBp62H7C",
+      "fields": [
+        {
+          "id": "fldafMVUpOBp62H7C",
+          "name": "Client Name",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fld2g3Xsgr1PP2WGK",
+          "name": "UID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldf46ha8LZdSRjGr",
+          "name": "Logo",
+          "type": "multipleAttachments"
+        },
+        {
+          "id": "fld0HdEOy7xa35yQJ",
+          "name": "Site Settings",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblJu5Bb5EhPQ0wn5",
+          "inverseLinkFieldId": "fldjWGr0selQ6ahDJ",
+          "prefersSingleRecordLink": false
+        }
+      ]
+    },
+    {
+      "id": "tblJu5Bb5EhPQ0wn5",
+      "name": "Site Settings",
+      "primaryFieldId": "fldRJ3z74WysH0vr2",
+      "fields": [
+        {
+          "id": "fldRJ3z74WysH0vr2",
+          "name": "Setting Key",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldJOHN1mm88ZsuUZ",
+          "name": "Value",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldI9zQ7W9oXAvbFy",
+          "name": "Scope",
+          "type": "singleSelect",
+          "choices": [
+            {
+              "id": "selPZJ8Ob7scaZXeT",
+              "name": "Global"
+            },
+            {
+              "id": "selbg9Llx4fFFoQ4W",
+              "name": "Section-specific"
+            }
+          ]
+        },
+        {
+          "id": "fldjWGr0selQ6ahDJ",
+          "name": "Client Logos",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblCDEdqmJgttzdfw",
+          "inverseLinkFieldId": "fld0HdEOy7xa35yQJ",
+          "prefersSingleRecordLink": false
+        }
+      ]
+    },
+    {
+      "id": "tbloDo3CZUeua3i0B",
+      "name": "Account Team",
+      "primaryFieldId": "fldr0KPw53cxXNPvb",
+      "fields": [
+        {
+          "id": "fldr0KPw53cxXNPvb",
+          "name": "UID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldwnWT4zxgn43rdn",
+          "name": "Page",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldFoJt9bPogbrJ9F",
+          "name": "Member Name",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldvXF6YG3SPPTM88",
+          "name": "Role",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldgZZSwsRL81qmFB",
+          "name": "Bio",
+          "type": "richText"
+        },
+        {
+          "id": "fldaLP49Y5jqh3H7n",
+          "name": "Photo",
+          "type": "multipleAttachments"
+        }
+      ]
+    },
+    {
+      "id": "tblkzvMMe75ABtpPx",
+      "name": "Industry Cards",
+      "primaryFieldId": "fldEoURdUiezFc81Q",
+      "fields": [
+        {
+          "id": "fldEoURdUiezFc81Q",
+          "name": "UID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldxeFtuJI2th5pGV",
+          "name": "Niche Space",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldfzWIteu6nRgWQI",
+          "name": "Card Title",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fld9IVmLW2dd57cgL",
+          "name": "Card Body",
+          "type": "richText"
+        },
+        {
+          "id": "fldrL9MVDP9EIT8uh",
+          "name": "Icon",
+          "type": "multipleAttachments"
+        }
+      ]
+    },
+    {
+      "id": "tblOlSg69mRVP8XDO",
+      "name": "Team Profiles",
+      "primaryFieldId": "fldcCQ9vIP0yh1nEn",
+      "fields": [
+        {
+          "id": "fldcCQ9vIP0yh1nEn",
+          "name": "UID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldoFRXCgUn1l1mSs",
+          "name": "TEAM-BODY",
+          "type": "richText"
+        },
+        {
+          "id": "fldWV9DCCXiZdhXV5",
+          "name": "LINKEDIN",
+          "type": "url"
+        },
+        {
+          "id": "fldydClRDR8dJYcYu",
+          "name": "TEAM-CASE-STUDIES",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tbl1A2Wyvbt1MDNfR",
+          "inverseLinkFieldId": "fldOyzIjG9vGfTHPN",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldEu0xmRUkCvpVi8",
+          "name": "Pages",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblyECInojqSB7WF2",
+          "inverseLinkFieldId": "fldx0CkZXXv7Qe6TG",
+          "prefersSingleRecordLink": false
+        }
+      ]
+    },
+    {
+      "id": "tblL2CZS3raLDwtkK",
+      "name": "Field Map",
+      "primaryFieldId": "fldvuWYXQ0KfEaDSy",
+      "fields": [
+        {
+          "id": "fldvuWYXQ0KfEaDSy",
+          "name": "Slot",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldYAwbJ1wUFsPzzw",
+          "name": "Order",
+          "type": "number"
+        },
+        {
+          "id": "fldYUAt92zxeN1QgH",
+          "name": "Figma Node",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldwXnrEjAeemeRY1",
+          "name": "Figma Node ID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fld5fdmpL15OzoWSU",
+          "name": "Node Path",
+          "type": "multilineText"
+        },
+        {
+          "id": "fld0tmoAK23uENK2c",
+          "name": "Design Copy",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldHfipMydWsKq669",
+          "name": "Airtable Field",
+          "type": "singleLineText"
+        },
+        {
+          "id": "flddYyzNNlTvQpcKf",
+          "name": "Airtable Field ID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldttBqAx38882jqy",
+          "name": "Content Table",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fld8p8jJl2TLHg0KC",
+          "name": "Join",
+          "type": "singleSelect",
+          "choices": [
+            {
+              "id": "selOb6tTCIM51lzhg",
+              "name": "direct"
+            },
+            {
+              "id": "selRT5WrQObilnVh4",
+              "name": "styled-runs"
+            },
+            {
+              "id": "selAgGBID5H2QSUBc",
+              "name": "markdown-lead"
+            },
+            {
+              "id": "selVVXThO49OEL7XS",
+              "name": "markdown-list"
+            },
+            {
+              "id": "selBsyOTNeqx47wXY",
+              "name": "link"
+            },
+            {
+              "id": "selaT9A5dN9UbTwHE",
+              "name": "attachment"
+            },
+            {
+              "id": "selG30dKosEQj0f4z",
+              "name": "constant"
+            }
+          ]
+        },
+        {
+          "id": "fldpRxS1ARiLNprEK",
+          "name": "Status",
+          "type": "singleSelect",
+          "choices": [
+            {
+              "id": "sel4eZxaFbp5aoQtP",
+              "name": "1-to-1"
+            },
+            {
+              "id": "selXcp42BgYKncUvi",
+              "name": "Split"
+            },
+            {
+              "id": "sel17cIlRWvtLTwhV",
+              "name": "Copy drift"
+            },
+            {
+              "id": "selUik1Dp4ydndpf5",
+              "name": "No field"
+            },
+            {
+              "id": "selxu6o2uOckuBbRg",
+              "name": "No node"
+            },
+            {
+              "id": "sel5DPBHUlhWqhH9n",
+              "name": "Global chrome"
+            }
+          ]
+        },
+        {
+          "id": "flde96BnKqtn7Bmx4",
+          "name": "Max Chars",
+          "type": "number"
+        },
+        {
+          "id": "fldwyxQb9Y12Mr4Gb",
+          "name": "Action",
+          "type": "singleSelect",
+          "choices": [
+            {
+              "id": "sel7CoWm3SonH2dY0",
+              "name": "None"
+            },
+            {
+              "id": "selMpd5HYvDZNKVi4",
+              "name": "Add Airtable field"
+            },
+            {
+              "id": "selE0eDdVJy9T3VHP",
+              "name": "Add Figma node"
+            },
+            {
+              "id": "selnSxYcVBKiuJg9r",
+              "name": "Fix copy"
+            },
+            {
+              "id": "sel8mRlmpY497UTsB",
+              "name": "Move to Site Settings"
+            },
+            {
+              "id": "selBNpLuQnCIzrTEw",
+              "name": "Retire field"
+            }
+          ]
+        },
+        {
+          "id": "fldXqKIiGadIzdLGQ",
+          "name": "Note",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldEtrELnvJbrMUfZ",
+          "name": "Section",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblhxZu8Pd19KGs4i",
+          "inverseLinkFieldId": "fldfkCiBdrNm2u6dI",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldu0dvTYV5AinWzu",
+          "name": "Is Gap",
+          "type": "formula"
+        },
+        {
+          "id": "fld6Uop8OfsEswE4T",
+          "name": "Is Drift",
+          "type": "formula"
+        }
+      ]
+    },
+    {
+      "id": "tblo2P8qv6vplpaTk",
+      "name": "Templates",
+      "primaryFieldId": "fldzdMHNyzT4eL7v0",
+      "fields": [
+        {
+          "id": "fldzdMHNyzT4eL7v0",
+          "name": "Name",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldz8AyUVicA5ZH92",
+          "name": "Slug",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldsOpYX8a1OGEZ2W",
+          "name": "Description",
+          "type": "multilineText"
+        },
+        {
+          "id": "fldsVP1u2SO2Chzrk",
+          "name": "Figma File Key",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldv6guNmCkY8MAuw",
+          "name": "Figma Reference Node ID",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldBC7KHAFMT8TxfM",
+          "name": "ACF Field Group",
+          "type": "singleLineText"
+        },
+        {
+          "id": "fldZnzw39PzCQDy9a",
+          "name": "Status",
+          "type": "singleSelect",
+          "choices": [
+            {
+              "id": "selxNVzyYhntOggQy",
+              "name": "Draft"
+            },
+            {
+              "id": "selY7Lh7yHproHLj4",
+              "name": "Mapped"
+            },
+            {
+              "id": "selzMwz4rpRZTg3d2",
+              "name": "Active"
+            },
+            {
+              "id": "selyGzMKjVKaptYDM",
+              "name": "Retired"
+            }
+          ]
+        },
+        {
+          "id": "fldRfDsqNTnbHtu0g",
+          "name": "Sections",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblhxZu8Pd19KGs4i",
+          "inverseLinkFieldId": "fld33uq8dN8J4OxgS",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fldD1zRyJvbubprA1",
+          "name": "Pages",
+          "type": "multipleRecordLinks",
+          "linkedTableId": "tblyECInojqSB7WF2",
+          "inverseLinkFieldId": "fld0N9ht4pmQCwBYL",
+          "prefersSingleRecordLink": false
+        },
+        {
+          "id": "fld18049vqXzBmU43",
+          "name": "Section Count",
+          "type": "count"
+        },
+        {
+          "id": "fldMDcExzDhWERkPA",
+          "name": "Total Slots",
+          "type": "rollup"
+        },
+        {
+          "id": "fldV3q26aD7cumqhw",
+          "name": "Figma URL",
+          "type": "formula"
+        },
+        {
+          "id": "fldvWmQ3wVQfIXMsL",
+          "name": "Page Count",
+          "type": "count"
+        },
+        {
+          "id": "fldqzW5KXEtS1sK2S",
+          "name": "Gaps",
+          "type": "rollup"
+        },
+        {
+          "id": "fldzUkWFqEAkMgrof",
+          "name": "Copy Drifts",
+          "type": "rollup"
+        }
+      ]
+    }
+  ]
+}

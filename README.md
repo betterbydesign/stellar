@@ -1,101 +1,35 @@
-# Stacki
+# Stellar
 
-Visual Builder for Astro.
+An agent-assisted website studio and client portal for responsive Astro and HTML sites.
 
-A Mac & Windows desktop app for editing [Astro](https://astro.build) projects visually.
+This repository now contains the initial Next.js web foundation and a project-local adaptation of the Altitude agent harness. The editor, authentication, CMS connections, agent runtime and deployments are planned work; the starter page is not a working studio.
 
-MIT licensed — fork it, build on it, ship your own version.
+## Start locally
 
-## Features
+Use the Node version in `.nvmrc` and npm. From the repository root:
 
-- **Pages** — browse every page in `src/pages`, create new pages (including nested routes like `blog/post-1`), and delete pages.
-- **Layouts** — choose which layout from `src/layouts` wraps each page, and edit the layout's props (e.g. `title`).
-- **Components** — every component in `src/components` appears in the palette. Drag one into the page structure (or double-click to append), drag to reorder, click ✕ to remove.
-- **Props** — the props panel reads each component's `interface Props` / `Astro.props` destructure and generates typed fields (text, number, checkbox). Defaults are shown as placeholders.
-- **Live preview** — the app runs `astro dev` for the opened project and embeds it. Edits are auto-saved (300 ms debounce), so Astro's hot reload updates the preview as you type.
-- **Git & GitHub** — the branch chip in the title bar shows the current branch and dirty state. From its dropdown you can switch branches, create branches, commit, push, or publish a brand-new repo to GitHub (via the `gh` CLI).
-- **Tell an AI what's selected** — **⇧⌘C** copies whatever the canvas has selected as the trail of `file:line-range` pointers that leads to it: the page, each component drilled into on the way down, then the node itself. Paste that into Claude Code or any AI chat that can read the project and it knows exactly which markup you mean.
-- **Code fallback** — pages with markup too complex for the visual model open in a code editor instead, still with live preview.
-- **New project** — "New Project…" scaffolds a minimal Astro starter (layout + 5 components + home page) and runs `npm install` for you.
-
-## Running in development
-
-```bash
-npm install
+```sh
+npm ci
 npm run dev
 ```
 
-`npm run dev` starts Vite (renderer hot reload) and launches Electron against it.
+Open the local address printed by the development server. This initial scaffold needs no environment variables or external accounts. The application lives in `apps/web`; dependencies use the one root lockfile.
 
-To run against a production build of the UI:
-
-```bash
-npm start
+```sh
+npm run verify
+npm run build
+npm run start
 ```
 
-## Packaging installers
+Verification checks the harness profile and file integrity, documentation, lint, TypeScript and the harness regression tests. Production build validation is separate. CI is defined locally but remote runs and branch protection have not been configured or verified.
 
-If you're building for yourself or from a fork, use the unsigned build — it
-needs no Apple Developer account and no certificates:
+## Project documents
 
-```bash
-npm run dist:mac:unsigned   # .dmg + .zip, no signing (build on macOS)
-npm run dist:win            # NSIS installer (build on Windows)
-```
+- [Product requirements](docs/STELLAR-PRD.md)
+- [Bootstrap plan and ownership discussion](docs/BOOTSTRAP-PLAN.md)
+- [Company-site proof](docs/POC-01-company-site.md)
+- [Active work](docs/current-work.md)
+- [Agent instructions](AGENTS.md)
+- [Licensing](LICENSING.md) and [source provenance](docs/provenance/sources.json)
 
-Output lands in `release/`. macOS will warn the first time you open an
-unsigned build; right-click the app and choose Open to get past Gatekeeper.
-
-The signed variants are for maintainers with the release certificates:
-
-```bash
-npm run dist:mac   # requires a Developer ID cert + notarization credentials
-```
-
-## Releases
-
-Official builds are published by CI, not from anyone's laptop. Pushing a
-`v*` tag runs `.github/workflows/release.yml`, which builds a signed and
-notarized macOS universal build plus a Windows installer, uploads them to
-the `stacki-releases` repo, and only makes the release visible once both
-platforms have landed. Shipped apps auto-update from that feed via
-`electron-updater`.
-
-The install script backports the temporary-keychain password fix from
-[electron-builder #10172](https://github.com/electron-userland/electron-builder/pull/10172)
-to the locked builder version. This keeps signing working on current macOS
-runners without changing the certificate credentials. Remove the backport when
-upgrading to a builder version that includes the fix.
-
-Signing and notarization credentials live in GitHub Actions secrets. They
-are never in this repository, and GitHub does not expose them to workflows
-triggered from forks — so a fork can build and run everything here, but
-cannot produce a build signed with the official identity. That's intended.
-
-If you fork this and publish your own builds, change `build.appId` and
-`build.publish` in `package.json` to your own identifiers so your releases
-don't collide with the official update feed.
-
-## Contributing
-
-Issues and pull requests are welcome. A few notes:
-
-- `npm run dev` is all you need for day-to-day work — no credentials required.
-- Please don't add workflows that use `pull_request_target`, or any workflow
-  that exposes secrets to code from a fork.
-- Report security issues privately to the maintainer rather than opening a
-  public issue.
-
-## Requirements
-
-- Node.js 18+ and npm (the app shells out to `npm install` / `astro dev` for opened projects)
-- `git` for version control features
-- [GitHub CLI](https://cli.github.com) (`gh`), authenticated via `gh auth login`, for "Publish to GitHub"
-
-## How editing works
-
-Pages are parsed into a simple model: optional layout wrapper + a flat list of
-self-closing component instances with props. The editor writes that model back
-as clean `.astro` source. Pages containing arbitrary HTML, expressions, or
-nested children fall back to the built-in code editor — nothing is ever
-rewritten destructively.
+The Stacki reference and harness source are adjacent checkouts for development. Neither is required to install or build Stellar. Selected editor modules can be ported with their upstream tests and notices when the first editing proof begins. The company Astro and WordPress repositories remain separate POC targets.
