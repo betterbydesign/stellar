@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const { PROTOCOL_VERSION, SourceModelSchema, exampleElementTarget, exampleTokenTarget } = require("@stellar/contracts");
@@ -61,4 +62,6 @@ test("preview origin accepts only exact local preview hostname", () => {
   assert.equal(previewOrigin("http://127.0.0.1:4321/"), null);
   assert.equal(previewOrigin("https://localhost:4321/"), null);
   assert.equal(previewOrigin("http://user@localhost:4321/"), null);
+  assert.equal(previewOrigin("http://localhost/"), null);
+  assert.equal(previewOrigin("http://localhost:4321/?token=bad"), null);
 });

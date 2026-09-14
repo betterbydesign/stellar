@@ -40,7 +40,8 @@ export function acceptFrameMessage(event: Pick<MessageEvent, "origin" | "source"
 export function previewOrigin(url: string): string | null {
   try {
     const parsed = new URL(url);
-    return parsed.protocol === "http:" && parsed.hostname === "localhost" && parsed.username === "" && parsed.password === ""
+    return parsed.protocol === "http:" && parsed.hostname === "localhost" && parsed.port !== "" &&
+      parsed.username === "" && parsed.password === "" && parsed.pathname === "/" && !parsed.search && !parsed.hash
       ? parsed.origin : null;
   } catch { return null; }
 }

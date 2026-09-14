@@ -30,6 +30,7 @@ The user requested the first real Stellar Studio on `codex/m1-04-canvas` in `/pr
 
 - 2026-09-14: Read intake, PRD, handoff, contracts, runner seam, fixture, and design references. Agreed inspector and history prop seams with their owners.
 - 2026-09-14: Implemented the project dashboard, Studio shell, exact-width iframe, frame handshake, source-target validation, Astro development injection, and user/architecture documentation. Inspector and history render through separately owned feature imports.
+- 2026-09-14: Follow-up hardening added strict preview URL parsing, full fit scaling at narrow widths, history-busy interaction lock, a reachable iframe refresh action and CSRF rehydration for a deep-linked tab.
 
 ## Surprises & Discoveries
 
@@ -44,6 +45,7 @@ The user requested the first real Stellar Studio on `codex/m1-04-canvas` in `/pr
 - `npm install --package-lock-only --offline` and `npm ci --offline --ignore-scripts --no-audit --no-fund` succeeded for this worktree. The generated lockfile is coordinator-owned and excluded from this commit.
 - `npm run build:contracts`, the five bridge tests, the integration package test, Astro integration JavaScript syntax checks, scoped web lint, `npm run verify:docs`, and `git diff --check` passed.
 - Standalone `npm run typecheck --workspace=@stellar/web` found only the intentionally cross-owner missing imports for `../inspector/Inspector` and `../history/HistoryControls`; a combined typecheck follows their integration.
+- Pinned Astro 7.3.2 actual dev server with explicit local app origin returned HTTP 200 and injected the bridge. An ordinary dev server returned HTTP 200 without bridge/protocol markers. A clean fixture build also contained none of the editor identifiers.
 
 ## Outcomes & Retrospective
 

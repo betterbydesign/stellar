@@ -20,10 +20,19 @@ async function responseData(response: Response): Promise<unknown> {
 }
 
 const endpoint = (path: string, id = requestId()) => `/api/projects${path}${path.includes("?") ? "&" : "?"}requestId=${encodeURIComponent(id)}`;
-const csrf = () => typeof window === "undefined" ? "" : window.sessionStorage.getItem("stellar.csrf") ?? "";
+async function csrf(): Promise<string> {
+  const saved = window.sessionStorage.getItem("stellar.csrf");
+  if (saved) return saved;
+  const response = await fetch("/api/operator/session", { credentials: "same-origin", cache: "no-store" });
+  if (!response.ok) throw new StudioApiError("Connect to the local workspace before changing a session.", "UNAUTHORIZED", true);
+  const value = await response.json() as { csrfToken?: unknown };
+  if (typeof value.csrfToken !== "string" || !value.csrfToken) throw new StudioApiError("The local connection is unavailable.", "UNAUTHORIZED", true);
+  window.sessionStorage.setItem("stellar.csrf", value.csrfToken);
+  return value.csrfToken;
+}
 const mutation = async (path: string, method: "POST" | "DELETE", body?: Record<string, unknown>) => responseData(await fetch(endpoint(path), {
   method, credentials: "same-origin", cache: "no-store",
-  headers: { "content-type": "application/json", "x-stellar-csrf": csrf() },
+  headers: { "content-type": "application/json", "x-stellar-csrf": await csrf() },
   ...(body ? { body: JSON.stringify(body) } : {}),
 }));
 
