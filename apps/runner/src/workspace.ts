@@ -1,15 +1,15 @@
 import { mkdir, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import {
-  ApplyChangeSchema, ChangeProposalSchema, IdentifierSchema, OpenSessionRequestSchema,
+  ApplyChangeSchema, ChangeProposalSchema, HistoryCommandSchema, IdentifierSchema, OpenSessionRequestSchema,
   PrepareChangeSchema, ProjectManifestSchema, PROTOCOL_VERSION, ReconcileRequestSchema, SourceModelSchema,
-  validateApplyChange, makeError,
+  validateApplyChange, validateHistoryCommand, makeError,
   type ApplyChange, type ApplyChangeResponse, type ChangeProposal, type ChangeReceipt,
-  type ErrorCode, type ErrorEnvelope, type HistoryEntry, type HistoryResponse,
+  type ErrorCode, type ErrorEnvelope, type HistoryCommand, type HistoryEntry, type HistoryResponse, type SourcePatch,
   type PrepareChangeResponse,
   type RequestOutcome, type Session, type SourceModel,
 } from "@stellar/contracts";
-import { applySourcePatch, createSourceModel, prepareSourceChange } from "@stellar/editor-core";
+import { applySourcePatch, createInversePatch, createSourceModel, prepareSourceChange } from "@stellar/editor-core";
 import { PreviewError, PreviewProcess } from "./preview.js";
 import type { RegisteredProject } from "./registry.js";
 import { digest, durableJson, durableReplace, newId, readJson, safeSourcePath, snapshotFingerprint, sourceSnapshot } from "./storage.js";
@@ -26,8 +26,28 @@ type AppliedOperation = {
   sequence: number;
   beforeBase64: string | null; afterBase64: string | null;
   beforeFingerprint: string | null; afterFingerprint: string | null;
+  display?: HistoryEntry["display"];
 };
-type Operation = PreparedOperation | AppliedOperation;
+type HistoryOperation = {
+  version: 1; kind: "undo" | "redo"; operatorId: string; sessionId: string; intentHash: string;
+  requestId: string; status: "intent" | "applied" | "conflicted" | "unapplied";
+  sourceEntryId: string; patch: SourcePatch; receipt: ChangeReceipt;
+  sequence: number;
+  beforeBase64: string; afterBase64: string;
+  beforeFingerprint: string; afterFingerprint: string;
+};
+type WrittenOperation = AppliedOperation | HistoryOperation;
+type Operation = PreparedOperation | WrittenOperation;
+const writtenPatch = (operation: WrittenOperation): SourcePatch => operation.kind === "apply" ? operation.proposal.sourcePatch : operation.patch;
+
+function displayFor(proposal: ChangeProposal): NonNullable<HistoryEntry["display"]> {
+  const patch = proposal.sourcePatch;
+  const before = proposal.command.type === "style.reset"
+    ? patch.expectedOldText.replace(/^.*?:\s*/, "").replace(/;\s*$/, "").trim()
+    : patch.expectedOldText.trim() || "Inherited";
+  const after = proposal.command.type === "style.reset" ? "Inherited" : patch.replacementText.trim();
+  return { timestamp: new Date().toISOString(), before: before.slice(0, 160), after: after.slice(0, 160) };
+}
 
 const id = (value: unknown): value is string => IdentifierSchema.safeParse(value).success;
 const scopeOf = (input: unknown): { projectId: string | undefined; sessionId: string | undefined; requestId: string | undefined } => {
@@ -59,7 +79,7 @@ export class WorkspaceRuntime {
 
   constructor(readonly project: RegisteredProject, readonly seed: string, readonly data: string,
     readonly operatorId: string, readonly previewPort?: number,
-    readonly faultPoint?: "after-intent" | "after-replace") {}
+    readonly faultPoint?: "after-intent" | "after-replace", readonly appOrigin?: string) {}
 
   private async serial<T>(task: () => Promise<T>): Promise<T> {
     const result = this.mutex.then(task, task);
@@ -85,7 +105,7 @@ export class WorkspaceRuntime {
     for (const name of await readdir(this.operationsDir())) {
       if (!name.endsWith(".json")) continue;
       const operation = await this.loadOperation(name.slice(0, -5));
-      if (operation?.kind === "apply") this.nextSequence = Math.max(this.nextSequence, operation.sequence ?? 0);
+      if (operation && operation.kind !== "prepare") this.nextSequence = Math.max(this.nextSequence, operation.sequence ?? 0);
     }
   }
 
@@ -97,7 +117,7 @@ export class WorkspaceRuntime {
     if (!id(requestId)) return null;
     try {
       const operation = await readJson(this.operationFile(requestId)) as Operation;
-      if (operation.version !== 1 || operation.requestId !== requestId || !["prepare", "apply"].includes(operation.kind)) throw new Error("Invalid operation record");
+      if (operation.version !== 1 || operation.requestId !== requestId || !["prepare", "apply", "undo", "redo"].includes(operation.kind)) throw new Error("Invalid operation record");
       return operation;
     } catch (failure) {
       if ((failure as NodeJS.ErrnoException).code === "ENOENT") return null;
@@ -111,10 +131,10 @@ export class WorkspaceRuntime {
     const files = (await readdir(this.operationsDir())).filter((name) => name.endsWith(".json")).sort();
     for (const name of files) {
       const operation = await this.loadOperation(name.slice(0, -5));
-      if (!operation || operation.kind !== "apply" || operation.status !== "intent" || !operation.receipt ||
+      if (!operation || operation.kind === "prepare" || operation.status !== "intent" || !operation.receipt ||
         !operation.beforeBase64 || !operation.afterBase64 || !operation.afterFingerprint) continue;
       let bytes: Uint8Array;
-      try { bytes = await readFile(await safeSourcePath(this.project.root, operation.proposal.sourcePatch.file)); }
+      try { bytes = await readFile(await safeSourcePath(this.project.root, writtenPatch(operation).file)); }
       catch { operation.status = "conflicted"; await this.storeOperation(operation); continue; }
       const current = digest(bytes);
       const before = digest(Buffer.from(operation.beforeBase64, "base64"));
@@ -159,7 +179,7 @@ export class WorkspaceRuntime {
     for (const name of await readdir(this.operationsDir())) {
       if (!name.endsWith(".json")) continue;
       const operation = await this.loadOperation(name.slice(0, -5));
-      if (operation?.kind === "apply" && operation.status === "intent" && operation.requestId !== exceptRequestId) return true;
+      if (operation && operation.kind !== "prepare" && operation.status === "intent" && operation.requestId !== exceptRequestId) return true;
     }
     return false;
   }
@@ -211,7 +231,7 @@ export class WorkspaceRuntime {
       if (this.session === session && session.state === "ready") {
         session.state = "failed"; session.previewUrl = null; session.statusMessage = "The preview process stopped. Retry the session.";
       }
-    });
+    }, this.appOrigin);
     this.preview = preview;
     void (async () => {
       try {
@@ -404,7 +424,8 @@ export class WorkspaceRuntime {
     const record: AppliedOperation = { version: 1, kind: "apply", operatorId: this.operatorId,
       sessionId: this.session!.id, requestId: request.requestId, intentHash, status: "intent",
       proposal, sequence: ++this.nextSequence, receipt, beforeBase64: Buffer.from(before).toString("base64"),
-      afterBase64: Buffer.from(after).toString("base64"), beforeFingerprint: this.ledger.fingerprint, afterFingerprint };
+      afterBase64: Buffer.from(after).toString("base64"), beforeFingerprint: this.ledger.fingerprint, afterFingerprint,
+      display: displayFor(proposal) };
     if (!existing) await this.storeOperation(record);
     if (this.faultPoint === "after-intent") throw new Error("Injected interruption after durable intent");
     // Recheck immediately before atomic replacement; an uncooperative external writer can still race rename.
@@ -431,6 +452,143 @@ export class WorkspaceRuntime {
     return null;
   }
 
+  private async historyState(): Promise<{
+    entries: { sequence: number; entry: HistoryEntry; original: AppliedOperation }[];
+    undoStack: string[]; redoStack: string[]; lastRevision: string | null;
+  }> {
+    const written: WrittenOperation[] = [];
+    for (const name of await readdir(this.operationsDir())) {
+      if (!name.endsWith(".json")) continue;
+      const operation = await this.loadOperation(name.slice(0, -5));
+      if (operation && operation.kind !== "prepare" && operation.status === "applied" && operation.receipt) written.push(operation);
+    }
+    written.sort((left, right) => left.sequence - right.sequence || left.requestId.localeCompare(right.requestId));
+    const entries: { sequence: number; entry: HistoryEntry; original: AppliedOperation }[] = [];
+    const byId = new Map<string, (typeof entries)[number]>();
+    const undoStack: string[] = [];
+    const redoStack: string[] = [];
+    let lastRevision: string | null = null;
+    for (const operation of written) {
+      if (operation.kind === "apply") {
+        if (lastRevision && operation.receipt!.oldRevision !== lastRevision) { undoStack.length = 0; redoStack.length = 0; }
+        const receipt = operation.receipt!;
+        const item = { sequence: operation.sequence, original: operation,
+          entry: { entryId: receipt.receiptId, receipt, command: operation.proposal.command,
+            state: "applied" as const, impact: operation.proposal.impact,
+            ...(operation.display ? { display: operation.display } : {}) } };
+        entries.push(item);
+        byId.set(item.entry.entryId, item);
+        undoStack.push(item.entry.entryId);
+        redoStack.length = 0;
+      } else if (operation.kind === "undo") {
+        if (undoStack.at(-1) !== operation.sourceEntryId) throw new Error("Invalid undo journal order");
+        undoStack.pop();
+        redoStack.push(operation.sourceEntryId);
+        const item = byId.get(operation.sourceEntryId);
+        if (!item) throw new Error("Missing undo source entry");
+        item.entry.state = "undone";
+      } else {
+        if (redoStack.at(-1) !== operation.sourceEntryId) throw new Error("Invalid redo journal order");
+        redoStack.pop();
+        undoStack.push(operation.sourceEntryId);
+        const item = byId.get(operation.sourceEntryId);
+        if (!item) throw new Error("Missing redo source entry");
+        item.entry.state = "applied";
+      }
+      lastRevision = operation.receipt!.newRevision;
+    }
+    return { entries, undoStack, redoStack, lastRevision };
+  }
+
+  async historyCommand(input: unknown): Promise<ApplyChangeResponse | ErrorEnvelope> {
+    const parsed = HistoryCommandSchema.safeParse(input);
+    if (!parsed.success) return error(input, "INVALID_REQUEST");
+    return this.serial(async () => {
+      const invalid = this.requireReady(input);
+      if (invalid) return invalid;
+      await this.refreshSource();
+      if (await this.hasPendingIntent(parsed.data.requestId)) return error(input, "HISTORY_CONFLICT");
+      return this.historyCommandLocked(parsed.data);
+    });
+  }
+
+  private async commitHistoryRecord(record: HistoryOperation, before: Uint8Array, after: Uint8Array): Promise<ApplyChangeResponse | ErrorEnvelope> {
+    const request = { projectId: this.project.id, sessionId: this.session!.id, requestId: record.requestId };
+    if (this.faultPoint === "after-intent") throw new Error("Injected interruption after durable intent");
+    if (this.ledger.revision !== record.receipt.oldRevision || this.ledger.fingerprint !== record.beforeFingerprint) return error(request, "STALE_REVISION");
+    const sourcePath = await safeSourcePath(this.project.root, record.patch.file);
+    const observed = await readFile(sourcePath);
+    if (digest(observed) !== digest(before)) return error(request, "STALE_REVISION");
+    try { if (digest(applySourcePatch(observed, record.patch)) !== digest(after)) return error(request, "HISTORY_CONFLICT"); }
+    catch { return error(request, "STALE_REVISION"); }
+    await durableReplace(sourcePath, after);
+    if (this.faultPoint === "after-replace") throw new Error("Injected interruption after atomic replacement");
+    this.ledger = { version: 1, revision: record.receipt.newRevision, fingerprint: record.afterFingerprint };
+    await durableJson(this.ledgerFile(), this.ledger);
+    this.session!.sourceRevision = record.receipt.newRevision;
+    record.status = "applied";
+    await this.storeOperation(record);
+    return { ...responseScope(this.session!, record.requestId), status: "applied", receipt: record.receipt };
+  }
+
+  private async historyCommandLocked(request: HistoryCommand): Promise<ApplyChangeResponse | ErrorEnvelope> {
+    const intentHash = digest(JSON.stringify({ operatorId: this.operatorId, operation: request.operation, request }));
+    const existing = await this.loadOperation(request.requestId);
+    if (existing) {
+      if (existing.kind !== request.operation || existing.operatorId !== this.operatorId || existing.intentHash !== intentHash) return error(request, "IDEMPOTENCY_CONFLICT");
+      if (existing.status === "applied") return { ...responseScope(this.session!, request.requestId), status: "applied", receipt: existing.receipt };
+      if (existing.status === "unapplied") return { ...responseScope(this.session!, request.requestId), status: "unchanged", reason: "The interrupted write did not change the source." };
+      if (existing.status === "conflicted") return error(request, "HISTORY_CONFLICT");
+      await this.recoverOperations();
+      const recovered = await this.loadOperation(request.requestId) as HistoryOperation;
+      if (recovered.status === "applied") return { ...responseScope(this.session!, request.requestId), status: "applied", receipt: recovered.receipt };
+      if (recovered.status === "unapplied") return { ...responseScope(this.session!, request.requestId), status: "unchanged", reason: "The interrupted write did not change the source." };
+      if (recovered.status === "conflicted") return error(request, "HISTORY_CONFLICT");
+      if (recovered.sessionId !== this.session!.id) return error(request, "INVALID_SCOPE");
+      await this.refreshSource();
+      if (this.ledger.revision !== recovered.receipt.oldRevision || this.ledger.fingerprint !== recovered.beforeFingerprint) return error(request, "STALE_REVISION");
+      const before = Buffer.from(recovered.beforeBase64, "base64");
+      const after = Buffer.from(recovered.afterBase64, "base64");
+      return this.commitHistoryRecord(recovered, before, after);
+    }
+    const validated = validateHistoryCommand(request, { projectId: this.project.id, sessionId: this.session!.id,
+      sourceRevision: this.ledger.revision, previewGeneration: this.session!.previewGeneration });
+    if (!validated.ok) return validated.error;
+    const state = await this.historyState();
+    if (state.lastRevision !== this.ledger.revision) return error(request, "HISTORY_CONFLICT");
+    const expectedEntryId = request.operation === "undo" ? state.undoStack.at(-1) : state.redoStack.at(-1);
+    if (!expectedEntryId || expectedEntryId !== request.entryId) return error(request, "HISTORY_CONFLICT");
+    const original = state.entries.find((item) => item.entry.entryId === request.entryId)?.original;
+    if (!original || original.operatorId !== this.operatorId || !original.receipt || !original.beforeBase64 || !original.afterBase64 ||
+      original.receipt.proposalId !== original.proposal.proposalId || original.receipt.changedFile !== original.proposal.sourcePatch.file) return error(request, "HISTORY_CONFLICT");
+    const file = original.proposal.sourcePatch.file;
+    if (!this.project.manifest.allowedCssFiles.includes(file)) return error(request, "UNSUPPORTED_TARGET");
+    const originalBefore = Buffer.from(original.beforeBase64, "base64");
+    const originalAfter = Buffer.from(original.afterBase64, "base64");
+    if (digest(originalBefore) !== original.proposal.sourcePatch.expectedFileSha256) return error(request, "HISTORY_CONFLICT");
+    let patch: SourcePatch;
+    try {
+      patch = request.operation === "undo" ? createInversePatch(original.proposal.sourcePatch, originalAfter) : original.proposal.sourcePatch;
+    } catch { return error(request, "HISTORY_CONFLICT"); }
+    const snapshot = await this.refreshSource();
+    const sourcePath = await safeSourcePath(this.project.root, file);
+    const before = await readFile(sourcePath);
+    if (!snapshot[file] || digest(before) !== digest(snapshot[file]) || digest(before) !== patch.expectedFileSha256) return error(request, "STALE_REVISION");
+    let after: Uint8Array;
+    try { after = applySourcePatch(before, patch); } catch { return error(request, "STALE_REVISION"); }
+    if (digest(before) === digest(after)) return error(request, "HISTORY_CONFLICT");
+    const receipt: ChangeReceipt = { receiptId: newId("receipt"), projectId: this.project.id, sessionId: this.session!.id,
+      requestId: request.requestId, proposalId: null, operation: request.operation, targetId: original.proposal.targetId,
+      oldRevision: this.ledger.revision, newRevision: newId("revision"), changedFile: file };
+    const record: HistoryOperation = { version: 1, kind: request.operation, operatorId: this.operatorId,
+      sessionId: this.session!.id, requestId: request.requestId, intentHash, status: "intent", sourceEntryId: request.entryId,
+      patch, receipt, sequence: ++this.nextSequence, beforeBase64: Buffer.from(before).toString("base64"),
+      afterBase64: Buffer.from(after).toString("base64"), beforeFingerprint: this.ledger.fingerprint,
+      afterFingerprint: snapshotFingerprint({ ...snapshot, [file]: after }) };
+    await this.storeOperation(record);
+    return this.commitHistoryRecord(record, before, after);
+  }
+
   async outcome(input: unknown): Promise<RequestOutcome | ErrorEnvelope> {
     const parsed = ReconcileRequestSchema.safeParse(input);
     if (!parsed.success) return error(input, "INVALID_REQUEST");
@@ -446,10 +604,10 @@ export class WorkspaceRuntime {
         if (record.status === "prepared") return { ...base, operation: "prepare", status: "prepared", proposal: record.proposal! };
         return { ...base, operation: "prepare", status: "unchanged" };
       }
-      if (record.status === "applied") return { ...base, operation: "apply", status: "applied", receipt: record.receipt! };
-      if (record.status === "unchanged" || record.status === "unapplied") return { ...base, operation: "apply", status: "unchanged" };
-      if (record.status === "conflicted") return { ...base, operation: "apply", status: "conflicted", error: error(input, "HISTORY_CONFLICT").error };
-      return { ...base, operation: "apply", status: "pending" };
+      if (record.status === "applied") return { ...base, operation: record.kind, status: "applied", receipt: record.receipt! };
+      if (record.status === "unapplied" || record.kind === "apply" && record.status === "unchanged") return { ...base, operation: record.kind, status: "unchanged" };
+      if (record.status === "conflicted") return { ...base, operation: record.kind, status: "conflicted", error: error(input, "HISTORY_CONFLICT").error };
+      return { ...base, operation: record.kind, status: "pending" };
     });
   }
 
@@ -461,17 +619,15 @@ export class WorkspaceRuntime {
       const invalid = this.checkSession(input);
       if (invalid) return invalid;
       await this.refreshSource();
-      const entries: { sequence: number; entry: HistoryEntry }[] = [];
-      for (const name of await readdir(this.operationsDir())) {
-        if (!name.endsWith(".json")) continue;
-        const operation = await this.loadOperation(name.slice(0, -5));
-        if (operation?.kind !== "apply" || operation.status !== "applied" || !operation.receipt) continue;
-        entries.push({ sequence: operation.sequence, entry: { entryId: operation.receipt.receiptId, receipt: operation.receipt,
-          command: operation.proposal.command, state: "applied", impact: operation.proposal.impact } });
-      }
-      entries.sort((left, right) => left.sequence - right.sequence || left.entry.entryId.localeCompare(right.entry.entryId));
+      const state = await this.historyState();
+      const fresh = state.lastRevision === this.ledger.revision && !(await this.hasPendingIntent());
+      const recent = state.entries.slice(-200).map((item) => item.entry);
+      const topUndo = state.undoStack.at(-1);
+      const topRedo = state.redoStack.at(-1);
+      const undoEntryId = fresh && recent.some((item) => item.entryId === topUndo) ? topUndo! : null;
+      const redoEntryId = fresh && recent.some((item) => item.entryId === topRedo) ? topRedo! : null;
       return { ...responseScope(this.session!, requestId), projectRevision: this.ledger.revision,
-        entries: entries.slice(-200).map((item) => item.entry), canUndo: false, canRedo: false };
+        entries: recent, canUndo: undoEntryId !== null, canRedo: redoEntryId !== null, undoEntryId, redoEntryId };
     });
   }
 

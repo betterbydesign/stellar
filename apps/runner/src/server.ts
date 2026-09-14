@@ -42,7 +42,7 @@ export class Runner {
       await this.registry.initialize();
       for (const project of this.registry.list()) {
         const workspace = new WorkspaceRuntime(project, this.config.seed, this.config.data,
-          this.config.operatorId, this.config.previewPort);
+          this.config.operatorId, this.config.previewPort, undefined, this.config.appOrigin);
         await workspace.initialize();
         this.workspaces.set(project.id, workspace);
       }
@@ -91,6 +91,7 @@ export class Runner {
     if (method === "applyChange") return workspace.apply(body);
     if (method === "requestOutcome") return workspace.outcome(body);
     if (method === "history") return workspace.history(body);
+    if (method === "historyCommand") return workspace.historyCommand(body);
     return makeError({ projectId, sessionId, requestId }, "INVALID_REQUEST");
   }
 }

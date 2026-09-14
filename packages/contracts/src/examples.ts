@@ -100,6 +100,7 @@ export const exampleSavedState = EditStateSchema.parse({ status: "saved", receip
 export const exampleHistory = HistoryResponseSchema.parse({
   protocolVersion: PROTOCOL_VERSION, projectId: "project-a", sessionId: "session-a", requestId: "history-0001", projectRevision: "revision-0002",
   entries: [{ entryId: "entry-0001", receipt: exampleReceipt, command: examplePrepareChange.command, state: "applied", impact: localCtaImpact }], canUndo: true, canRedo: false,
+  undoEntryId: "entry-0001", redoEntryId: null,
 });
 export const examplePreviewSelection = PreviewEnvelopeSchema.parse({
   protocolVersion: PROTOCOL_VERSION, projectId: "project-a", sessionId: "session-a", previewGeneration: "generation-0001", frameId: "frame-0001",

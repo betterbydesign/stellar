@@ -41,7 +41,26 @@ test("every exported example validates", () => {
   assert.equal(ChangeProposalSchema.safeParse(exampleProposal).success, true);
   assert.equal(ApplyChangeResponseSchema.safeParse(exampleApplyResponse).success, true);
   assert.equal(HistoryResponseSchema.safeParse(exampleHistory).success, true);
+  assert.equal(HistoryResponseSchema.safeParse({ ...exampleHistory, entries: [{
+    ...exampleHistory.entries[0], display: { timestamp: "2026-09-14T15:00:00.000Z", before: "Inherited", after: "#123456" },
+  }] }).success, true);
+  assert.equal(HistoryResponseSchema.safeParse({ ...exampleHistory, entries: [{
+    ...exampleHistory.entries[0], display: { timestamp: "not-a-date", before: "Inherited", after: "#123456" },
+  }] }).success, false);
+  assert.equal(HistoryResponseSchema.safeParse({ ...exampleHistory, undoEntryId: "missing" }).success, false);
+  assert.equal(HistoryResponseSchema.safeParse({ ...exampleHistory, canUndo: false, undoEntryId: "entry-0001" }).success, false);
+  assert.equal(HistoryResponseSchema.safeParse({ ...exampleHistory, canUndo: false, undoEntryId: null,
+    canRedo: true, redoEntryId: "entry-0001" }).success, false);
   assert.equal(PreviewEnvelopeSchema.safeParse(examplePreviewSelection).success, true);
+  assert.equal(PreviewEnvelopeSchema.safeParse({ ...examplePreviewSelection, payload: {
+    ...examplePreviewSelection.payload, computedStyles: { "background-color": "rgb(20, 109, 105)" },
+  } }).success, true);
+  assert.equal(PreviewEnvelopeSchema.safeParse({ ...examplePreviewSelection, payload: {
+    ...examplePreviewSelection.payload, computedStyles: { position: "absolute" },
+  } }).success, false);
+  assert.equal(PreviewEnvelopeSchema.safeParse({ ...examplePreviewSelection, payload: {
+    ...examplePreviewSelection.payload, computedStyles: { color: "x".repeat(161) },
+  } }).success, false);
   assert.equal(SourceModelSchema.safeParse({
     protocolVersion: PROTOCOL_VERSION, projectId: "project-a", sessionId: "session-a", requestId: "model-1",
     pageId: "home", projectRevision: "revision-0001", targets: context.targets,

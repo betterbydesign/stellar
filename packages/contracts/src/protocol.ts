@@ -40,6 +40,7 @@ export const ErrorDetailSchema = z.strictObject({
   code: ErrorCodeSchema, httpStatus: z.union([z.literal(400), z.literal(401), z.literal(403), z.literal(404), z.literal(409), z.literal(422), z.literal(503)]),
   recoverable: z.boolean(), message: z.string().min(1).max(160),
 }).refine((error) => error.httpStatus === ERROR_HTTP_STATUS[error.code] && error.recoverable === ERROR_RECOVERABLE[error.code], "Error code, HTTP status or recoverability mismatch");
+export type ErrorDetail = z.infer<typeof ErrorDetailSchema>;
 export const ErrorEnvelopeSchema = z.strictObject({
   ...scope,
   status: z.literal("error"),
@@ -234,12 +235,19 @@ export type RequestOutcome = z.infer<typeof RequestOutcomeSchema>;
 export const HistoryEntrySchema = z.strictObject({
   entryId: OpaqueIdSchema, receipt: ChangeReceiptSchema, command: CommandSchema,
   state: z.enum(["applied", "undone"]), impact: ImpactSchema,
+  display: z.strictObject({
+    timestamp: z.iso.datetime(), before: z.string().max(160), after: z.string().max(160),
+  }).optional(),
 });
 export type HistoryEntry = z.infer<typeof HistoryEntrySchema>;
 export const HistoryResponseSchema = z.strictObject({ ...scope,
   projectRevision: ProjectRevisionSchema, entries: z.array(HistoryEntrySchema).max(200),
   canUndo: z.boolean(), canRedo: z.boolean(),
-}).refine((history) => history.entries.every((entry) => entry.receipt.projectId === history.projectId), "History project scope mismatch");
+  undoEntryId: OpaqueIdSchema.nullable().optional(), redoEntryId: OpaqueIdSchema.nullable().optional(),
+}).refine((history) => history.entries.every((entry) => entry.receipt.projectId === history.projectId) &&
+  (history.canUndo ? history.entries.some((entry) => entry.entryId === history.undoEntryId && entry.state === "applied") : history.undoEntryId == null) &&
+  (history.canRedo ? history.entries.some((entry) => entry.entryId === history.redoEntryId && entry.state === "undone") : history.redoEntryId == null),
+  "History scope or available entry mismatch");
 export type HistoryResponse = z.infer<typeof HistoryResponseSchema>;
 export const HistoryCommandSchema = z.strictObject({ ...scope,
   operation: z.enum(["undo", "redo"]), expectedRevision: ProjectRevisionSchema, entryId: OpaqueIdSchema,
@@ -265,7 +273,9 @@ const frameScope = {
 const GeometrySchema = z.strictObject({ x: z.number().finite(), y: z.number().finite(), width: z.number().finite().nonnegative(), height: z.number().finite().nonnegative() });
 export const PreviewEnvelopeSchema = z.discriminatedUnion("type", [
   z.strictObject({ ...frameScope, type: z.literal("ready"), payload: z.strictObject({ route: z.string().regex(/^\/(?:[a-z0-9-]+\/)*$/) }) }),
-  z.strictObject({ ...frameScope, type: z.literal("selection"), payload: z.strictObject({ sourceKey: OpaqueIdSchema, anchor: OpaqueIdSchema, occurrenceId: OpaqueIdSchema, geometry: GeometrySchema }) }),
+  z.strictObject({ ...frameScope, type: z.literal("selection"), payload: z.strictObject({ sourceKey: OpaqueIdSchema, anchor: OpaqueIdSchema, occurrenceId: OpaqueIdSchema, geometry: GeometrySchema,
+    computedStyles: z.partialRecord(z.enum(SUPPORTED_PROPERTIES), z.string().max(160)).optional(),
+  }) }),
   z.strictObject({ ...frameScope, type: z.literal("geometry"), payload: z.strictObject({ occurrenceId: OpaqueIdSchema, geometry: GeometrySchema }) }),
   z.strictObject({ ...frameScope, type: z.literal("clear"), payload: z.strictObject({ reason: z.enum(["escape", "navigation", "stale", "removed"]) }) }),
   z.strictObject({ ...frameScope, type: z.literal("diagnostic"), payload: z.strictObject({ code: z.enum(["UNMAPPED_SOURCE", "RENDER_ERROR", "BRIDGE_ERROR"]), message: z.string().min(1).max(160) }) }),

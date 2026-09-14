@@ -11,7 +11,7 @@ import { isSafePreviewUrl, type LocalConfig } from "./local-config";
 export const RUNNER_METHODS = [
   "listProjects", "getProject", "openSession", "getSession", "closeSession",
   "restartSession", "listPages", "sourceModel", "prepareChange", "applyChange",
-  "requestOutcome", "history",
+  "requestOutcome", "history", "historyCommand",
 ] as const;
 export type RunnerMethod = (typeof RUNNER_METHODS)[number];
 type Scope = { projectId?: string; sessionId?: string; requestId?: string; pageId?: string };
@@ -30,6 +30,7 @@ const schemas: Record<RunnerMethod, Parseable> = {
   applyChange: ApplyChangeResponseSchema,
   requestOutcome: RequestOutcomeSchema,
   history: HistoryResponseSchema,
+  historyCommand: ApplyChangeResponseSchema,
 };
 
 function safeResponse(value: unknown, method: RunnerMethod, config: LocalConfig, scope: Scope): unknown | null {
@@ -80,7 +81,7 @@ function safeResponse(value: unknown, method: RunnerMethod, config: LocalConfig,
     if (object.status === "unchanged") return { ...object, reason: "No source change is needed." };
     if (object.status === "refused") return { ...object, error: makeError(scope, (object.error as { code: ErrorCode }).code).error };
   }
-  if (method === "applyChange" && object.status === "unchanged") {
+  if ((method === "applyChange" || method === "historyCommand") && object.status === "unchanged") {
     return { ...object, reason: "No source change is needed." };
   }
   if (method === "requestOutcome" && object.status === "conflicted") {
@@ -122,7 +123,13 @@ export async function callRunner(
       return makeError(scope, error.data.error.code);
     }
     if (response.status !== 200) return makeError(scope, "RUNNER_UNAVAILABLE");
-    return safeResponse(value, method, config, scope) ?? makeError(scope, "RUNNER_UNAVAILABLE");
+    const safe = safeResponse(value, method, config, scope);
+    if (safe && typeof safe === "object" && "status" in safe && safe.status === "applied" && "receipt" in safe) {
+      const receipt = safe.receipt as { operation?: unknown };
+      if (method === "applyChange" && receipt.operation !== "apply" ||
+        method === "historyCommand" && receipt.operation !== params.operation) return makeError(scope, "RUNNER_UNAVAILABLE");
+    }
+    return safe ?? makeError(scope, "RUNNER_UNAVAILABLE");
   } catch {
     return makeError(scope, "RUNNER_UNAVAILABLE");
   }

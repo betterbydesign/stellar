@@ -2,7 +2,7 @@
 const assert = require("node:assert/strict");
 const { createHmac, randomBytes } = require("node:crypto");
 const { test } = require("node:test");
-const { exampleSessionResponse, makeError, PROTOCOL_VERSION } = require("@stellar/contracts");
+const { exampleReceipt, exampleSessionResponse, makeError, PROTOCOL_VERSION } = require("@stellar/contracts");
 const { readLocalConfig, isSafePreviewUrl } = require("../lib/server/local-config.ts");
 const { bootstrapOperator, readOperator } = require("../lib/server/operator-auth.ts");
 const { callRunner } = require("../lib/server/runner-broker.ts");
@@ -178,4 +178,63 @@ test("NextURL loopback normalization preserves exact incoming Host and Origin ga
   assert.equal(isAppRequest(new Request("http://localhost:3211/api/projects", { headers: { host: "127.0.0.1:3210" } }), config), false);
   assert.equal(isAppRequest(new Request("http://evil.test:3210/api/projects", { headers: { host: "127.0.0.1:3210" } }), config), false);
   assert.equal(isAllowedOrigin(new Request(normalized.url, { headers: { origin: "http://localhost:3210" } }), config, true), false);
+});
+
+test("history broker checks command receipt operation and request scope", async () => {
+  const config = readLocalConfig(env());
+  const params = { protocolVersion: PROTOCOL_VERSION, projectId: "project-a", sessionId: "session-a",
+    requestId: "undo-0001", operation: "undo", entryId: "entry-0001", expectedRevision: "revision-0002" };
+  const reply = { ...params, status: "applied", receipt: { ...exampleReceipt, requestId: params.requestId,
+    operation: "undo", oldRevision: "revision-0002", newRevision: "revision-0003" } };
+  delete reply.entryId;
+  delete reply.expectedRevision;
+  delete reply.operation;
+  const transport = async (_url, init) => {
+    assert.deepEqual(JSON.parse(init.body), { method: "historyCommand", params });
+    return runnerJson(reply);
+  };
+  const correct = await callRunner(config, config.operatorId, "historyCommand", params, params, transport);
+  assert.equal(correct.status, "applied");
+  assert.equal(correct.receipt.operation, "undo");
+  const wrongOperation = await callRunner(config, config.operatorId, "historyCommand", params, params,
+    async () => runnerJson({ ...reply, receipt: { ...reply.receipt, operation: "redo" } }));
+  assert.equal(wrongOperation.error.code, "RUNNER_UNAVAILABLE");
+  const wrongRequest = await callRunner(config, config.operatorId, "historyCommand", params, params,
+    async () => runnerJson({ ...reply, requestId: "another-request" }));
+  assert.equal(wrongRequest.error.code, "RUNNER_UNAVAILABLE");
+});
+
+test("history POST requires operator, exact origin and CSRF before forwarding", async () => {
+  const settings = env();
+  Object.assign(process.env, settings);
+  const config = readLocalConfig();
+  const issued = await bootstrapOperator(config.bootstrapNonce, config);
+  const route = "/api/projects/project-a/sessions/session-a/history";
+  const segments = ["project-a", "sessions", "session-a", "history"];
+  const command = { protocolVersion: PROTOCOL_VERSION, projectId: "project-a", sessionId: "session-a",
+    requestId: "undo-0002", operation: "undo", entryId: "entry-0001", expectedRevision: "revision-0002" };
+  const headers = { cookie: cookie(issued), origin: config.appOrigin, "x-stellar-csrf": issued.operator.csrfToken,
+    "content-type": "application/json" };
+  const originalFetch = global.fetch;
+  let calls = 0;
+  global.fetch = async (_url, init) => {
+    calls++;
+    assert.deepEqual(JSON.parse(init.body), { method: "historyCommand", params: command });
+    return runnerJson({ protocolVersion: PROTOCOL_VERSION, projectId: "project-a", sessionId: "session-a",
+      requestId: "undo-0002", status: "applied", receipt: { ...exampleReceipt, requestId: "undo-0002",
+        operation: "undo", oldRevision: "revision-0002", newRevision: "revision-0003" } });
+  };
+  try {
+    assert.equal((await handleProjectApi(request(route, "POST", { origin: config.appOrigin, "content-type": "application/json" }, command), segments)).status, 401);
+    assert.equal((await handleProjectApi(request(route, "POST", { ...headers, origin: "http://localhost:3210" }, command), segments)).status, 403);
+    assert.equal((await handleProjectApi(request(route, "POST", { ...headers, "x-stellar-csrf": "bad" }, command), segments)).status, 403);
+    assert.equal((await handleProjectApi(request(route, "POST", headers, { ...command, sessionId: "session-b" }), segments)).status, 403);
+    const response = await handleProjectApi(request(route, "POST", headers, command), segments);
+    assert.equal(response.status, 200);
+    assert.equal((await response.json()).receipt.operation, "undo");
+    assert.equal(calls, 1);
+  } finally {
+    global.fetch = originalFetch;
+    for (const key of Object.keys(settings)) delete process.env[key];
+  }
 });

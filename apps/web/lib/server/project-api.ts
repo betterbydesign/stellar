@@ -1,6 +1,6 @@
 import "server-only";
 import {
-  ApplyChangeSchema, ErrorEnvelopeSchema, IdentifierSchema, makeError,
+  ApplyChangeSchema, ErrorEnvelopeSchema, HistoryCommandSchema, IdentifierSchema, makeError,
   OpenSessionRequestSchema, PrepareChangeSchema, PROTOCOL_VERSION,
   ReconcileRequestSchema, RequestScopeSchema,
   type ErrorCode,
@@ -104,6 +104,12 @@ export async function handleProjectApi(request: Request, segments: string[]): Pr
       if (!pageId) return error(scope, "INVALID_REQUEST");
       return invoke("sourceModel", { ...parsed, pageId }, { ...scope, pageId });
     }
+  }
+  if (segments.length === 4 && segments[3] === "history" && request.method === "POST") {
+    const parsed = HistoryCommandSchema.safeParse(await body(request));
+    if (!parsed.success) return error(scope, "INVALID_REQUEST");
+    if (parsed.data.projectId !== projectId || parsed.data.sessionId !== sessionId) return error(parsed.data, "INVALID_SCOPE");
+    return invoke("historyCommand", parsed.data, parsed.data);
   }
   if (segments.length === 5 && segments[3] === "changes" && request.method === "POST") {
     const method = segments[4] === "prepare" ? "prepareChange" : segments[4] === "apply" ? "applyChange" : null;

@@ -1,0 +1,9 @@
+# Durable source history
+
+Stellar derives Undo and Redo from the runner's existing per-project operation journal. An ordinary applied operation records its authorized proposal, source patch, receipt, source preimage/postimage, fingerprint, and monotonically increasing sequence. Undo and Redo append their own journal operation, receipt, and revision. They never rewrite the original receipt or restore a historical whole file.
+
+For Undo, the runner requires the current project revision and the top undo entry, derives a guarded inverse from the original patch, checks the entire current file digest, then applies the one-span patch. Redo uses the original forward patch under the same checks. A new ordinary edit clears the redo stack; the old entries remain in the audit list. An observed external source change rotates the revision and disables unsafe stack actions until new applied changes establish a fresh chain.
+
+Each operation first stores a durable intent with source before/after bytes and project fingerprints. Replacement is atomic, followed by ledger and receipt persistence. On restart, the runner compares current bytes with the recorded before, after, and neither states. An after-state completes the receipt; a before-state can be marked unapplied; a third state is conflicted. The existing request-outcome endpoint resolves lost responses by logical request ID. The operation journal is the single durable history store.
+
+History currently retains all operation records. The API returns the latest 200 ordinary edit entries; Undo and Redo are advertised only when their top entry is present in that response. This covers at least 20 recent operations across runner and session restarts without pruning unresolved intents. The toolbar uses the server-supplied entry IDs, never guesses a stack target from display order. It blocks another source mutation while a history write is pending or its outcome is unknown.
