@@ -6,7 +6,11 @@ From the Stellar repository root, install dependencies with `npm ci` and `npm ru
 
 The connection page can recognize an existing signed-in browser session. Use a fresh launcher link if the session expires or you restart the launcher. Opening the application as `localhost` instead of `127.0.0.1` will not share this session. Website previews deliberately use `localhost` on separate ports.
 
-This release establishes the project API, live previews and durable CSS write engine. The home screen is still the bootstrap shell. Project selection, the canvas and click-to-edit controls arrive in M1-04 and M1-05; connecting alone does not expose those controls yet.
+After connecting, open **Projects**. Select either working copy to open its Studio. The left panel lists Home and Contact; the center shows the real Astro page. Switch between 390, 768 and 1440 CSS-pixel presets, or enter a custom width from 320 to 1920. **Fit** scales the view to the available canvas; **100%** shows the page at its actual pixel width and allows scrolling.
+
+Use **Inspect** to select a marked source target on the page or choose one from the target list. The contextual inspector shows its source identity and whether it can be edited. Shared component targets are read-only in this local proof. Switch to **Interact** to follow the site's links normally. An unmarked element does not automatically select an editable ancestor. Press Escape while focused in the preview to clear a selection.
+
+If the preview is still starting, the Studio shows its actual runner state. A failed or stopped preview offers **Retry preview**; **Stop preview** retains the working copy. If a page loaded but has not reconnected to the editor bridge, use **Refresh preview** to reload the iframe without restarting the project runner. A saved edit and its receipt remain separate from preview freshness.
 
 ## Saved work and stopping
 
