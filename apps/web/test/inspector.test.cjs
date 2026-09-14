@@ -5,7 +5,7 @@ const {
   exampleApplyResponse, exampleElementTarget, examplePrepareChange,
   examplePrepareResponse, exampleProposal, exampleReceipt, exampleTokenTarget,
 } = require("@stellar/contracts");
-const { initialEditState, transitionEdit } = require("../features/inspector/edit-state.ts");
+const { initialEditState, receiptPreviewStatus, transitionEdit } = require("../features/inspector/edit-state.ts");
 const { parseLocalValue, parseTokenValue, isLocalCommandAllowed } = require("../features/inspector/values.ts");
 const { applyEdit, EditApiError, lookupEdit } = require("../features/inspector/edit-client.ts");
 const { canRetryPendingApply, parsePendingApply, pendingApplyAgeExpired, pendingApplyKey } = require("../features/inspector/pending-apply.ts");
@@ -175,4 +175,23 @@ test("pending apply marker stores only bounded logical identity and never grants
   const one = await pendingApplyKey("operator-a", "project-a");
   const two = await pendingApplyKey("operator-b", "project-a");
   assert.notEqual(one, two);
+});
+
+test("reconciled reload receipt remains visible while source and preview refresh independently", () => {
+  const received = transitionEdit(initialEditState, { type: "recovered-receipt",
+    projectId: exampleReceipt.projectId, requestId: exampleReceipt.requestId,
+    receipt: exampleReceipt, anchor: "home-hero-title" });
+  assert.equal(received.phase, "saved");
+  assert.equal(received.receipt, exampleReceipt);
+  assert.equal(received.receiptAnchor, "home-hero-title");
+  assert.equal(transitionEdit(initialEditState, { type: "recovered-receipt",
+    projectId: "project-b", requestId: exampleReceipt.requestId,
+    receipt: exampleReceipt, anchor: "home-hero-title" }).receipt, null);
+  assert.equal(receiptPreviewStatus(exampleReceipt, exampleReceipt.oldRevision, null),
+    "Source refresh is pending. The source save is retained.");
+  assert.equal(receiptPreviewStatus(exampleReceipt, exampleReceipt.newRevision, null),
+    "Preview refresh is pending or unavailable. The source save is retained.");
+  assert.equal(receiptPreviewStatus(exampleReceipt, exampleReceipt.newRevision, exampleReceipt.newRevision),
+    "Preview confirmed at the saved revision.");
+  assert.match(receiptPreviewStatus(exampleReceipt, "another-revision", "another-revision"), /different source revision/);
 });

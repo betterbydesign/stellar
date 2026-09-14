@@ -53,10 +53,19 @@ export type EditAction =
   | { type: "reconcile-start"; version: number }
   | { type: "reconcile-result"; version: number; result: RequestOutcome }
   | { type: "reconcile-error"; version: number; error: ErrorDetail }
+  | { type: "recovered-receipt"; projectId: string; requestId: string; receipt: ChangeReceipt; anchor: string }
   | { type: "context-changed"; contextKey: string; revision: string };
 
 export function hasPendingEdit(state: EditState): boolean {
   return state.draft !== null && state.phase !== "saved" && state.phase !== "idle";
+}
+
+export function receiptPreviewStatus(receipt: ChangeReceipt, sourceRevision: string, previewRevision: string | null | undefined): string {
+  if (sourceRevision === receipt.newRevision) return previewRevision === receipt.newRevision
+    ? "Preview confirmed at the saved revision."
+    : "Preview refresh is pending or unavailable. The source save is retained.";
+  if (sourceRevision === receipt.oldRevision) return "Source refresh is pending. The source save is retained.";
+  return "A different source revision is active. This earlier save remains in history.";
 }
 
 /** State transitions ignore late prepare replies and retain an uncertain apply's request ID. */
@@ -134,6 +143,11 @@ export function transitionEdit(state: EditState, action: EditAction): EditState 
         notice: action.error.code === "UNKNOWN_TARGET"
           ? "No saved result was found. Retry only the original save request if this session and source are unchanged."
           : "Could not confirm the save yet. Check again." };
+    case "recovered-receipt":
+      if (action.receipt.projectId !== action.projectId || action.receipt.requestId !== action.requestId ||
+        action.receipt.operation !== "apply") return state;
+      return { ...state, phase: state.draft ? state.phase : "saved", receipt: action.receipt,
+        receiptAnchor: action.anchor, notice: "Saved to source. The original response was lost." };
     case "context-changed":
       if (!state.draft || state.draft.contextKey === action.contextKey) return state;
       // A write may already have happened. Its receipt must still be observed

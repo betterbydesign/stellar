@@ -8,7 +8,7 @@ import {
 } from "@stellar/contracts";
 import { applyEdit, EditApiError, lookupEdit, newRequestId, prepareEdit } from "./edit-client";
 import { LocalEditForm, TokenEditForm } from "./EditForms";
-import { hasPendingEdit, initialEditState, transitionEdit, type EditAction, type EditDraft, type EditState } from "./edit-state";
+import { hasPendingEdit, initialEditState, receiptPreviewStatus, transitionEdit, type EditAction, type EditDraft, type EditState } from "./edit-state";
 import { canRetryPendingApply, parsePendingApply, pendingApplyAgeExpired, pendingApplyKey, type PendingApplyMarker } from "./pending-apply";
 import { formatValue, isLocalCommandAllowed, isTokenCommandAllowed, propertyLabel, readOnlyExplanation } from "./values";
 import styles from "./Inspector.module.css";
@@ -150,6 +150,9 @@ export function Inspector(props: InspectorProps) {
     try {
       const result = await lookupEdit(projectId, sessionId, pending.marker.request.requestId);
       if (result.status === "applied") {
+        if (result.operation !== "apply") throw new Error("Unexpected request outcome");
+        send({ type: "recovered-receipt", projectId, requestId: pending.marker.request.requestId,
+          receipt: result.receipt, anchor: pending.marker.anchor });
         removePendingMarker(pending.key);
         setRecovered(null);
         setRecoveredMissing(false);
@@ -187,6 +190,8 @@ export function Inspector(props: InspectorProps) {
     try {
       const result = await applyEdit(pending.marker.request);
       if (result.status === "applied") {
+        send({ type: "recovered-receipt", projectId, requestId: pending.marker.request.requestId,
+          receipt: result.receipt, anchor: pending.marker.anchor });
         removePendingMarker(pending.key);
         setRecovered(null);
         setRecoverNotice("Previous source save confirmed.");
@@ -564,11 +569,7 @@ export function Inspector(props: InspectorProps) {
       <p className={styles.meta}>Target {state.receiptAnchor ?? receipt.targetId} · receipt {receipt.receiptId}</p>
       <p className={styles.meta}>{receipt.changedFile}</p>
       <p className={styles.meta}>Revision {receipt.oldRevision} → {receipt.newRevision}</p>
-      <p className={styles.hint}>{sourceRevision !== receipt.newRevision
-        ? "A newer source revision is active. This earlier save remains in history."
-        : previewRevision === receipt.newRevision
-          ? "Preview confirmed at the saved revision."
-          : "Preview refresh is pending or unavailable. The source save is retained."}</p>
+      <p className={styles.hint}>{receiptPreviewStatus(receipt, sourceRevision, previewRevision)}</p>
     </section>}
 
     {dialogOpen && <div className={styles.dialogBackdrop}>
