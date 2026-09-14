@@ -1,6 +1,7 @@
-import { RequestOutcomeSchema, type ChangeReceipt, type HistoryResponse } from "@stellar/contracts";
+import { ErrorEnvelopeSchema, HistoryCommandSchema, RequestOutcomeSchema, type ChangeReceipt, type HistoryCommand, type HistoryResponse } from "@stellar/contracts";
 
 export type HistoryAction = "undo" | "redo";
+export type PendingHistory = { command: HistoryCommand; status: "unknown" | "missing" };
 export type HistoryOutcome = ChangeReceipt | "unchanged" | "pending" | "conflicted";
 export type HistoryLookupScope = { projectId: string; sessionId: string; lookupRequestId: string; originalRequestId: string; action: HistoryAction };
 
@@ -18,6 +19,24 @@ export function historyOutcome(value: unknown, scope: HistoryLookupScope): Histo
     return result.receipt;
   }
   return result.status;
+}
+
+export function historyMissing(value: unknown, scope: HistoryLookupScope): boolean {
+  const parsed = ErrorEnvelopeSchema.safeParse(value);
+  return parsed.success && parsed.data.error.code === "UNKNOWN_TARGET" && parsed.data.projectId === scope.projectId &&
+    parsed.data.sessionId === scope.sessionId && parsed.data.requestId === scope.lookupRequestId;
+}
+
+/** Return the exact original command or no retry capability. */
+export function historyRetryCommand(pending: PendingHistory | null, context: {
+  projectId: string; sessionId: string; sourceRevision: string; history: HistoryResponse | null; sessionReady: boolean;
+}): HistoryCommand | null {
+  if (!pending || pending.status !== "missing" || !context.sessionReady || !context.history) return null;
+  const command = pending.command;
+  return HistoryCommandSchema.safeParse(command).success && command.projectId === context.projectId && command.sessionId === context.sessionId &&
+    command.expectedRevision === context.sourceRevision && command.expectedRevision === context.history.projectRevision &&
+    context.history.projectId === context.projectId && context.history.sessionId === context.sessionId &&
+    availableEntry(context.history, command.operation) === command.entryId ? command : null;
 }
 type Shortcut = {
   key: string; metaKey: boolean; ctrlKey: boolean; altKey: boolean; shiftKey: boolean;

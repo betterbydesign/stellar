@@ -2,7 +2,7 @@
 const assert = require("node:assert/strict");
 const { test } = require("node:test");
 const { exampleHistory, exampleReceipt, makeError, PROTOCOL_VERSION } = require("@stellar/contracts");
-const { availableEntry, changeLabel, historyOutcome, historyShortcut } = require("../features/history/history-logic.ts");
+const { availableEntry, changeLabel, historyMissing, historyOutcome, historyRetryCommand, historyShortcut } = require("../features/history/history-logic.ts");
 
 const shortcut = (key, overrides = {}) => ({ key, metaKey: true, ctrlKey: false, altKey: false, shiftKey: false,
   defaultPrevented: false, target: null, ...overrides });
@@ -39,4 +39,24 @@ test("history lookup accepts a prior-session receipt but rejects mismatched scop
   assert.equal(historyOutcome({ ...outcome, sessionId: "another-session" }, scope), null);
   assert.equal(historyOutcome(makeError({ projectId: scope.projectId, sessionId: scope.sessionId,
     requestId: scope.lookupRequestId }, "UNKNOWN_TARGET"), scope), null);
+  assert.equal(historyMissing(makeError({ projectId: scope.projectId, sessionId: scope.sessionId,
+    requestId: scope.lookupRequestId }, "UNKNOWN_TARGET"), scope), true);
+  assert.equal(historyMissing(makeError({ projectId: "project-b", sessionId: scope.sessionId,
+    requestId: scope.lookupRequestId }, "UNKNOWN_TARGET"), scope), false);
+  assert.equal(historyMissing(makeError({ projectId: scope.projectId, sessionId: scope.sessionId,
+    requestId: "other-lookup" }, "UNKNOWN_TARGET"), scope), false);
+});
+
+test("missing history may retry only the original command in the same session, revision, and stack position", () => {
+  const command = { protocolVersion: PROTOCOL_VERSION, projectId: "project-a", sessionId: "session-a",
+    requestId: "history-undo-1", operation: "undo", entryId: "entry-0001", expectedRevision: "revision-0002" };
+  const pending = { command, status: "missing" };
+  const context = { projectId: "project-a", sessionId: "session-a", sourceRevision: "revision-0002",
+    history: exampleHistory, sessionReady: true };
+  assert.equal(historyRetryCommand(pending, context), command);
+  assert.equal(historyRetryCommand({ ...pending, status: "unknown" }, context), null);
+  assert.equal(historyRetryCommand(pending, { ...context, sessionId: "new-session" }), null);
+  assert.equal(historyRetryCommand(pending, { ...context, sourceRevision: "revision-0003" }), null);
+  assert.equal(historyRetryCommand(pending, { ...context, history: { ...exampleHistory, undoEntryId: null, canUndo: false } }), null);
+  assert.equal(historyRetryCommand({ ...pending, command: { ...command, entryId: "another-entry" } }, context), null);
 });

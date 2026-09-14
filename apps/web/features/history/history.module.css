@@ -1,9 +1,11 @@
 .root { position: relative; min-width: 0; }
 .actions { display: flex; align-items: center; gap: .4rem; }
-.actions button, .details summary { border: 1px solid var(--line); border-radius: .45rem; background: var(--surface); color: var(--ink); padding: .45rem .7rem; font: inherit; font-size: .8rem; line-height: 1.2; cursor: pointer; white-space: nowrap; }
-.actions button:hover:not(:disabled), .details summary:hover { border-color: var(--accent); color: var(--accent); }
-.actions button:focus-visible, .details summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.actions button:disabled { color: var(--muted); opacity: .55; cursor: not-allowed; }
+.actions button, .recovery button, .details summary { border: 1px solid var(--line); border-radius: .45rem; background: var(--surface); color: var(--ink); padding: .45rem .7rem; font: inherit; font-size: .8rem; line-height: 1.2; cursor: pointer; }
+.actions button, .details summary { white-space: nowrap; }
+.actions button:hover:not(:disabled), .recovery button:hover:not(:disabled), .details summary:hover { border-color: var(--accent); color: var(--accent); }
+.actions button:focus-visible, .recovery button:focus-visible, .details summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.actions button:disabled, .recovery button:disabled { color: var(--muted); opacity: .55; cursor: not-allowed; }
+.recovery { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .35rem; }
 .details summary { display: list-item; list-style-position: inside; }
 .panel { position: absolute; z-index: 20; top: calc(100% + .55rem); right: 0; width: min(25rem, 88vw); max-height: 24rem; overflow: auto; padding: .9rem; border: 1px solid var(--line); border-radius: .6rem; background: var(--surface); box-shadow: 0 12px 32px #20282224; color: var(--ink); }
 .revision { margin: 0 0 .75rem; color: var(--muted); font-size: .74rem; }
