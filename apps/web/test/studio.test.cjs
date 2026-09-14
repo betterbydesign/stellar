@@ -129,3 +129,28 @@ test("browser Back from a deep link falls back to Projects after guard approval"
   assert.equal(fallback, 1);
   cleanup();
 });
+
+test("remount and reload reuse the existing Studio sentinel", async () => {
+  const browser = fakeBrowser(["http://127.0.0.1:3210/projects", "http://127.0.0.1:3210/projects/project-a/studio"]);
+  const first = installStudioBackGuard(browser, async () => false, () => assert.fail("dashboard exists"));
+  const lengthAfterFirstMount = browser.history.length;
+  first();
+  const second = installStudioBackGuard(browser, async () => true, () => assert.fail("dashboard exists"));
+  assert.equal(browser.history.length, lengthAfterFirstMount);
+  browser.history.back();
+  await Promise.resolve();
+  assert.equal(browser.location.href, "http://127.0.0.1:3210/projects");
+  second();
+});
+
+test("deep-link remount retains fallback behavior instead of navigating to an unknown prior entry", async () => {
+  const browser = fakeBrowser(["http://127.0.0.1:3210/projects/project-a/studio"]);
+  const first = installStudioBackGuard(browser, async () => false, () => {});
+  first();
+  let fallback = 0;
+  const second = installStudioBackGuard(browser, async () => true, () => { fallback++; });
+  browser.history.back();
+  await Promise.resolve();
+  assert.equal(fallback, 1);
+  second();
+});

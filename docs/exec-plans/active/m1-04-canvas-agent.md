@@ -35,6 +35,7 @@ The user requested the first real Stellar Studio on `codex/m1-04-canvas` in `/pr
 - 2026-09-14: Expanded browser run found an Interact link navigation bug: the child frame's referrer changed from app origin to the preview's own origin. The development script now accepts only those two exact referrer origins while retaining exact configured app-origin/window postMessage checks. A VM regression test covers the route hello after internal navigation and foreign-referrer rejection.
 - 2026-09-14: Read-only review found browser Back bypassed the Inspector draft guard because Next handled it as client navigation. A same-URL history checkpoint now re-arms synchronously and invokes the existing async guard; unit tests cover Keep editing, repeated Back, approved leave, and deep-link fallback. Coordinator browser acceptance remains required.
 - 2026-09-14: An intermittent redo run showed a durable new receipt while the preview retained its previous computed color. Studio had reloaded the iframe before its session read returned the new revision. Receipt handling now waits for the current authenticated session before a revision-keyed reload; if reconciliation reports an already-known revision, it forces one refresh after that confirmation.
+- 2026-09-14: Review of the Back checkpoint found it could stack after reload/remount. The guard now reuses an existing same-URL sentinel and retains whether a prior route was available, with tests for both dashboard navigation and direct deep-link fallback after remount.
 
 ## Surprises & Discoveries
 
