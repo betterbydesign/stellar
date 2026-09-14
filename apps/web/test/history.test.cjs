@@ -2,7 +2,8 @@
 const assert = require("node:assert/strict");
 const { test } = require("node:test");
 const { exampleHistory, exampleReceipt, makeError, PROTOCOL_VERSION } = require("@stellar/contracts");
-const { availableEntry, changeLabel, historyMissing, historyOutcome, historyRetryCommand, historyShortcut } = require("../features/history/history-logic.ts");
+const { availableEntry, changeLabel, definiteHistoryRefusal, historyMissing, historyOutcome, historyPendingKey,
+  historyRetryCommand, historyShortcut, parsePendingHistory, serializePendingHistory } = require("../features/history/history-logic.ts");
 
 const shortcut = (key, overrides = {}) => ({ key, metaKey: true, ctrlKey: false, altKey: false, shiftKey: false,
   defaultPrevented: false, target: null, ...overrides });
@@ -50,7 +51,7 @@ test("history lookup accepts a prior-session receipt but rejects mismatched scop
 test("missing history may retry only the original command in the same session, revision, and stack position", () => {
   const command = { protocolVersion: PROTOCOL_VERSION, projectId: "project-a", sessionId: "session-a",
     requestId: "history-undo-1", operation: "undo", entryId: "entry-0001", expectedRevision: "revision-0002" };
-  const pending = { command, status: "missing" };
+  const pending = { command, status: "missing", createdAt: Date.now() };
   const context = { projectId: "project-a", sessionId: "session-a", sourceRevision: "revision-0002",
     history: exampleHistory, sessionReady: true };
   assert.equal(historyRetryCommand(pending, context), command);
@@ -59,4 +60,30 @@ test("missing history may retry only the original command in the same session, r
   assert.equal(historyRetryCommand(pending, { ...context, sourceRevision: "revision-0003" }), null);
   assert.equal(historyRetryCommand(pending, { ...context, history: { ...exampleHistory, undoEntryId: null, canUndo: false } }), null);
   assert.equal(historyRetryCommand({ ...pending, command: { ...command, entryId: "another-entry" } }, context), null);
+});
+
+test("all 5xx history responses retain the original request for reconciliation", () => {
+  const command = { protocolVersion: PROTOCOL_VERSION, projectId: "project-a", sessionId: "session-a",
+    requestId: "history-undo-1", operation: "undo", entryId: "entry-0001", expectedRevision: "revision-0002" };
+  assert.equal(definiteHistoryRefusal(makeError(command, "NOT_READY"), 503, command), null);
+  assert.equal(definiteHistoryRefusal(makeError(command, "RUNNER_UNAVAILABLE"), 503, command), null);
+  assert.equal(definiteHistoryRefusal(makeError(command, "STALE_REVISION"), 503, command), null);
+  assert.equal(definiteHistoryRefusal(makeError({ ...command, requestId: "other-request" }, "STALE_REVISION"), 409, command), null);
+  assert.equal(definiteHistoryRefusal(makeError(command, "STALE_REVISION"), 409, command)?.code, "STALE_REVISION");
+});
+
+test("pending history marker persists only scoped command metadata and rejects stale or malformed state", async () => {
+  const command = { protocolVersion: PROTOCOL_VERSION, projectId: "project-a", sessionId: "session-a",
+    requestId: "history-undo-1", operation: "undo", entryId: "entry-0001", expectedRevision: "revision-0002" };
+  const marker = { command, status: "unknown", createdAt: 1_000_000 };
+  const encoded = serializePendingHistory(marker);
+  assert.deepEqual(parsePendingHistory(JSON.parse(encoded), 1_000_001), marker);
+  assert.equal(encoded.includes("sourcePatch"), false);
+  assert.equal(encoded.includes("csrf"), false);
+  assert.equal(parsePendingHistory(JSON.parse(encoded), 1_000_000 + 8 * 60 * 60 * 1000 + 1), null);
+  assert.equal(parsePendingHistory({ ...JSON.parse(encoded), command: { ...command, entryId: "../bad" } }, 1_000_001), null);
+  const key = await historyPendingKey("project-a", "operator-token-one");
+  assert.notEqual(key, await historyPendingKey("project-a", "operator-token-two"));
+  assert.notEqual(key, await historyPendingKey("project-b", "operator-token-one"));
+  assert.equal(key.includes("operator-token-one"), false);
 });

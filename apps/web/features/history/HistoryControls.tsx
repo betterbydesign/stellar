@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  ApplyChangeResponseSchema, ErrorEnvelopeSchema, HistoryResponseSchema, PROTOCOL_VERSION,
+  ApplyChangeResponseSchema, HistoryResponseSchema, PROTOCOL_VERSION,
   type ChangeReceipt, type HistoryCommand, type HistoryResponse,
 } from "@stellar/contracts";
-import { availableEntry, changeLabel, historyMissing, historyOutcome, historyRetryCommand, historyShortcut, type HistoryAction, type PendingHistory } from "./history-logic";
+import { availableEntry, changeLabel, definiteHistoryRefusal, historyMissing, historyOutcome, historyPendingKey, historyRetryCommand, historyShortcut, parsePendingHistory, serializePendingHistory, type HistoryAction, type PendingHistory } from "./history-logic";
 import styles from "./history.module.css";
 
 export type HistoryControlsProps = {
@@ -24,9 +24,14 @@ export function HistoryControls({ projectId, sessionId, sourceRevision, previewG
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [pending, setPending] = useState<PendingHistory | null>(null);
+  const [restoredScopeState, setRestoredScopeState] = useState<string | null>(null);
+  const [storageError, setStorageError] = useState(false);
   const inFlight = useRef(false);
+  const pendingStorageKey = useRef<string | null>(null);
+  const restoredScope = useRef<string | null>(null);
   const refreshSequence = useRef(0);
   const [operationBlocked, setOperationBlocked] = useState(false);
+  const restoringPending = restoredScopeState !== `${projectId}\0${sessionId}`;
   const base = `/api/projects/${encodeURIComponent(projectId)}/sessions/${encodeURIComponent(sessionId)}`;
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
@@ -56,7 +61,8 @@ export function HistoryControls({ projectId, sessionId, sourceRevision, previewG
     return () => { controller.abort(); sequence.current++; window.removeEventListener("focus", onFocus); };
   }, [refresh, sourceRevision, previewGeneration]);
 
-  useEffect(() => { onOperationStateChange?.(operationBlocked || !!pending); }, [onOperationStateChange, operationBlocked, pending]);
+  useEffect(() => { onOperationStateChange?.(operationBlocked || !!pending || restoringPending || storageError); },
+    [onOperationStateChange, operationBlocked, pending, restoringPending, storageError]);
 
   const reconcile = useCallback(async (command: HistoryCommand): Promise<ChangeReceipt | "unchanged" | "pending" | "conflicted" | "missing"> => {
     const lookup = newId("history-lookup");
@@ -75,39 +81,96 @@ export function HistoryControls({ projectId, sessionId, sourceRevision, previewG
     return outcome;
   }, [base, projectId, sessionId]);
 
+  const rememberPending = useCallback((value: PendingHistory | null): boolean => {
+    try {
+      if (pendingStorageKey.current) {
+        if (value) window.sessionStorage.setItem(pendingStorageKey.current, serializePendingHistory(value));
+        else window.sessionStorage.removeItem(pendingStorageKey.current);
+      }
+    } catch {
+      setStorageError(true);
+      setNotice("History recovery storage is unavailable. Check the save before another edit.");
+      setPending(value);
+      return false;
+    }
+    setPending(value);
+    return true;
+  }, []);
+
   const acceptReceipt = useCallback(async (receipt: ChangeReceipt) => {
-    setPending(null);
+    rememberPending(null);
     try { onReceipt(receipt); }
     catch { setNotice("The source was saved. Reload the preview to see the latest result."); }
     try { await refresh(); }
     catch { setNotice("The source was saved. Recent changes could not be refreshed."); }
-  }, [onReceipt, refresh]);
+  }, [onReceipt, refresh, rememberPending]);
 
-  const settle = useCallback(async (command: HistoryCommand, result: ChangeReceipt | "unchanged" | "pending" | "conflicted" | "missing"): Promise<boolean> => {
+  const settle = useCallback(async (command: HistoryCommand, result: ChangeReceipt | "unchanged" | "pending" | "conflicted" | "missing", createdAt = Date.now()): Promise<boolean> => {
     if (typeof result === "object") { await acceptReceipt(result); return false; }
     if (result === "missing" || result === "pending") {
-      const next: PendingHistory = { command, status: result === "missing" ? "missing" : "unknown" };
-      setPending(next);
+      const next: PendingHistory = { command, status: result === "missing" ? "missing" : "unknown", createdAt };
+      rememberPending(next);
       setNotice(result === "pending" ? "The change is still pending. Check again before editing." :
         historyRetryCommand(next, { projectId, sessionId, sourceRevision, history, sessionReady }) ?
           "No save record was found yet. Retry the same request or check again." :
           "The original session or revision changed. Check again, then reload and review the project.");
       return true;
     }
-    setPending(null);
+    rememberPending(null);
     setNotice(result === "conflicted" ? "The source changed. Reload and review recent changes." : "No source change was made.");
     void refresh().catch(() => {});
     return false;
-  }, [acceptReceipt, history, projectId, refresh, sessionId, sessionReady, sourceRevision]);
+  }, [acceptReceipt, history, projectId, refresh, rememberPending, sessionId, sessionReady, sourceRevision]);
+
+  useEffect(() => {
+    const scope = `${projectId}\0${sessionId}`;
+    if (restoredScope.current === scope) return;
+    let cancelled = false;
+    const finish = () => { if (!cancelled) { restoredScope.current = scope; setRestoredScopeState(scope); } };
+    void (async () => {
+      let csrf: string;
+      try {
+        const response = await fetch("/api/operator/session", { credentials: "same-origin", cache: "no-store" });
+        const value: unknown = await response.json();
+        if (!response.ok || !value || typeof value !== "object" || typeof (value as { csrfToken?: unknown }).csrfToken !== "string")
+          throw new Error("Operator session unavailable");
+        csrf = (value as { csrfToken: string }).csrfToken;
+        window.sessionStorage.setItem("stellar.csrf", csrf);
+      } catch { if (!cancelled) setStorageError(true); finish(); return; }
+      const key = await historyPendingKey(projectId, csrf);
+      if (cancelled) return;
+      pendingStorageKey.current = key;
+      let saved: PendingHistory | null = null;
+      try { saved = parsePendingHistory(JSON.parse(window.sessionStorage.getItem(key) ?? "null")); }
+      catch { if (!cancelled) setStorageError(true); finish(); return; }
+      if (saved?.command.projectId !== projectId) saved = null;
+      if (!saved) {
+        try { window.sessionStorage.removeItem(key); }
+        catch { if (!cancelled) setStorageError(true); }
+        finish();
+        return;
+      }
+      setPending(saved);
+      try {
+        const result = await reconcile(saved.command);
+        if (cancelled) return;
+        await settle(saved.command, result, saved.createdAt);
+      }
+      catch { if (!cancelled) setNotice("A previous history save is unresolved. Check it before editing."); }
+      finish();
+    })();
+    return () => { cancelled = true; };
+  }, [projectId, sessionId, reconcile, settle]);
 
   const run = useCallback(async (action: HistoryAction) => {
-    if (inFlight.current || !history || pending || !sessionReady || history.projectRevision !== sourceRevision) return;
+    if (inFlight.current || restoringPending || storageError || !history || pending || !sessionReady || history.projectRevision !== sourceRevision) return;
     const entryId = availableEntry(history, action);
     if (!entryId) return;
     inFlight.current = true;
     setBusy(true);
     setNotice("");
     let command: HistoryCommand | null = null;
+    let createdAt = Date.now();
     let unresolved = false;
     try {
       if (onMutationStart && await onMutationStart() === false) return;
@@ -117,17 +180,26 @@ export function HistoryControls({ projectId, sessionId, sourceRevision, previewG
       if (!csrf) { setNotice("Reconnect the local operator before changing source."); return; }
       command = { protocolVersion: PROTOCOL_VERSION, projectId, sessionId, requestId: newId(`history-${action}`),
         operation: action, entryId, expectedRevision: history.projectRevision };
+      const key = await historyPendingKey(projectId, csrf);
+      pendingStorageKey.current = key;
+      createdAt = Date.now();
+      if (!rememberPending({ command, status: "unknown", createdAt })) {
+        command = null;
+        setPending(null);
+        return;
+      }
       const response = await fetch(`${base}/history`, {
         method: "POST", credentials: "same-origin", cache: "no-store",
         headers: { "content-type": "application/json", "x-stellar-csrf": csrf },
         body: JSON.stringify(command),
       });
       const value: unknown = await response.json();
-      const failure = ErrorEnvelopeSchema.safeParse(value);
-      if (failure.success && failure.data.error.code !== "RUNNER_UNAVAILABLE") {
-        setNotice(failure.data.error.code === "STALE_REVISION" || failure.data.error.code === "HISTORY_CONFLICT"
+      const failure = definiteHistoryRefusal(value, response.status, command);
+      if (failure) {
+        rememberPending(null);
+        setNotice(failure.code === "STALE_REVISION" || failure.code === "HISTORY_CONFLICT"
           ? "The project changed. Reload and review recent changes before retrying."
-          : failure.data.error.message);
+          : failure.message);
         void refresh().catch(() => setNotice("The project changed. Reload and review recent changes before retrying."));
         return;
       }
@@ -143,9 +215,9 @@ export function HistoryControls({ projectId, sessionId, sourceRevision, previewG
       // before offering another source mutation.
       if (command) {
         unresolved = true;
-        setPending({ command, status: "unknown" });
+        rememberPending({ command, status: "unknown", createdAt });
         try {
-          unresolved = await settle(command, await reconcile(command));
+          unresolved = await settle(command, await reconcile(command), createdAt);
         } catch { setNotice("The save result is unknown. Check again before editing."); }
       } else setNotice("The save result is unknown. Reload recent changes before editing again.");
     } finally {
@@ -154,14 +226,14 @@ export function HistoryControls({ projectId, sessionId, sourceRevision, previewG
       setOperationBlocked(false);
       if (!unresolved) onOperationStateChange?.(false);
     }
-  }, [history, pending, sessionReady, sourceRevision, onMutationStart, onOperationStateChange, base, projectId, sessionId, acceptReceipt, refresh, reconcile, settle]);
+  }, [history, pending, restoringPending, storageError, sessionReady, sourceRevision, onMutationStart, onOperationStateChange, base, projectId, sessionId, acceptReceipt, refresh, reconcile, rememberPending, settle]);
 
   const checkPending = useCallback(async () => {
     if (!pending || inFlight.current) return;
     inFlight.current = true;
     setBusy(true);
     try {
-      await settle(pending.command, await reconcile(pending.command));
+      await settle(pending.command, await reconcile(pending.command), pending.createdAt);
     } catch { setNotice("The save result is unknown. Check again before editing."); }
     finally { inFlight.current = false; setBusy(false); }
   }, [pending, reconcile, settle]);
@@ -184,41 +256,49 @@ export function HistoryControls({ projectId, sessionId, sourceRevision, previewG
         body: JSON.stringify(command),
       });
       const value: unknown = await response.json();
+      const refusal = definiteHistoryRefusal(value, response.status, command);
+      if (refusal) {
+        rememberPending(null);
+        setNotice(refusal.code === "STALE_REVISION" || refusal.code === "HISTORY_CONFLICT"
+          ? "The project changed. Reload and review recent changes before retrying." : refusal.message);
+        void refresh().catch(() => {});
+        return;
+      }
       const result = ApplyChangeResponseSchema.safeParse(value);
       if (!response.ok || !result.success || result.data.projectId !== command.projectId ||
         result.data.sessionId !== command.sessionId || result.data.requestId !== command.requestId ||
         result.data.status === "applied" && (result.data.receipt.operation !== command.operation ||
           result.data.receipt.oldRevision !== command.expectedRevision))
         throw new Error("The retry result is unknown.");
-      await settle(command, result.data.status === "applied" ? result.data.receipt : "unchanged");
+      await settle(command, result.data.status === "applied" ? result.data.receipt : "unchanged", pending?.createdAt);
     } catch {
-      try { await settle(command, await reconcile(command)); }
+      try { await settle(command, await reconcile(command), pending?.createdAt); }
       catch { setNotice("The save result is unknown. Check again before editing."); }
     } finally { inFlight.current = false; setBusy(false); }
-  }, [pending, projectId, sessionId, sourceRevision, history, sessionReady, base, settle, reconcile]);
+  }, [pending, projectId, sessionId, sourceRevision, history, sessionReady, base, settle, reconcile, rememberPending, refresh]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const action = historyShortcut(event);
-      if (action && !busy && !pending && sessionReady && history?.projectRevision === sourceRevision && availableEntry(history, action)) {
+      if (action && !busy && !restoringPending && !storageError && !pending && sessionReady && history?.projectRevision === sourceRevision && availableEntry(history, action)) {
         event.preventDefault();
         void run(action);
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [history, busy, pending, sessionReady, sourceRevision, run]);
+  }, [history, busy, restoringPending, storageError, pending, sessionReady, sourceRevision, run]);
 
   const undoId = history?.projectRevision === sourceRevision ? availableEntry(history, "undo") : null;
   const redoId = history?.projectRevision === sourceRevision ? availableEntry(history, "redo") : null;
   const retryCommand = historyRetryCommand(pending, { projectId, sessionId, sourceRevision, history, sessionReady });
-  const disabledReason = loading ? "Loading recent changes" : pending ? "Check the pending save first" :
+  const disabledReason = loading || restoringPending ? "Checking previous saves" : storageError ? "History recovery storage unavailable" : pending ? "Check the pending save first" :
     !history ? "Recent changes unavailable" : "No available change";
   return <div className={styles.root} aria-label="Source history">
     <div className={styles.actions}>
-      <button type="button" onClick={() => void run("undo")} disabled={busy || !undoId || !!pending || !sessionReady}
+      <button type="button" onClick={() => void run("undo")} disabled={busy || restoringPending || storageError || !undoId || !!pending || !sessionReady}
         title={undoId ? "Undo source change" : disabledReason} aria-label="Undo source change">Undo</button>
-      <button type="button" onClick={() => void run("redo")} disabled={busy || !redoId || !!pending || !sessionReady}
+      <button type="button" onClick={() => void run("redo")} disabled={busy || restoringPending || storageError || !redoId || !!pending || !sessionReady}
         title={redoId ? "Redo source change" : disabledReason} aria-label="Redo source change">Redo</button>
       <details className={styles.details}>
         <summary>Recent changes</summary>

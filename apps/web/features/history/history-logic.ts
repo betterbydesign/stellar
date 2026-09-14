@@ -1,7 +1,8 @@
-import { ErrorEnvelopeSchema, HistoryCommandSchema, RequestOutcomeSchema, type ChangeReceipt, type HistoryCommand, type HistoryResponse } from "@stellar/contracts";
+import { ErrorEnvelopeSchema, HistoryCommandSchema, RequestOutcomeSchema, type ChangeReceipt, type ErrorDetail, type HistoryCommand, type HistoryResponse } from "@stellar/contracts";
 
 export type HistoryAction = "undo" | "redo";
-export type PendingHistory = { command: HistoryCommand; status: "unknown" | "missing" };
+export const HISTORY_PENDING_MAX_AGE_MS = 8 * 60 * 60 * 1000;
+export type PendingHistory = { command: HistoryCommand; status: "unknown" | "missing"; createdAt: number };
 export type HistoryOutcome = ChangeReceipt | "unchanged" | "pending" | "conflicted";
 export type HistoryLookupScope = { projectId: string; sessionId: string; lookupRequestId: string; originalRequestId: string; action: HistoryAction };
 
@@ -27,11 +28,41 @@ export function historyMissing(value: unknown, scope: HistoryLookupScope): boole
     parsed.data.sessionId === scope.sessionId && parsed.data.requestId === scope.lookupRequestId;
 }
 
+export function parsePendingHistory(value: unknown, now = Date.now()): PendingHistory | null {
+  if (!value || typeof value !== "object") return null;
+  const record = value as Record<string, unknown>;
+  if (record.version !== 1 || (record.status !== "unknown" && record.status !== "missing") ||
+    !Number.isSafeInteger(record.createdAt) || (record.createdAt as number) > now ||
+    now - (record.createdAt as number) > HISTORY_PENDING_MAX_AGE_MS) return null;
+  const command = HistoryCommandSchema.safeParse(record.command);
+  return command.success ? { command: command.data, status: record.status, createdAt: record.createdAt as number } : null;
+}
+
+export function serializePendingHistory(pending: PendingHistory): string {
+  return JSON.stringify({ version: 1, createdAt: pending.createdAt, status: pending.status, command: pending.command });
+}
+
+export async function historyPendingKey(projectId: string, csrf: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(csrf));
+  const fingerprint = Array.from(new Uint8Array(digest).slice(0, 8), (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return `stellar.history.pending.v1.${projectId}.${fingerprint}`;
+}
+
+/** A 5xx POST may follow a durable write, so only a matching 4xx refusal is final. */
+export function definiteHistoryRefusal(value: unknown, responseStatus: number, command: HistoryCommand): ErrorDetail | null {
+  const parsed = ErrorEnvelopeSchema.safeParse(value);
+  if (!parsed.success || parsed.data.error.httpStatus !== responseStatus || responseStatus >= 500 ||
+    parsed.data.projectId !== command.projectId || parsed.data.sessionId !== command.sessionId ||
+    parsed.data.requestId !== command.requestId) return null;
+  return parsed.data.error;
+}
+
 /** Return the exact original command or no retry capability. */
 export function historyRetryCommand(pending: PendingHistory | null, context: {
   projectId: string; sessionId: string; sourceRevision: string; history: HistoryResponse | null; sessionReady: boolean;
 }): HistoryCommand | null {
   if (!pending || pending.status !== "missing" || !context.sessionReady || !context.history) return null;
+  if (parsePendingHistory({ version: 1, ...pending }) === null) return null;
   const command = pending.command;
   return HistoryCommandSchema.safeParse(command).success && command.projectId === context.projectId && command.sessionId === context.sessionId &&
     command.expectedRevision === context.sourceRevision && command.expectedRevision === context.history.projectRevision &&
