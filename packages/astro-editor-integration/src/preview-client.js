@@ -7,7 +7,10 @@
   const ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
   const origin = "__STELLAR_APP_ORIGIN__";
   const referringOrigin = (() => { try { return new URL(document.referrer).origin; } catch { return null; } })();
-  if (referringOrigin !== origin || window.parent === window) return;
+  // Initial iframe entry is referred by the app. Links followed inside the
+  // preview are referred by this exact preview origin instead. Both still
+  // communicate only with the configured app parent via exact-origin messages.
+  if ((referringOrigin !== origin && referringOrigin !== window.location.origin) || window.parent === window) return;
 
   let scope = null;
   let mode = "inspect";

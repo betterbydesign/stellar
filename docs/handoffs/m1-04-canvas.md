@@ -1,6 +1,6 @@
 # M1-04 canvas and selection handoff
 
-M1-04 lives on `codex/m1-04-canvas` as local commits `7352225`, `703902a`, `9b48d8b` and `cfc67f9`, plus this final documentation follow-up. It owns `/projects`, `/projects/{projectId}/studio`, the root redirect, Studio state and CSS, the preview bridge, and the trusted Astro development integration. The coordinator integrates these with separately owned inspector, history and runner-origin plumbing. No push or deployment is part of this handoff.
+M1-04 lives on `codex/m1-04-canvas` as local commits `7352225`, `703902a`, `9b48d8b`, `cfc67f9`, `f5208a4` and a navigation follow-up. It owns `/projects`, `/projects/{projectId}/studio`, the root redirect, Studio state and CSS, the preview bridge, and the trusted Astro development integration. The coordinator integrates these with separately owned inspector, history and runner-origin plumbing. No push or deployment is part of this handoff.
 
 ## What works
 
@@ -18,7 +18,7 @@ The current source model supplies revision-scoped opaque `targetId` values. The 
 
 - Scoped Studio lint, five frame-validator tests, the integration factory test, JavaScript syntax checks, docs checks, and diff whitespace checks passed in the M1-04 worktree.
 - Pinned Astro 7.3.2 launched with the explicit editor integration: Home returned HTTP 200 and contained the development bridge bound to `http://127.0.0.1:3210`. A separate ordinary Astro dev launch returned HTTP 200 and contained no editor bridge/protocol/markers. A clean fixture build generated both routes and a recursive scan of `dist` found none of those identifiers.
-- The standalone web typecheck before integration reported only missing separately owned Inspector and HistoryControls imports. The coordinator owns the combined typecheck and browser acceptance. The first combined browser run exercised both project cards, four widths, selection, base/mobile style edits, reset, token edit, undo/redo, Contact navigation, reload, runner restart and independent fixture build. A stored-width reload exposed React hydration error #418; the follow-up renders deterministic defaults and restores sessionStorage only after hydration. The expanded browser console rerun is pending the coordinator's result.
+- The standalone web typecheck before integration reported only missing separately owned Inspector and HistoryControls imports. The coordinator owns the combined typecheck and browser acceptance. The combined browser run exercised both project cards, four widths, selection, base/mobile style edits, reset, token edit, undo/redo, reload, runner restart and independent fixture build. A stored-width reload exposed React hydration error #418; the follow-up renders deterministic defaults and restores sessionStorage only after hydration. The expanded run then found Contact rendered after an Interact link click while the shell remained on Home: its new iframe document had the preview origin as referrer. The bridge now permits that exact same-preview referrer but keeps the parent message origin fixed to the configured app, with a focused regression test. The coordinator's full rerun remains pending.
 
 ## Integration notes
 
