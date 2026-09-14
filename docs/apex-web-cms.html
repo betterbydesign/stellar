@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apex Studio — Web CMS · Agentic Site Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      --font-sans:"Inter",ui-sans-serif,system-ui,sans-serif;
+      --font-mono:"Geist Mono",ui-monospace,monospace;
+      --background:#f4f2ed; --foreground:#00203d; --card:#ffffff; --card-foreground:#00203d;
+      --popover:#ffffff; --primary:#0071ce; --brand:#0071ce; --primary-foreground:#ffffff;
+      --secondary:#eee9df; --muted:#eee9df; --muted-foreground:#5e6a72; --accent:#eee9df; --accent-foreground:#00203d;
+      --destructive:#8a3e31; --border:#e4dfd4; --input:#e4dfd4; --ring:#0071ce;
+      --sidebar:#00203d; --sidebar-foreground:#cee5f6; --sidebar-primary:#0071ce; --sidebar-primary-foreground:#ffffff;
+      --sidebar-accent:#003869; --sidebar-accent-foreground:#cee5f6; --sidebar-border:#1b3a55;
+      --sidebar-hover:rgba(206,229,246,0.08); --sidebar-muted:rgba(206,229,246,0.55);
+      --accent-teal:#14b8a6; --accent-teal-light:#5eead4;
+      --tool-scheduler:#2773be; --tool-design-system:#a855f7; --tool-social:#ec4899; --tool-agents:#f59e0b; --tool-connections:#6366f1;
+      --tool-web:#0ea5e9;
+      --success:#22c55e; --warning:#f59e0b; --error:#8a3e31;
+      --radius-sm:6px; --radius-md:8px; --radius-lg:10px; --radius-xl:14px; --radius-2xl:16px;
+      /* client site accent (Ridgeline — reads as a distinct site, not Apex chrome) */
+      --client-forest:#1f5c3d; --client-forest-soft:#e8efe9;
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter','system-ui','sans-serif'], mono: ['Geist Mono','ui-monospace','monospace'] },
+          colors: {
+            background:'var(--background)', foreground:'var(--foreground)',
+            card:'var(--card)', border:'var(--border)', muted:'var(--muted)',
+            'muted-foreground':'var(--muted-foreground)',
+            primary:'var(--primary)', brand:'var(--brand)',
+            sidebar:'var(--sidebar)', 'sidebar-accent':'var(--sidebar-accent)',
+            'sidebar-border':'var(--sidebar-border)', 'sidebar-foreground':'var(--sidebar-foreground)',
+            'sidebar-muted':'var(--sidebar-muted)',
+            teal:'var(--accent-teal)', success:'var(--success)', warning:'var(--warning)', destructive:'var(--destructive)',
+            web:'var(--tool-web)', forest:'var(--client-forest)',
+          },
+          fontSize: { '2xs': ['0.625rem', { lineHeight: '0.85rem' }] },
+          borderRadius: { xl:'var(--radius-xl)', '2xl':'var(--radius-2xl)' },
+        },
+      },
+    };
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; }
+    .mono { font-family: var(--font-mono); }
+    .eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted-foreground); }
+    .scroll::-webkit-scrollbar { width: 7px; }
+    .scroll::-webkit-scrollbar-track { background: transparent; }
+    .scroll::-webkit-scrollbar-thumb { background: #ded8cc; border-radius: 7px; }
+    .scroll-dark::-webkit-scrollbar { width: 4px; }
+    .scroll-dark::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 4px; }
+    @keyframes pulse-teal { 0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(20,184,166,.55);} 50%{opacity:.6; box-shadow:0 0 0 4px rgba(20,184,166,0);} }
+    .pulse-teal { animation: pulse-teal 1.8s ease-in-out infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 1s linear infinite; }
+    .canvas-grid { background-color: var(--background); background-image: radial-gradient(rgba(0,32,61,0.055) 1px, transparent 1px); background-size: 22px 22px; }
+    .hero-img { background: linear-gradient(135deg, #2f6b4a 0%, #1f5c3d 45%, #143f2a 100%); }
+    .feat-img { background: linear-gradient(140deg, #dfeae2 0%, #cfe0d5 100%); }
+  </style>
+</head>
+<body class="font-sans text-foreground" style="background:var(--background)">
+  <!--
+    ============================================================================
+    APEX STUDIO — WEB CMS (agentic site builder)
+    A separate Apex app for building real client websites with an AI agent that
+    edits the page as real editable blocks, drawn in Apex Studio's design system.
+
+    STACK NOTE (Aug 21, 2026): the earlier "fork Instatic as the site engine"
+    direction is WITHDRAWN. Client sites are headless WordPress + Astro, built
+    from starter repos carrying an agent harness — so each site's editing
+    surface is its own WordPress admin, and this app is the operations layer
+    above a portfolio of sites rather than a CMS of its own. Read the Output
+    Astro|HTML toggle and Data source pill below as pre-decision artifacts.
+    See AGENTS.md -> "Website build stack (Aug 21, 2026)" and
+    docs/stellar-vs-agent-hub-build-plane.html.
+    Layout L→R: global top bar (site toolbar w/ Output Astro|HTML + Data source
+    pill + breakpoints) · left CMS sidebar (nav + Pages tree + Blocks palette) ·
+    center visual canvas (browser-chrome frame rendering the client marketing
+    page w/ one selected block + floating block toolbar) · right rail (Web Agent
+    chat, Data source, Sandboxed workflows/plugins w/ permissions, Deploy strip).
+    Chrome = Apex navy/blue. Client site content uses forest-green accent so it
+    reads as a distinct site, not Apex chrome.
+    ============================================================================
+  -->
+  <div class="flex flex-col h-screen w-screen overflow-hidden min-w-[1360px]">
+
+    <!-- ===================== GLOBAL TOP BAR ===================== -->
+    <header class="h-12 flex items-center px-3 shrink-0 border-b border-black/30" style="background:var(--sidebar)">
+      <!-- brand -->
+      <div class="flex items-center gap-2.5 pr-3 shrink-0">
+        <span class="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style="border:2px solid var(--accent-teal-light)">
+          <span class="w-1.5 h-1.5 rounded-full" style="background:var(--primary)"></span>
+        </span>
+        <span class="text-white font-semibold text-[14px] tracking-tight">Apex Studio</span>
+        <span class="text-[11px] px-1.5 py-0.5 rounded" style="color:var(--sidebar-muted);background:var(--sidebar-hover)">Web CMS</span>
+      </div>
+
+      <!-- center: site toolbar -->
+      <div class="flex-1 flex items-center justify-center gap-2.5">
+        <div class="flex items-center gap-1.5 text-white text-[13px] font-medium">
+          <i data-lucide="globe" class="w-4 h-4" style="color:var(--accent-teal-light)"></i>
+          ridgeline.com
+        </div>
+
+        <!-- Output segmented control -->
+        <div class="flex items-center gap-1 rounded-lg p-0.5" style="background:var(--sidebar-hover)">
+          <span class="eyebrow pl-1.5 pr-0.5" style="color:var(--sidebar-muted)">Output</span>
+          <button class="flex items-center gap-1 text-[12px] px-2 py-1 rounded-md font-medium text-white" style="background:var(--sidebar-accent)"><i data-lucide="rocket" class="w-3.5 h-3.5" style="color:var(--accent-teal-light)"></i>Astro</button>
+          <button class="flex items-center gap-1 text-[12px] px-2 py-1 rounded-md" style="color:var(--sidebar-muted)"><i data-lucide="file-code-2" class="w-3.5 h-3.5"></i>HTML</button>
+        </div>
+
+        <!-- Data source pill (reads like a dropdown) -->
+        <button class="flex items-center gap-1.5 text-[12px] px-2.5 py-1.5 rounded-lg text-white" style="background:var(--sidebar-hover)">
+          <span class="w-1.5 h-1.5 rounded-full" style="background:var(--success)"></span>
+          <i data-lucide="database" class="w-3.5 h-3.5" style="color:var(--sidebar-muted)"></i>
+          WordPress <span style="color:var(--sidebar-muted)">· connected</span>
+          <i data-lucide="chevron-down" class="w-3 h-3" style="color:var(--sidebar-muted)"></i>
+        </button>
+
+        <!-- breakpoint toggles -->
+        <div class="flex items-center gap-0.5 rounded-lg p-0.5" style="background:var(--sidebar-hover)">
+          <button class="w-7 h-7 rounded-md flex items-center justify-center text-white" style="background:var(--sidebar-accent)" title="Desktop"><i data-lucide="monitor" class="w-4 h-4"></i></button>
+          <button class="w-7 h-7 rounded-md flex items-center justify-center" style="color:var(--sidebar-muted)" title="Tablet"><i data-lucide="tablet" class="w-4 h-4"></i></button>
+          <button class="w-7 h-7 rounded-md flex items-center justify-center" style="color:var(--sidebar-muted)" title="Mobile"><i data-lucide="smartphone" class="w-4 h-4"></i></button>
+        </div>
+      </div>
+
+      <!-- right: sync chip + publish + user -->
+      <div class="flex items-center gap-2.5 shrink-0">
+        <span class="flex items-center gap-1.5 text-[11.5px] px-2.5 py-1.5 rounded-lg" style="color:var(--sidebar-foreground);background:var(--sidebar-hover)">
+          <i data-lucide="link-2" class="w-3.5 h-3.5" style="color:var(--accent-teal-light)"></i>
+          Synced to Apex: <span class="font-medium text-white">Ridgeline</span>
+        </span>
+        <button class="text-[13px] font-semibold px-4 py-1.5 rounded-lg text-white hover:opacity-90" style="background:var(--primary)">Publish</button>
+        <span class="w-7 h-7 rounded-full text-white text-[11px] font-semibold flex items-center justify-center" style="background:linear-gradient(135deg,var(--primary),#003869)">SF</span>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+
+      <!-- ===================== LEFT SIDEBAR (CMS) ===================== -->
+      <aside class="w-64 flex flex-col shrink-0" style="background:var(--sidebar)">
+        <!-- workspace switcher -->
+        <button class="m-3 mb-2 flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-left hover:bg-[var(--sidebar-hover)]">
+          <span class="w-8 h-8 rounded-md text-white text-[12px] font-semibold flex items-center justify-center shrink-0" style="background:var(--primary)">AM</span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-white text-[13px] font-medium leading-tight truncate">Altitude Marketing</span>
+            <span class="block text-[11px] leading-tight" style="color:var(--sidebar-muted)">Workspace</span>
+          </span>
+          <i data-lucide="chevrons-up-down" class="w-3.5 h-3.5" style="color:var(--sidebar-muted)"></i>
+        </button>
+
+        <nav class="flex-1 overflow-y-auto scroll-dark px-2 pb-3 text-[13px]">
+          <div class="px-2 eyebrow mt-2 mb-1.5" style="color:var(--sidebar-muted)">Site</div>
+          <a class="flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg text-white font-medium" style="background:var(--sidebar-accent)"><i data-lucide="layout-panel-top" class="w-4 h-4" style="color:var(--accent-teal-light)"></i> Pages</a>
+          <a class="flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg hover:bg-[var(--sidebar-hover)] hover:text-white" style="color:var(--sidebar-foreground)"><i data-lucide="file-text" class="w-4 h-4" style="color:var(--sidebar-muted)"></i> Content</a>
+          <a class="flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg hover:bg-[var(--sidebar-hover)] hover:text-white" style="color:var(--sidebar-foreground)"><i data-lucide="database" class="w-4 h-4" style="color:var(--sidebar-muted)"></i> Data</a>
+          <a class="flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg hover:bg-[var(--sidebar-hover)] hover:text-white" style="color:var(--sidebar-foreground)"><i data-lucide="image" class="w-4 h-4" style="color:var(--sidebar-muted)"></i> Media</a>
+          <a class="flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg hover:bg-[var(--sidebar-hover)] hover:text-white" style="color:var(--sidebar-foreground)"><i data-lucide="palette" class="w-4 h-4" style="color:var(--sidebar-muted)"></i> Design System</a>
+          <a class="flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg hover:bg-[var(--sidebar-hover)] hover:text-white" style="color:var(--sidebar-foreground)"><i data-lucide="component" class="w-4 h-4" style="color:var(--sidebar-muted)"></i> Components</a>
+          <a class="flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg hover:bg-[var(--sidebar-hover)] hover:text-white" style="color:var(--sidebar-foreground)"><i data-lucide="puzzle" class="w-4 h-4" style="color:var(--sidebar-muted)"></i> Plugins</a>
+          <a class="flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg hover:bg-[var(--sidebar-hover)] hover:text-white" style="color:var(--sidebar-foreground)"><i data-lucide="cloud-upload" class="w-4 h-4" style="color:var(--sidebar-muted)"></i> Deployments</a>
+
+          <!-- pages tree preview -->
+          <div class="px-2 eyebrow mt-4 mb-1.5 flex items-center justify-between" style="color:var(--sidebar-muted)">
+            <span>Pages</span>
+            <i data-lucide="plus" class="w-3 h-3"></i>
+          </div>
+          <div class="space-y-0.5">
+            <a class="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[12.5px] text-white" style="background:var(--sidebar-hover)"><i data-lucide="home" class="w-3.5 h-3.5" style="color:var(--accent-teal-light)"></i> Home</a>
+            <a class="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[12.5px] hover:bg-[var(--sidebar-hover)] hover:text-white" style="color:var(--sidebar-muted)"><i data-lucide="file" class="w-3.5 h-3.5"></i> About</a>
+            <a class="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[12.5px] hover:bg-[var(--sidebar-hover)] hover:text-white" style="color:var(--sidebar-muted)"><i data-lucide="rss" class="w-3.5 h-3.5"></i> Blog</a>
+            <a class="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[12.5px] hover:bg-[var(--sidebar-hover)] hover:text-white" style="color:var(--sidebar-muted)"><i data-lucide="mail" class="w-3.5 h-3.5"></i> Contact</a>
+          </div>
+
+          <!-- blocks palette -->
+          <div class="px-2 eyebrow mt-4 mb-1.5" style="color:var(--sidebar-muted)">Blocks</div>
+          <div class="grid grid-cols-2 gap-1.5 px-1">
+            <div class="flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[11.5px] cursor-grab select-none" style="color:var(--sidebar-foreground);background:var(--sidebar-hover);border:1px solid var(--sidebar-border)"><i data-lucide="square" class="w-3.5 h-3.5" style="color:var(--sidebar-muted)"></i> Container</div>
+            <div class="flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[11.5px] cursor-grab select-none" style="color:var(--sidebar-foreground);background:var(--sidebar-hover);border:1px solid var(--sidebar-border)"><i data-lucide="type" class="w-3.5 h-3.5" style="color:var(--sidebar-muted)"></i> Text</div>
+            <div class="flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[11.5px] cursor-grab select-none" style="color:var(--sidebar-foreground);background:var(--sidebar-hover);border:1px solid var(--sidebar-border)"><i data-lucide="image" class="w-3.5 h-3.5" style="color:var(--sidebar-muted)"></i> Image</div>
+            <div class="flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[11.5px] cursor-grab select-none" style="color:var(--sidebar-foreground);background:var(--sidebar-hover);border:1px solid var(--sidebar-border)"><i data-lucide="square-mouse-pointer" class="w-3.5 h-3.5" style="color:var(--sidebar-muted)"></i> Button</div>
+            <div class="flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[11.5px] cursor-grab select-none" style="color:var(--sidebar-foreground);background:var(--sidebar-hover);border:1px solid var(--sidebar-border)"><i data-lucide="text-cursor-input" class="w-3.5 h-3.5" style="color:var(--sidebar-muted)"></i> Form</div>
+            <div class="flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[11.5px] cursor-grab select-none" style="color:var(--sidebar-foreground);background:var(--sidebar-hover);border:1px solid var(--sidebar-border)"><i data-lucide="repeat" class="w-3.5 h-3.5" style="color:var(--sidebar-muted)"></i> Loop</div>
+          </div>
+        </nav>
+
+        <div class="px-2 py-2 text-[13px]" style="border-top:1px solid var(--sidebar-border)">
+          <a class="flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg hover:bg-[var(--sidebar-hover)] hover:text-white" style="color:var(--sidebar-muted)"><i data-lucide="book-open" class="w-4 h-4"></i> Documentation</a>
+          <a class="flex items-center gap-2.5 px-2.5 py-[7px] rounded-lg hover:bg-[var(--sidebar-hover)] hover:text-white" style="color:var(--sidebar-muted)"><i data-lucide="settings" class="w-4 h-4"></i> Settings</a>
+        </div>
+      </aside>
+
+      <!-- ===================== CENTER CANVAS ===================== -->
+      <main class="flex-1 min-w-[520px] flex flex-col overflow-hidden">
+        <!-- canvas sub-toolbar -->
+        <div class="h-10 px-4 flex items-center gap-3 shrink-0" style="background:var(--card);border-bottom:1px solid var(--border)">
+          <span class="eyebrow">Editing · Home</span>
+          <span class="text-[11px] flex items-center gap-1.5 mono" style="color:var(--muted-foreground)"><i data-lucide="git-branch" class="w-3.5 h-3.5"></i> draft</span>
+          <div class="ml-auto flex items-center gap-1.5">
+            <button class="w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--muted)]" style="color:var(--muted-foreground)" title="Undo"><i data-lucide="undo-2" class="w-4 h-4"></i></button>
+            <button class="w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--muted)]" style="color:var(--muted-foreground)" title="Redo"><i data-lucide="redo-2" class="w-4 h-4"></i></button>
+            <div class="w-px h-4 mx-1" style="background:var(--border)"></div>
+            <button class="flex items-center gap-1.5 text-[12px] px-2.5 py-1.5 rounded-lg hover:bg-[var(--muted)]" style="color:var(--muted-foreground)"><i data-lucide="eye" class="w-3.5 h-3.5"></i> Preview</button>
+            <span class="flex items-center gap-1 text-[11px] mono px-2 py-1 rounded-md" style="color:var(--muted-foreground);background:var(--muted)"><i data-lucide="zoom-in" class="w-3 h-3"></i> 100%</span>
+          </div>
+        </div>
+
+        <!-- workspace -->
+        <div class="flex-1 overflow-auto scroll canvas-grid p-8">
+          <div class="flex items-start gap-6 justify-center min-w-max">
+
+            <!-- desktop breakpoint frame -->
+            <div class="w-[860px] shrink-0">
+              <div class="flex items-center justify-between mb-2 px-1">
+                <span class="eyebrow flex items-center gap-1.5"><i data-lucide="monitor" class="w-3.5 h-3.5" style="color:var(--tool-web)"></i> Desktop · 1280px</span>
+                <span class="eyebrow" style="color:var(--tool-web)">Editing</span>
+              </div>
+              <!-- browser chrome -->
+              <div class="rounded-xl overflow-hidden shadow-[0_18px_44px_rgba(15,27,42,0.16)]" style="border:1px solid var(--border);background:var(--card)">
+                <div class="h-9 flex items-center gap-2 px-3" style="background:#eef1f4;border-bottom:1px solid var(--border)">
+                  <span class="flex gap-1.5">
+                    <span class="w-3 h-3 rounded-full" style="background:#f2685f"></span>
+                    <span class="w-3 h-3 rounded-full" style="background:#f6be4f"></span>
+                    <span class="w-3 h-3 rounded-full" style="background:#61c454"></span>
+                  </span>
+                  <div class="ml-2 flex-1 h-6 rounded-md flex items-center gap-2 px-3 text-[12px] mono" style="background:#ffffff;border:1px solid var(--border);color:var(--muted-foreground)">
+                    <i data-lucide="lock" class="w-3 h-3" style="color:var(--success)"></i> ridgeline.com/
+                  </div>
+                  <i data-lucide="rotate-cw" class="w-3.5 h-3.5" style="color:var(--muted-foreground)"></i>
+                </div>
+
+                <!-- rendered client marketing page (forest-green accent = distinct site) -->
+                <div class="bg-white">
+                  <!-- site nav -->
+                  <div class="flex items-center justify-between px-8 py-4" style="border-bottom:1px solid #ecefec">
+                    <div class="flex items-center gap-2 text-[15px] font-bold" style="color:var(--client-forest)"><i data-lucide="mountain" class="w-5 h-5"></i> Ridgeline</div>
+                    <div class="flex items-center gap-6 text-[13px]" style="color:#3a473e">
+                      <span>Products</span><span>Trails</span><span>About</span>
+                      <span class="px-3.5 py-1.5 rounded-md text-white text-[12.5px] font-medium" style="background:var(--client-forest)">Shop</span>
+                    </div>
+                  </div>
+
+                  <!-- hero -->
+                  <div class="px-8 py-10 grid grid-cols-2 gap-8 items-center">
+                    <div>
+                      <div class="eyebrow mb-3" style="color:var(--client-forest)">Fall 2026 Collection</div>
+                      <h1 class="text-[38px] font-bold leading-[1.05] tracking-tight" style="color:#12261b">Gear that goes the distance.</h1>
+                      <p class="mt-4 text-[14px] leading-relaxed" style="color:#4b5850">Field-tested packs, shells and boots built for the long haul. Lifetime repairs, carbon-neutral shipping, no gimmicks.</p>
+                      <div class="mt-6 flex items-center gap-3">
+                        <span class="px-5 py-2.5 rounded-lg text-white text-[13.5px] font-semibold" style="background:var(--client-forest)">Shop the collection</span>
+                        <span class="px-5 py-2.5 rounded-lg text-[13.5px] font-semibold" style="color:var(--client-forest);border:1px solid #cddccf">Watch film</span>
+                      </div>
+                    </div>
+                    <div class="hero-img rounded-xl h-[220px] flex items-center justify-center">
+                      <i data-lucide="image" class="w-9 h-9 text-white/55"></i>
+                    </div>
+                  </div>
+
+                  <!-- 3-up feature row -->
+                  <div class="px-8 pb-10 grid grid-cols-3 gap-5">
+                    <div class="rounded-xl p-4" style="border:1px solid #ecefec">
+                      <div class="feat-img rounded-lg h-[84px] mb-3 flex items-center justify-center"><i data-lucide="backpack" class="w-6 h-6" style="color:var(--client-forest)"></i></div>
+                      <div class="text-[14px] font-semibold" style="color:#12261b">Trail Packs</div>
+                      <p class="text-[12px] mt-1" style="color:#6a766d">30–65L, welded seams, lifetime warranty.</p>
+                    </div>
+                    <div class="rounded-xl p-4" style="border:1px solid #ecefec">
+                      <div class="feat-img rounded-lg h-[84px] mb-3 flex items-center justify-center"><i data-lucide="shirt" class="w-6 h-6" style="color:var(--client-forest)"></i></div>
+                      <div class="text-[14px] font-semibold" style="color:#12261b">Shell Layers</div>
+                      <p class="text-[12px] mt-1" style="color:#6a766d">3-layer waterproof, fully recycled.</p>
+                    </div>
+                    <div class="rounded-xl p-4" style="border:1px solid #ecefec">
+                      <div class="feat-img rounded-lg h-[84px] mb-3 flex items-center justify-center"><i data-lucide="footprints" class="w-6 h-6" style="color:var(--client-forest)"></i></div>
+                      <div class="text-[14px] font-semibold" style="color:#12261b">Approach Boots</div>
+                      <p class="text-[12px] mt-1" style="color:#6a766d">Resoleable, broken-in on day one.</p>
+                    </div>
+                  </div>
+
+                  <!-- SELECTED BLOCK: features section (selection ring + floating toolbar) -->
+                  <div class="relative mx-6 mb-8">
+                    <div class="absolute -inset-[3px] rounded-xl pointer-events-none" style="border:2px solid var(--primary);box-shadow:0 0 0 4px rgba(0,113,206,0.12)"></div>
+                    <!-- floating block toolbar -->
+                    <div class="absolute -top-9 left-0 flex items-center gap-0.5 rounded-lg px-1 py-1 shadow-lg z-10" style="background:var(--sidebar)">
+                      <span class="text-[11px] mono text-white/80 px-2 flex items-center gap-1.5"><i data-lucide="rows-3" class="w-3 h-3" style="color:var(--accent-teal-light)"></i> Features</span>
+                      <span class="w-px h-4 mx-0.5" style="background:var(--sidebar-border)"></span>
+                      <button class="w-6 h-6 rounded-md flex items-center justify-center text-white/75 hover:bg-white/10" title="Move"><i data-lucide="move" class="w-3.5 h-3.5"></i></button>
+                      <button class="w-6 h-6 rounded-md flex items-center justify-center text-white/75 hover:bg-white/10" title="Duplicate"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                      <button class="w-6 h-6 rounded-md flex items-center justify-center text-white/75 hover:bg-white/10" title="Settings"><i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i></button>
+                      <button class="w-6 h-6 rounded-md flex items-center justify-center hover:bg-white/10" style="color:var(--destructive)" title="Delete"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    </div>
+                    <div class="rounded-xl px-6 py-7 text-center" style="background:var(--client-forest-soft)">
+                      <div class="eyebrow mb-2" style="color:var(--client-forest)">Why Ridgeline</div>
+                      <div class="text-[20px] font-bold" style="color:#12261b">Built to be repaired, not replaced.</div>
+                      <p class="text-[13px] mt-2 max-w-[520px] mx-auto" style="color:#4b5850">Every product ships with a lifetime repair guarantee and a QR code that books a fix in 60 seconds.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- faint second (mobile) breakpoint frame edge -->
+            <div class="w-[300px] shrink-0 opacity-55">
+              <div class="flex items-center gap-1.5 mb-2 px-1">
+                <span class="eyebrow flex items-center gap-1.5"><i data-lucide="smartphone" class="w-3.5 h-3.5"></i> Mobile · 390px</span>
+              </div>
+              <div class="rounded-[22px] overflow-hidden shadow-[0_12px_30px_rgba(15,27,42,0.10)]" style="border:1px solid var(--border);background:var(--card)">
+                <div class="h-6 flex items-center justify-center" style="background:#eef1f4"><span class="w-16 h-1.5 rounded-full" style="background:#c9cfd4"></span></div>
+                <div class="bg-white">
+                  <div class="flex items-center justify-between px-4 py-3" style="border-bottom:1px solid #ecefec">
+                    <span class="text-[12px] font-bold" style="color:var(--client-forest)">Ridgeline</span>
+                    <i data-lucide="menu" class="w-4 h-4" style="color:#3a473e"></i>
+                  </div>
+                  <div class="px-4 py-5">
+                    <div class="h-[10px] w-3/4 rounded" style="background:#e6ebe7"></div>
+                    <div class="h-[10px] w-2/3 rounded mt-2" style="background:#e6ebe7"></div>
+                    <div class="hero-img rounded-lg h-[120px] mt-4"></div>
+                    <div class="mt-4 space-y-2">
+                      <div class="feat-img rounded-lg h-[52px]"></div>
+                      <div class="feat-img rounded-lg h-[52px]"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+
+      <!-- ===================== RIGHT PANEL ===================== -->
+      <aside class="w-[380px] shrink-0 flex flex-col overflow-hidden" style="background:var(--card);border-left:1px solid var(--border)">
+        <div class="flex-1 overflow-y-auto scroll p-4 space-y-4">
+
+          <!-- WEB AGENT chat card -->
+          <div class="rounded-xl overflow-hidden flex flex-col" style="border:1px solid var(--border);background:var(--card)">
+            <div class="px-4 py-3 flex items-center gap-2" style="border-bottom:1px solid var(--border)">
+              <span class="w-7 h-7 rounded-md flex items-center justify-center" style="background:rgba(14,165,233,0.10)"><i data-lucide="sparkles" class="w-4 h-4" style="color:var(--tool-web)"></i></span>
+              <span class="text-[13.5px] font-semibold">Web Agent</span>
+              <span class="ml-2 inline-flex items-center gap-1.5 text-2xs mono px-2 py-0.5 rounded-full" style="background:rgba(20,184,166,0.10);color:var(--accent-teal);border:1px solid rgba(20,184,166,0.28)">
+                <span class="w-1.5 h-1.5 rounded-full pulse-teal" style="background:var(--accent-teal)"></span> LIVE
+              </span>
+              <button class="ml-auto w-7 h-7 rounded-md flex items-center justify-center hover:bg-[var(--muted)]" style="color:var(--muted-foreground)"><i data-lucide="history" class="w-4 h-4"></i></button>
+            </div>
+
+            <!-- conversation -->
+            <div class="px-4 py-3.5 space-y-3.5">
+              <div class="flex justify-end">
+                <div class="text-white text-[13px] rounded-2xl rounded-br-md px-3.5 py-2.5 max-w-[85%] leading-relaxed" style="background:var(--primary)">Add a testimonials section under the features and pull 3 quotes from the WordPress reviews collection.</div>
+              </div>
+              <div class="text-[13px] leading-relaxed" style="color:var(--foreground)">
+                <p class="text-[10.5px] font-medium mb-1 flex items-center gap-1.5" style="color:var(--muted-foreground)">
+                  <span class="w-4 h-4 rounded text-white inline-flex items-center justify-center" style="background:var(--sidebar)"><i data-lucide="sparkles" class="w-2.5 h-2.5"></i></span>Web Agent
+                </p>
+                Done — I inserted a <b>Testimonials</b> section below the features and wired it to a <span class="mono text-[12px]">Loop</span> over <span class="mono text-[12px]">wp.reviews</span> (3 quotes, rating ≥ 4.5). It's editable as real blocks — tweak any card directly on the canvas.
+              </div>
+
+              <!-- ToolStatusStrip -->
+              <div class="rounded-lg overflow-hidden" style="border:1px solid var(--border);background:var(--background)">
+                <div class="px-3 py-1.5 text-2xs mono flex items-center gap-1.5" style="color:var(--muted-foreground);border-bottom:1px solid var(--border)"><i data-lucide="wrench" class="w-3 h-3"></i> Tools</div>
+                <div class="px-3 py-2 space-y-1.5 text-[12px]">
+                  <div class="flex items-center gap-2" style="color:var(--foreground)">
+                    <i data-lucide="loader" class="w-3.5 h-3.5 spin" style="color:var(--accent-teal)"></i>
+                    <span class="font-medium">editing page</span>
+                    <span class="ml-auto text-2xs mono px-1.5 py-0.5 rounded" style="background:rgba(20,184,166,0.10);color:var(--accent-teal)">running</span>
+                  </div>
+                  <div class="flex items-center gap-2" style="color:var(--muted-foreground)">
+                    <i data-lucide="check" class="w-3.5 h-3.5" style="color:var(--success)"></i>
+                    <span class="mono text-[12px]">loop: wp.reviews</span>
+                    <span class="ml-auto text-2xs mono px-1.5 py-0.5 rounded" style="background:var(--muted);color:var(--muted-foreground)">completed</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- composer -->
+            <div class="px-3 pb-3 mt-auto">
+              <div class="rounded-xl px-3 pt-2.5 pb-2" style="border:1px solid var(--border);background:var(--card)">
+                <textarea rows="1" placeholder="Ask the Web Agent to edit the page…" class="w-full resize-none outline-none text-[13px] bg-transparent px-1 mb-2 placeholder:text-[color:var(--muted-foreground)]" style="color:var(--foreground)"></textarea>
+                <div class="flex items-center gap-1.5">
+                  <button class="flex items-center gap-1 text-[12px] px-2 py-1 rounded-md hover:bg-[var(--muted)]" style="color:var(--muted-foreground)">Claude Sonnet <i data-lucide="chevron-down" class="w-3 h-3"></i></button>
+                  <div class="ml-auto flex items-center gap-1.5">
+                    <button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[var(--muted)]" style="color:var(--muted-foreground)"><i data-lucide="paperclip" class="w-4 h-4"></i></button>
+                    <button class="w-8 h-8 rounded-lg text-white flex items-center justify-center hover:opacity-90" style="background:var(--primary)"><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DATA SOURCE card -->
+          <div class="rounded-xl overflow-hidden" style="border:1px solid var(--border);background:var(--card)">
+            <div class="px-4 py-3 flex items-center gap-2" style="border-bottom:1px solid var(--border)">
+              <span class="w-7 h-7 rounded-md flex items-center justify-center" style="background:rgba(14,165,233,0.10)"><i data-lucide="database" class="w-4 h-4" style="color:var(--tool-web)"></i></span>
+              <span class="text-[13.5px] font-semibold">Data source</span>
+              <span class="ml-auto inline-flex items-center gap-1.5 text-2xs mono px-2 py-0.5 rounded-full" style="background:rgba(34,197,94,0.10);color:#15803d;border:1px solid rgba(34,197,94,0.25)"><span class="w-1.5 h-1.5 rounded-full" style="background:var(--success)"></span> connected</span>
+            </div>
+            <div class="px-4 py-3 space-y-3">
+              <div>
+                <div class="text-[13px] font-medium">WordPress <span style="color:var(--muted-foreground)">(headless)</span></div>
+                <div class="text-2xs mono mt-0.5" style="color:var(--muted-foreground)">https://cms.ridgeline.com/wp-json/wp/v2</div>
+              </div>
+              <div>
+                <div class="eyebrow mb-1.5">Collections · loop sources</div>
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2 text-[12.5px] px-2.5 py-1.5 rounded-md" style="background:var(--background)"><i data-lucide="file-text" class="w-3.5 h-3.5" style="color:var(--tool-web)"></i> Posts <span class="ml-auto text-2xs mono" style="color:var(--muted-foreground)">128</span></div>
+                  <div class="flex items-center gap-2 text-[12.5px] px-2.5 py-1.5 rounded-md" style="background:var(--background)"><i data-lucide="star" class="w-3.5 h-3.5" style="color:var(--tool-web)"></i> Reviews <span class="ml-auto text-2xs mono" style="color:var(--muted-foreground)">41</span></div>
+                  <div class="flex items-center gap-2 text-[12.5px] px-2.5 py-1.5 rounded-md" style="background:var(--background)"><i data-lucide="users" class="w-3.5 h-3.5" style="color:var(--tool-web)"></i> Team <span class="ml-auto text-2xs mono" style="color:var(--muted-foreground)">9</span></div>
+                </div>
+              </div>
+              <button class="flex items-center gap-1.5 text-[12px] hover:underline" style="color:var(--muted-foreground)"><i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i> Switch to Postgres</button>
+            </div>
+          </div>
+
+          <!-- SANDBOX card -->
+          <div class="rounded-xl overflow-hidden" style="border:1px solid var(--border);background:var(--card)">
+            <div class="px-4 py-3 flex items-center gap-2" style="border-bottom:1px solid var(--border)">
+              <span class="w-7 h-7 rounded-md flex items-center justify-center" style="background:rgba(14,165,233,0.10)"><i data-lucide="shield-check" class="w-4 h-4" style="color:var(--tool-web)"></i></span>
+              <span class="text-[13.5px] font-semibold">Sandboxed workflows &amp; plugins</span>
+            </div>
+            <div class="px-4 py-3 space-y-3">
+              <!-- running item -->
+              <div class="rounded-lg px-3 py-2.5" style="background:var(--background);border:1px solid var(--border)">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="loader" class="w-3.5 h-3.5 spin" style="color:var(--accent-teal)"></i>
+                  <span class="text-[12.5px] font-medium">Apex SEO Audit</span>
+                  <span class="text-2xs mono px-1.5 py-0.5 rounded" style="background:var(--muted);color:var(--muted-foreground)">workflow</span>
+                  <span class="ml-auto inline-flex items-center gap-1.5 text-2xs mono px-2 py-0.5 rounded-full" style="background:rgba(20,184,166,0.10);color:var(--accent-teal);border:1px solid rgba(20,184,166,0.28)"><span class="w-1.5 h-1.5 rounded-full pulse-teal" style="background:var(--accent-teal)"></span> running</span>
+                </div>
+                <div class="mt-2.5">
+                  <div class="eyebrow mb-1.5">Permissions</div>
+                  <div class="flex flex-wrap gap-1.5">
+                    <span class="text-2xs mono px-2 py-0.5 rounded" style="background:var(--muted);color:var(--foreground);border:1px solid var(--border)">network.outbound</span>
+                    <span class="text-2xs mono px-2 py-0.5 rounded" style="background:var(--muted);color:var(--foreground);border:1px solid var(--border)">hosts: api.ridgeline.com</span>
+                    <span class="text-2xs mono px-2 py-0.5 rounded" style="background:var(--muted);color:var(--foreground);border:1px solid var(--border)">content.read</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-2xs leading-relaxed flex items-start gap-1.5" style="color:var(--muted-foreground)">
+                <i data-lucide="lock" class="w-3 h-3 mt-0.5 shrink-0"></i>
+                Runs isolated — no filesystem, no env, network gated.
+              </p>
+            </div>
+          </div>
+
+          <!-- DEPLOY footer strip -->
+          <div class="rounded-xl px-4 py-3 flex items-center gap-3" style="border:1px solid var(--border);background:var(--background)">
+            <span class="w-8 h-8 rounded-md flex items-center justify-center shrink-0" style="background:rgba(14,165,233,0.10)"><i data-lucide="cloud-upload" class="w-4 h-4" style="color:var(--tool-web)"></i></span>
+            <div class="min-w-0 leading-tight">
+              <div class="text-[12.5px] font-medium">Last deployed 2h ago</div>
+              <div class="text-2xs mono mt-0.5" style="color:var(--muted-foreground)">Vercel · Astro build</div>
+            </div>
+            <button class="ml-auto text-[12.5px] font-semibold px-3.5 py-2 rounded-lg text-white hover:opacity-90 shrink-0" style="background:var(--primary)">Deploy</button>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1017 @@
+{
+  "contractVersion": "0.1.0",
+  "status": "draft_not_executable",
+  "observedAt": "2026-09-13",
+  "purpose": "Proposed schema and data mapping; no WordPress schema or records have been created.",
+  "source": {
+    "baseId": "appctrC0fkefkHeK8",
+    "rootTableId": "tblyECInojqSB7WF2",
+    "viewId": "viw8b0xz2WntKE3Xd",
+    "viewName": "Grid view",
+    "observedRootRecordIds": [
+      "rec5dU04B6EArakgp"
+    ],
+    "identity": [
+      "baseId",
+      "tableId",
+      "recordId"
+    ],
+    "initialMode": "draft_seed",
+    "sourceAuthority": "airtable_for_mapped_fields"
+  },
+  "schema": {
+    "management": "ACF-managed post types, taxonomies and field groups; versioned definitions deployed before record import",
+    "fieldGroupNameFromSource": "serv_lg_flexible_content",
+    "proposedFieldGroupKey": "group_alt_serv_lg",
+    "proposedFlexibleContentField": {
+      "name": "page_sections",
+      "key": "field_alt_page_sections"
+    },
+    "targetFieldKeys": "Assign and version actual ACF field keys during schema implementation; target paths below are proposed logical paths, not discovered keys.",
+    "targetSchemaVerified": false
+  },
+  "root": {
+    "sourceRecordId": "rec5dU04B6EArakgp",
+    "uid": "SERV-LG",
+    "proposedPostType": "page",
+    "templateKey": "serv-lg",
+    "bindings": [
+      {
+        "source": {
+          "tableId": "tblyECInojqSB7WF2",
+          "fieldId": "fldz4p7tTRPdHFo5z",
+          "tableName": "Pages",
+          "fieldName": "Title"
+        },
+        "target": "post_title",
+        "transform": "text"
+      },
+      {
+        "source": {
+          "tableId": "tblyECInojqSB7WF2",
+          "fieldId": "fldbHstUQNSkf6SI5",
+          "tableName": "Pages",
+          "fieldName": "Slug"
+        },
+        "target": "post_name",
+        "transform": "text"
+      },
+      {
+        "source": {
+          "tableId": "tblyECInojqSB7WF2",
+          "fieldId": "fld1SHM0mmjN3ebSd",
+          "tableName": "Pages",
+          "fieldName": "UID"
+        },
+        "target": "source_uid",
+        "transform": "text"
+      },
+      {
+        "source": {
+          "tableId": "tblyECInojqSB7WF2",
+          "fieldId": "flde26EnbIUe2f2J3",
+          "tableName": "Pages",
+          "fieldName": "Status"
+        },
+        "target": "post_status",
+        "transform": "status_map",
+        "policy": {
+          "Draft": "draft",
+          "In Review": "pending",
+          "Published": "requires_explicit_release"
+        }
+      },
+      {
+        "source": {
+          "tableId": "tblyECInojqSB7WF2",
+          "fieldId": "fld0N9ht4pmQCwBYL",
+          "tableName": "Pages",
+          "fieldName": "Templates"
+        },
+        "target": "template_key",
+        "transform": "template_lookup",
+        "expectedCardinality": 1
+      },
+      {
+        "source": {
+          "tableId": "tblyECInojqSB7WF2",
+          "fieldId": "fldUqWbdh7rWILxWc",
+          "tableName": "Pages",
+          "fieldName": "Page Type"
+        },
+        "target": "page_kind",
+        "transform": "validated_discriminator",
+        "policy": {
+          "requiredSourceChoiceId": "selA46uj3dnrrCdxJ",
+          "requiredSourceValue": "Services",
+          "compatibleTemplateKey": "serv-lg",
+          "mapsToTaxonomy": false,
+          "unknownCombination": "validation_error"
+        }
+      }
+    ]
+  },
+  "template": {
+    "sourceRecordId": "recJ0Kl58TnxrsRHX",
+    "sections": [
+      {
+        "sourceRecordId": "recBjuxrYIyS8ryuo",
+        "key": "hero",
+        "scope": "Per page",
+        "acfLayoutName": "section_hero",
+        "astroComponent": "Hero.astro",
+        "role": "body"
+      },
+      {
+        "sourceRecordId": "rec6mMV7GfytmoQtW",
+        "key": "featured-case-studies",
+        "scope": "Shared library",
+        "acfLayoutName": "section_featured_case_studies",
+        "astroComponent": "FeaturedCaseStudies.astro",
+        "role": "body"
+      },
+      {
+        "sourceRecordId": "rechgZJD1TwsJsbXx",
+        "key": "reach-higher",
+        "scope": "Per page",
+        "acfLayoutName": "section_reach_higher",
+        "astroComponent": "ReachHigher.astro",
+        "role": "body"
+      },
+      {
+        "sourceRecordId": "recKRTFgo1rh3ERYS",
+        "key": "your-team",
+        "scope": "Shared library",
+        "acfLayoutName": "section_your_team",
+        "astroComponent": "YourTeam.astro",
+        "role": "body"
+      },
+      {
+        "sourceRecordId": "recG8rrPszV3GVjEN",
+        "key": "niche-spaces",
+        "scope": "Shared library",
+        "acfLayoutName": "section_niche_spaces",
+        "astroComponent": "NicheSpaces.astro",
+        "role": "body"
+      },
+      {
+        "sourceRecordId": "recS62X6Svj8ZIMOa",
+        "key": "testimonial",
+        "scope": "Shared library",
+        "acfLayoutName": "section_testimonial",
+        "astroComponent": "Testimonial.astro",
+        "role": "body"
+      },
+      {
+        "sourceRecordId": "recpvVxSg912zBVC5",
+        "key": "hire-intelligence",
+        "scope": "Per page",
+        "acfLayoutName": "section_hire_intelligence",
+        "astroComponent": "HireIntelligence.astro",
+        "role": "body"
+      },
+      {
+        "sourceRecordId": "rec500DdnelrSjgbl",
+        "key": "global-chrome",
+        "scope": "Global",
+        "acfLayoutName": null,
+        "astroComponent": null,
+        "role": "global"
+      }
+    ],
+    "bodySectionOrder": [
+      "hero",
+      "featured-case-studies",
+      "reach-higher",
+      "your-team",
+      "niche-spaces",
+      "testimonial",
+      "hire-intelligence"
+    ],
+    "globalSections": [
+      "global-chrome"
+    ],
+    "layoutBindings": {
+      "hero": [
+        {
+          "source": {
+            "tableId": "tblyECInojqSB7WF2",
+            "fieldId": "flduHIpjAB1YEUTK8",
+            "tableName": "Pages",
+            "fieldName": "HERO-EYEBROW"
+          },
+          "target": "eyebrow",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblyECInojqSB7WF2",
+            "fieldId": "fldKvifSMud8nLfrw",
+            "tableName": "Pages",
+            "fieldName": "HERO-H1"
+          },
+          "target": "heading",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblyECInojqSB7WF2",
+            "fieldId": "fldPjZGXd5uHGcjid",
+            "tableName": "Pages",
+            "fieldName": "HERO-CONTENT"
+          },
+          "target": "body",
+          "transform": "text"
+        }
+      ],
+      "featured-case-studies": [
+        {
+          "source": {
+            "tableId": "tblyECInojqSB7WF2",
+            "fieldId": "fldb0wWKlsOe0LE5Y",
+            "tableName": "Pages",
+            "fieldName": "CASE-HEAD"
+          },
+          "target": "heading",
+          "transform": "text",
+          "requiredForPublication": true
+        },
+        {
+          "source": {
+            "tableId": "tblyECInojqSB7WF2",
+            "fieldId": "fldf9d94WQ11HsOl8",
+            "tableName": "Pages",
+            "fieldName": "CASE-1"
+          },
+          "target": "case_studies[0]",
+          "transform": "wp_record_reference",
+          "expectedCardinality": 1
+        },
+        {
+          "source": {
+            "tableId": "tblyECInojqSB7WF2",
+            "fieldId": "fldivbyIMQyV8OF1W",
+            "tableName": "Pages",
+            "fieldName": "CASE-2"
+          },
+          "target": "case_studies[1]",
+          "transform": "wp_record_reference",
+          "expectedCardinality": 1
+        }
+      ],
+      "reach-higher": [
+        {
+          "source": {
+            "tableId": "tblyECInojqSB7WF2",
+            "fieldId": "fldewG4rm4gzGlF7P",
+            "tableName": "Pages",
+            "fieldName": "SERV-HED-1"
+          },
+          "target": "heading_lead",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblyECInojqSB7WF2",
+            "fieldId": "fldl9ILbTPjUXBg6L",
+            "tableName": "Pages",
+            "fieldName": "SERV-HED-2"
+          },
+          "target": "heading_emphasis",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblyECInojqSB7WF2",
+            "fieldId": "fldpuGAWzgH0WlwPJ",
+            "tableName": "Pages",
+            "fieldName": "SERV-CONTENT"
+          },
+          "target": "body",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblcLkCmQTDSQiwiy",
+            "fieldId": "fldlWdmV2TbN6wnET",
+            "tableName": "Approach Sections",
+            "fieldName": "APPROACH-TITLE",
+            "viaPageFieldId": "fldaMEP6BOKW1d7yb"
+          },
+          "target": "eyebrow",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblcLkCmQTDSQiwiy",
+            "fieldId": "fldNIvPdGjeci2d23",
+            "tableName": "Approach Sections",
+            "fieldName": "APP-HEAD-1",
+            "viaPageFieldId": "fldaMEP6BOKW1d7yb"
+          },
+          "target": "columns[0].heading",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblcLkCmQTDSQiwiy",
+            "fieldId": "fldE7odVlIG6hChMa",
+            "tableName": "Approach Sections",
+            "fieldName": "APP-CONTENT-1",
+            "viaPageFieldId": "fldaMEP6BOKW1d7yb"
+          },
+          "target": "columns[0].body_markdown",
+          "transform": "markdown"
+        },
+        {
+          "source": {
+            "tableId": "tblcLkCmQTDSQiwiy",
+            "fieldId": "fldEIeiQx2FlrUqjt",
+            "tableName": "Approach Sections",
+            "fieldName": "APP-HEAD-2",
+            "viaPageFieldId": "fldaMEP6BOKW1d7yb"
+          },
+          "target": "columns[1].heading",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblcLkCmQTDSQiwiy",
+            "fieldId": "fldpjHVRQRCgEWH0u",
+            "tableName": "Approach Sections",
+            "fieldName": "APP-CONTENT-2",
+            "viaPageFieldId": "fldaMEP6BOKW1d7yb"
+          },
+          "target": "columns[1].body_markdown",
+          "transform": "markdown"
+        },
+        {
+          "source": {
+            "tableId": "tblcLkCmQTDSQiwiy",
+            "fieldId": "fldycLv9Gy3pZLKse",
+            "tableName": "Approach Sections",
+            "fieldName": "APP-HEAD-3",
+            "viaPageFieldId": "fldaMEP6BOKW1d7yb"
+          },
+          "target": "columns[2].heading",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblcLkCmQTDSQiwiy",
+            "fieldId": "fldxXBbZW4XXeoKJN",
+            "tableName": "Approach Sections",
+            "fieldName": "APP-CONTENT-3",
+            "viaPageFieldId": "fldaMEP6BOKW1d7yb"
+          },
+          "target": "columns[2].body_markdown",
+          "transform": "markdown"
+        }
+      ],
+      "your-team": [
+        {
+          "source": {
+            "tableId": "tblyECInojqSB7WF2",
+            "fieldId": "fldVYivyThBxcZ1s2",
+            "tableName": "Pages",
+            "fieldName": "Services Team"
+          },
+          "target": "shared_section",
+          "transform": "wp_record_reference",
+          "expectedCardinality": 1
+        }
+      ],
+      "niche-spaces": [
+        {
+          "source": {
+            "tableId": "tblyECInojqSB7WF2",
+            "fieldId": "fldgiosmRRLbshC2b",
+            "tableName": "Pages",
+            "fieldName": "Niche Spaces"
+          },
+          "target": "shared_section",
+          "transform": "wp_record_reference",
+          "expectedCardinality": 1
+        }
+      ],
+      "testimonial": [
+        {
+          "source": {
+            "tableId": "tblyECInojqSB7WF2",
+            "fieldId": "fld3q1meT8UHRSpIK",
+            "tableName": "Pages",
+            "fieldName": "Testimonials"
+          },
+          "target": "testimonial",
+          "transform": "wp_record_reference",
+          "expectedCardinality": 1
+        }
+      ],
+      "hire-intelligence": [
+        {
+          "source": {
+            "tableId": "tbl5IROOFTJOuxwEP",
+            "fieldId": "fldBUWGRBv5Lpq9J2",
+            "tableName": "Get Started",
+            "fieldName": "START-SUBHED",
+            "viaPageFieldId": "fldSjYSrIIfV8mBiU"
+          },
+          "target": "eyebrow",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl5IROOFTJOuxwEP",
+            "fieldId": "fldmrJfSm061oqYZ6",
+            "tableName": "Get Started",
+            "fieldName": "START-HED",
+            "viaPageFieldId": "fldSjYSrIIfV8mBiU"
+          },
+          "target": "heading",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl5IROOFTJOuxwEP",
+            "fieldId": "fldV2vSLfD2SGzauD",
+            "tableName": "Get Started",
+            "fieldName": "START-CONTENT",
+            "viaPageFieldId": "fldSjYSrIIfV8mBiU"
+          },
+          "target": "body",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl5IROOFTJOuxwEP",
+            "fieldId": "fldue8JGuujGfee95",
+            "tableName": "Get Started",
+            "fieldName": "START-CTA-LINE",
+            "viaPageFieldId": "fldSjYSrIIfV8mBiU"
+          },
+          "target": "primary_cta.label",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl5IROOFTJOuxwEP",
+            "fieldId": "fldrMpfRxIosnsAVs",
+            "tableName": "Get Started",
+            "fieldName": "START-CTA-LINK",
+            "viaPageFieldId": "fldSjYSrIIfV8mBiU"
+          },
+          "target": "primary_cta.url",
+          "transform": "url"
+        },
+        {
+          "source": {
+            "tableId": "tbl5IROOFTJOuxwEP",
+            "fieldId": "fldITgMQwddwh0yDX",
+            "tableName": "Get Started",
+            "fieldName": "START-CTA-2-LINE",
+            "viaPageFieldId": "fldSjYSrIIfV8mBiU"
+          },
+          "target": "secondary_cta.label",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl5IROOFTJOuxwEP",
+            "fieldId": "fld3wlt6nEiedg5qA",
+            "tableName": "Get Started",
+            "fieldName": "START-CTA-2-LINK",
+            "viaPageFieldId": "fldSjYSrIIfV8mBiU"
+          },
+          "target": "secondary_cta.url",
+          "transform": "url"
+        },
+        {
+          "source": {
+            "tableId": "tbl5IROOFTJOuxwEP",
+            "fieldId": "fldIj4pOBR8RAMOIQ",
+            "tableName": "Get Started",
+            "fieldName": "TXT-LINK",
+            "viaPageFieldId": "fldSjYSrIIfV8mBiU"
+          },
+          "target": "resources.txt",
+          "transform": "url"
+        },
+        {
+          "source": {
+            "tableId": "tbl5IROOFTJOuxwEP",
+            "fieldId": "fldbVES0NWN9OdoEs",
+            "tableName": "Get Started",
+            "fieldName": "MD-LINK",
+            "viaPageFieldId": "fldSjYSrIIfV8mBiU"
+          },
+          "target": "resources.md",
+          "transform": "url"
+        },
+        {
+          "source": {
+            "tableId": "tbl5IROOFTJOuxwEP",
+            "fieldId": "fldfKlXPBG5nh0K2R",
+            "tableName": "Get Started",
+            "fieldName": "CSV-LINK",
+            "viaPageFieldId": "fldSjYSrIIfV8mBiU"
+          },
+          "target": "resources.csv",
+          "transform": "url"
+        },
+        {
+          "source": {
+            "tableId": "tbl5IROOFTJOuxwEP",
+            "fieldId": "fldYTfoXP7nFUdPyz",
+            "tableName": "Get Started",
+            "fieldName": "HTML-LINK",
+            "viaPageFieldId": "fldSjYSrIIfV8mBiU"
+          },
+          "target": "resources.html",
+          "transform": "url"
+        }
+      ]
+    }
+  },
+  "entities": [
+    {
+      "sourceTableId": "tbl1A2Wyvbt1MDNfR",
+      "sourceTableName": "Case Studies",
+      "sourceRecordIds": [
+        "receU0rXQS6u6ZDku",
+        "rec5hMSGZ2BDbUlhH"
+      ],
+      "proposedPostType": "case_study",
+      "kind": "shared_cpt",
+      "publicRoutes": false,
+      "bindings": [
+        {
+          "source": {
+            "tableId": "tbl1A2Wyvbt1MDNfR",
+            "fieldId": "fldVmnYHIzMXK50Ti",
+            "tableName": "Case Studies",
+            "fieldName": "CASE-CLIENT"
+          },
+          "target": "post_title",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl1A2Wyvbt1MDNfR",
+            "fieldId": "fldZ3XKVKtgjAJ7M2",
+            "tableName": "Case Studies",
+            "fieldName": "CASE-SUMMARY"
+          },
+          "target": "summary_markdown",
+          "transform": "markdown"
+        },
+        {
+          "source": {
+            "tableId": "tbl1A2Wyvbt1MDNfR",
+            "fieldId": "flda78xnWREGkjFmX",
+            "tableName": "Case Studies",
+            "fieldName": "CASE-LONG-PROBLEM"
+          },
+          "target": "problem",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl1A2Wyvbt1MDNfR",
+            "fieldId": "fldUvwVIM26IHJGtg",
+            "tableName": "Case Studies",
+            "fieldName": "CASE-LONG-SOLUTION"
+          },
+          "target": "solution",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl1A2Wyvbt1MDNfR",
+            "fieldId": "fld8w7VkKmHMUf2rE",
+            "tableName": "Case Studies",
+            "fieldName": "CASE-LONG-RESULTS"
+          },
+          "target": "results",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl1A2Wyvbt1MDNfR",
+            "fieldId": "fldH6bd5dtZsh7cQt",
+            "tableName": "Case Studies",
+            "fieldName": "CASE-URL"
+          },
+          "target": "source_url",
+          "transform": "url"
+        },
+        {
+          "source": {
+            "tableId": "tbl1A2Wyvbt1MDNfR",
+            "fieldId": "fldrY1OrGZbXaj23A",
+            "tableName": "Case Studies",
+            "fieldName": "CASE-HEADSHOT"
+          },
+          "target": "headshot",
+          "transform": "wp_attachment_reference"
+        },
+        {
+          "source": {
+            "tableId": "tbl1A2Wyvbt1MDNfR",
+            "fieldId": "fldm9G2A3udo3Or6T",
+            "tableName": "Case Studies",
+            "fieldName": "CASE-CONTEXT"
+          },
+          "target": "context_image",
+          "transform": "wp_attachment_reference"
+        }
+      ]
+    },
+    {
+      "sourceTableId": "tblEm7TDpPgcXPwB9",
+      "sourceTableName": "Testimonials",
+      "sourceRecordIds": [
+        "recdZuX5yIwKnYJMc"
+      ],
+      "proposedPostType": "testimonial",
+      "kind": "shared_cpt",
+      "publicRoutes": false,
+      "bindings": [
+        {
+          "source": {
+            "tableId": "tblEm7TDpPgcXPwB9",
+            "fieldId": "fldhAtBOjA87j6Csv",
+            "tableName": "Testimonials",
+            "fieldName": "TEST-QUOTE"
+          },
+          "target": "quote_markdown",
+          "transform": "markdown"
+        },
+        {
+          "source": {
+            "tableId": "tblEm7TDpPgcXPwB9",
+            "fieldId": "fldvocg8HnAUCmC8l",
+            "tableName": "Testimonials",
+            "fieldName": "TEST-ATTRIBUTE"
+          },
+          "target": "attribution",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblEm7TDpPgcXPwB9",
+            "fieldId": "fldgQLXO1E0tHMtzC",
+            "tableName": "Testimonials",
+            "fieldName": "TEST-COMPANY"
+          },
+          "target": "company",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblEm7TDpPgcXPwB9",
+            "fieldId": "fldMoRjD24WT1i8eS",
+            "tableName": "Testimonials",
+            "fieldName": "TEST-LOGO"
+          },
+          "target": "logo",
+          "transform": "wp_attachment_reference"
+        }
+      ]
+    },
+    {
+      "sourceTableId": "tbl6qCic4efHL5mU7",
+      "sourceTableName": "Services Team",
+      "sourceRecordIds": [
+        "reckcejC8ABtQUnlM"
+      ],
+      "proposedPostType": "content_section",
+      "kind": "shared_section",
+      "publicRoutes": false,
+      "bindings": [
+        {
+          "source": {
+            "tableId": "tbl6qCic4efHL5mU7",
+            "fieldId": "fldHwcaavGJICmv7F",
+            "tableName": "Services Team",
+            "fieldName": "SERV-TEAM-HED"
+          },
+          "target": "heading",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl6qCic4efHL5mU7",
+            "fieldId": "fldX4UO2029uXZJfy",
+            "tableName": "Services Team",
+            "fieldName": "SERV-TEAM-CONTENT"
+          },
+          "target": "body",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl6qCic4efHL5mU7",
+            "fieldId": "fldp7mcgm1WrhLgDy",
+            "tableName": "Services Team",
+            "fieldName": "SERV-TEAM-ROLE-1"
+          },
+          "target": "roles[0].title",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl6qCic4efHL5mU7",
+            "fieldId": "fldAeaMWAOGA6tkbb",
+            "tableName": "Services Team",
+            "fieldName": "SERV-TEAM-ROLE-1-CONTENT"
+          },
+          "target": "roles[0].body",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl6qCic4efHL5mU7",
+            "fieldId": "fldVBCqAk3DoB6Kni",
+            "tableName": "Services Team",
+            "fieldName": "SERV-TEAM-ROLE-2"
+          },
+          "target": "roles[1].title",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl6qCic4efHL5mU7",
+            "fieldId": "fldtkRonfkEUypMaZ",
+            "tableName": "Services Team",
+            "fieldName": "SERV-TEAM-ROLE-2-CONTENT"
+          },
+          "target": "roles[1].body",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl6qCic4efHL5mU7",
+            "fieldId": "fldA49P2Uv5mXNS0i",
+            "tableName": "Services Team",
+            "fieldName": "SERV-TEAM-ROLE-3"
+          },
+          "target": "roles[2].title",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl6qCic4efHL5mU7",
+            "fieldId": "fldncsF2d583gv1R3",
+            "tableName": "Services Team",
+            "fieldName": "SERV-TEAM-ROLE-3-CONTENT"
+          },
+          "target": "roles[2].body",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl6qCic4efHL5mU7",
+            "fieldId": "fldi9vbm2YeFfsRNw",
+            "tableName": "Services Team",
+            "fieldName": "SERV-TEAM-ROLE-4"
+          },
+          "target": "roles[3].title",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tbl6qCic4efHL5mU7",
+            "fieldId": "fldlS2PRaoUZpyBjm",
+            "tableName": "Services Team",
+            "fieldName": "SERV-TEAM-ROLE-4-CONTENT"
+          },
+          "target": "roles[3].body",
+          "transform": "text"
+        }
+      ],
+      "sectionKind": "your-team"
+    },
+    {
+      "sourceTableId": "tblG7ni3msP6LVxFe",
+      "sourceTableName": "Niche Spaces",
+      "sourceRecordIds": [
+        "recW8CH2vdEw8wqpe"
+      ],
+      "proposedPostType": "content_section",
+      "kind": "shared_section",
+      "publicRoutes": false,
+      "bindings": [
+        {
+          "source": {
+            "tableId": "tblG7ni3msP6LVxFe",
+            "fieldId": "fldzfkipGVyoXJemj",
+            "tableName": "Niche Spaces",
+            "fieldName": "SERV-NICHE-HED"
+          },
+          "target": "heading",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblG7ni3msP6LVxFe",
+            "fieldId": "fldPbyW1pEWXWmyfk",
+            "tableName": "Niche Spaces",
+            "fieldName": "SERV-NICHE-CONTENT"
+          },
+          "target": "body",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblG7ni3msP6LVxFe",
+            "fieldId": "fldPkDCUo4XbPSzCl",
+            "tableName": "Niche Spaces",
+            "fieldName": "SERV-NICHE-HED-1"
+          },
+          "target": "industries[0].heading",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblG7ni3msP6LVxFe",
+            "fieldId": "fldIA44SOsQG43a7O",
+            "tableName": "Niche Spaces",
+            "fieldName": "SERV-NICHE-CONTENT-1"
+          },
+          "target": "industries[0].body_markdown",
+          "transform": "markdown"
+        },
+        {
+          "source": {
+            "tableId": "tblG7ni3msP6LVxFe",
+            "fieldId": "fldkesuZhGg1R9LWf",
+            "tableName": "Niche Spaces",
+            "fieldName": "SERV-NICHE-HED-2"
+          },
+          "target": "industries[1].heading",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblG7ni3msP6LVxFe",
+            "fieldId": "fldu6msjqKMNmPcqV",
+            "tableName": "Niche Spaces",
+            "fieldName": "SERV-NICHE-CONTENT-2"
+          },
+          "target": "industries[1].body_markdown",
+          "transform": "markdown"
+        },
+        {
+          "source": {
+            "tableId": "tblG7ni3msP6LVxFe",
+            "fieldId": "fld9mJbUPCVTHbJRM",
+            "tableName": "Niche Spaces",
+            "fieldName": "SERV-NICHE-HED-3"
+          },
+          "target": "industries[2].heading",
+          "transform": "text"
+        },
+        {
+          "source": {
+            "tableId": "tblG7ni3msP6LVxFe",
+            "fieldId": "fld5eeVkt4B7XTvMc",
+            "tableName": "Niche Spaces",
+            "fieldName": "SERV-NICHE-CONTENT-3"
+          },
+          "target": "industries[2].body_markdown",
+          "transform": "markdown"
+        }
+      ],
+      "sectionKind": "niche-spaces"
+    }
+  ],
+  "globals": {
+    "sourceTableId": "tblJu5Bb5EhPQ0wn5",
+    "target": "acf_options",
+    "allowlistedSettingKeys": [
+      "closing_tagline",
+      "client_logo_bar"
+    ],
+    "bindings": [
+      {
+        "source": {
+          "tableId": "tblJu5Bb5EhPQ0wn5",
+          "fieldId": "fldRJ3z74WysH0vr2",
+          "tableName": "Site Settings",
+          "fieldName": "Setting Key"
+        },
+        "target": "setting_key",
+        "transform": "text"
+      },
+      {
+        "source": {
+          "tableId": "tblJu5Bb5EhPQ0wn5",
+          "fieldId": "fldJOHN1mm88ZsuUZ",
+          "tableName": "Site Settings",
+          "fieldName": "Value"
+        },
+        "target": "setting_value",
+        "transform": "text"
+      },
+      {
+        "source": {
+          "tableId": "tblJu5Bb5EhPQ0wn5",
+          "fieldId": "fldjWGr0selQ6ahDJ",
+          "tableName": "Site Settings",
+          "fieldName": "Client Logos"
+        },
+        "target": "client_logos",
+        "transform": "ordered_wp_media_references"
+      }
+    ],
+    "logoSourceTableId": "tblCDEdqmJgttzdfw",
+    "logoBindings": [
+      {
+        "source": {
+          "tableId": "tblCDEdqmJgttzdfw",
+          "fieldId": "fldafMVUpOBp62H7C",
+          "tableName": "Clients-Logos",
+          "fieldName": "Client Name"
+        },
+        "target": "name",
+        "transform": "text"
+      },
+      {
+        "source": {
+          "tableId": "tblCDEdqmJgttzdfw",
+          "fieldId": "fldf46ha8LZdSRjGr",
+          "tableName": "Clients-Logos",
+          "fieldName": "Logo"
+        },
+        "target": "attachment",
+        "transform": "wp_attachment_reference"
+      }
+    ]
+  },
+  "taxonomies": {
+    "status": "awaiting_user_definition",
+    "observedTaxonomyTables": [],
+    "definitions": [],
+    "assignments": [],
+    "requirement": "Map taxonomy definition, post-type attachment, stable term identity, hierarchy and post-term assignments once the classifications are specified. Do not infer terms from prose, Page Type or a section title."
+  },
+  "dependencyPolicy": {
+    "followOnlyDeclaredRelations": true,
+    "followInverseRelations": false,
+    "allowlistedGlobalSettings": true,
+    "excludeNonViewRootPages": true,
+    "importEmptyRecords": false,
+    "sourceAbsenceCausesUnpublishInSeedMode": false,
+    "writeBackToAirtable": false
+  },
+  "excludedFromSeed": {
+    "rootRecordIds": [
+      "recxayVmK9WoXmadD"
+    ],
+    "tables": [
+      "Approach Columns",
+      "Industry Cards",
+      "Account Team"
+    ],
+    "additionalRelations": [
+      "Case Studies.Team Profiles",
+      "Team Profiles.Pages"
+    ],
+    "fields": [
+      "Case Studies.Pages",
+      "Case Studies.Pages 2",
+      "Case Studies.Pages 2 copy",
+      "Services Team.SERV-TEAM-ROLE-1..4-IMAGE",
+      "Pages.Parent",
+      "Pages.Section Registry"
+    ],
+    "note": "Excluded only from this POC import plan. Nothing is deleted or changed in Airtable. Inverse links are retained as source evidence. Pages.Parent is empty and hierarchy is deferred; Pages.Section Registry is empty and Templates.Sections supplies composition order."
+  },
+  "normalization": {
+    "fieldMapExpressions": "Replace combined strings with typed field-ID paths and allowlisted transforms; never execute source text.",
+    "markdown": "Preserve semantic content and links; sanitize rendered output. Do not infer missing URLs or taxonomy assignments.",
+    "sectionOrder": "Use the observed Templates.Sections array order; write explicit ordinal positions to the manifest.",
+    "attachments": "Resolve to WordPress attachments using stable source identity; no expiring source URL persists as website content.",
+    "nonRootDiagnostics": "Retain non-root UID/Name values as source provenance when present; base/table/record IDs remain the upsert identity. No public ACF field is implied for diagnostic labels."
+  },
+  "releaseBlockers": [
+    "Blank CASE-HEAD and closing_tagline",
+    "Four missing Services Team role bodies",
+    "Missing secondary CTA values and placeholder google.com destinations",
+    "Missing destination URLs for link-like bullets",
+    "Unmapped global navigation/footer",
+    "Reported Figma gaps and copy drifts not independently reconciled",
+    "Taxonomy definition and term source unresolved"
+  ],
+  "observedFieldMapSummary": {
+    "slots": 56,
+    "statuses": {
+      "1-to-1": 31,
+      "Split": 6,
+      "No node": 7,
+      "Global chrome": 5,
+      "Copy drift": 7
+    },
+    "notAnApproval": "Mapped/Verified source labels are observations, not proof of complete content or an implemented target schema."
+  }
+}
