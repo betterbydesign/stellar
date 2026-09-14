@@ -1,0 +1,1152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:stellar:harness:schema:1",
+  "title": "Stellar agent harness profile",
+  "description": "Stellar Next.js workspace harness profile. Optional integrations are null until configured; no deployment is assumed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "repoRole",
+    "project",
+    "toolchain",
+    "packageManager",
+    "commands",
+    "verify",
+    "branches",
+    "tracker",
+    "review",
+    "documentation",
+    "ci"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional pointer to this schema file, so editors validate the profile as it is edited. Use a relative path (`./harness.schema.json`) only if the schema is vendored into the consumer repo; otherwise use the raw URL of the schema in the harness template repo."
+    },
+    "$comment": {
+      "type": "string",
+      "description": "Free-text note for humans reading the profile. Ignored by every consumer of this file."
+    },
+    "schemaVersion": {
+      "const": 1,
+      "description": "Version of this schema the profile was written against. Bumped only for breaking key changes; adding optional keys does not bump it."
+    },
+    "harnessTemplate": {
+      "type": "object",
+      "description": "Which revision of the harness template repo this repo was installed from. Recorded so an upgrade can diff the installed documents against a newer template revision instead of guessing.",
+      "additionalProperties": false,
+      "required": [
+        "repo",
+        "ref"
+      ],
+      "properties": {
+        "repo": {
+          "type": "string",
+          "description": "Repo slug or name of the harness template this profile was seeded from.",
+          "minLength": 1
+        },
+        "ref": {
+          "type": "string",
+          "description": "Git ref (tag, branch, or commit SHA) of the template revision that was installed.",
+          "minLength": 1
+        }
+      }
+    },
+    "repoRole": {
+      "const": "nextjs",
+      "description": "Stellar Next.js npm workspace role."
+    },
+    "project": {
+      "type": "object",
+      "description": "Identity of the project and of this specific repo within it. Replaces every hardcoded product name and repo slug in the ported documents, including the ones that appear inside delegated subagent prompts and reviewer check names.",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "repoSlug"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Human-readable name used as the document title in `WORKFLOW.md`, in prose, and as the prefix of the conventions check-run agent name. Should name the repo, not just the project, when the two consumer repos need distinguishable review check names.",
+          "minLength": 1
+        },
+        "repoSlug": {
+          "type": "string",
+          "description": "Short machine-readable slug for this repo. Used in paths, branch prose, and anywhere a document needs to name the repo it is installed in.",
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "One-sentence statement of what this repo contains and how it is deployed. Seeds the stack-summary section of the repo's agent-instruction files."
+        },
+        "siblingRepos": {
+          "type": "array",
+          "description": "Optional sibling repositories, if this project later splits across repos.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "repoRole",
+              "repoSlug"
+            ],
+            "properties": {
+              "repoRole": {
+                "enum": [
+                  "nextjs"
+                ],
+                "description": "Role of the sibling repo."
+              },
+              "repoSlug": {
+                "type": "string",
+                "description": "Slug of the sibling repo.",
+                "minLength": 1
+              },
+              "relationship": {
+                "type": "string",
+                "description": "How the two repos depend on each other, in one sentence."
+              }
+            }
+          }
+        }
+      }
+    },
+    "toolchain": {
+      "type": "object",
+      "description": "Pinned language runtimes. Kept in the profile rather than only in a CI workflow so the setup docs, the agent-instruction files, and CI all render the same pinned versions.",
+      "additionalProperties": false,
+      "properties": {
+        "node": {
+          "type": "string",
+          "description": "Major Node version used by the Next.js workspace and CI, as a string.",
+          "pattern": "^[0-9]+(\\.[0-9]+)*$"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Why these versions are pinned where they are \u2014 support windows, host constraints, or a scheduled upgrade. Kept here so the reason survives the next upgrade decision."
+        }
+      }
+    },
+    "packageManager": {
+      "type": "object",
+      "description": "The one package manager this repo uses. Deliberately singular: some hosting platforms select a build toolchain by which lockfile they find in the repo, so a second lockfile committed by accident silently changes how the repo builds. `lockfile` exists so a drift check can assert that no other lockfile is present.",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "installCmd",
+        "lockfile"
+      ],
+      "properties": {
+        "name": {
+          "enum": [
+            "npm"
+          ],
+          "description": "The npm workspace package manager."
+        },
+        "installCmd": {
+          "type": "string",
+          "description": "Exact reproducible-install command used by CI and by a fresh checkout. Must be the lockfile-respecting form, not the resolve-and-update form.",
+          "minLength": 1
+        },
+        "lockfile": {
+          "type": "string",
+          "description": "Path to the one lockfile this repo is allowed to commit. Any other lockfile in the tree is drift.",
+          "minLength": 1
+        },
+        "forbiddenLockfiles": {
+          "type": "array",
+          "description": "Lockfiles that must never appear in this repo, because their presence would change how the host or CI resolves dependencies. Enforced by the drift check.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "commands": {
+      "type": "object",
+      "description": "Day-to-day commands that are not verification steps.",
+      "additionalProperties": false,
+      "required": [
+        "dev"
+      ],
+      "properties": {
+        "dev": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Command that starts a local development server. `null` when local development does not run from this repo at all \u2014 for example when the runtime is provided by a local application environment rather than by a command in the tree. When `null`, `devNotes` must explain how a developer runs the project."
+        },
+        "devNotes": {
+          "type": "string",
+          "description": "How local development actually works, especially when `dev` is `null`."
+        },
+        "format": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional formatter command, if the repo has one that is separate from lint."
+        }
+      }
+    },
+    "verify": {
+      "type": "object",
+      "description": "The repo's verification vocabulary, grouped by class of check rather than by tool. Every group is an ordered list of shell commands to run, or `null` when that class of verification does not exist in this repo. Documents render the applicable groups as one list, so `null` groups simply do not appear \u2014 that is how one workflow document produces a JavaScript command list in one repo and a PHP command list in the other. Never claim a result from a group you did not run.",
+      "additionalProperties": false,
+      "required": [
+        "docsOnly",
+        "lint",
+        "typecheck",
+        "test",
+        "build",
+        "schema"
+      ],
+      "properties": {
+        "docsOnly": {
+          "$ref": "#/$defs/commandList",
+          "description": "The verification floor for a documentation-only change. Never `null`: a docs-only change still has a minimum bar, and it is this list. Include `node scripts/check-docs.mjs` \u2014 the shipped scan of changed Markdown for placeholders, secrets, absolute local paths, and broken relative links. Naming the command here is what stops each agent inventing its own scan."
+        },
+        "lint": {
+          "$ref": "#/$defs/nullableCommandList",
+          "description": "Style and static-correctness checks that do not need a type system: linters, syntax sweeps, coding-standard checks."
+        },
+        "typecheck": {
+          "$ref": "#/$defs/nullableCommandList",
+          "description": "Type checking, including framework-specific diagnostic passes that the plain compiler does not perform. `null` in a repo with no type system."
+        },
+        "test": {
+          "$ref": "#/$defs/nullableCommandList",
+          "description": "Automated tests. `null` when the repo has no test suite yet; set it as soon as one exists rather than leaving the workflow document silently short a step."
+        },
+        "build": {
+          "$ref": "#/$defs/nullableCommandList",
+          "description": "Production build. `null` when the deploy mechanism ships files as they are committed and never runs a build \u2014 in that case there is no build to break, and claiming a build step would be false."
+        },
+        "audit": {
+          "$ref": "#/$defs/nullableCommandList",
+          "description": "Dependency vulnerability audit, when the package manager provides one that is fast enough to run per change."
+        },
+        "schema": {
+          "description": "How this repo verifies that a committed schema artifact still matches the schema the running application exposes. `null` when the repo does not own a schema artifact. When set, the export command regenerates the artifact and the diff command compares it against the committed copy, so an uncommitted schema change fails rather than drifting silently.",
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "committedPath",
+                "export",
+                "diff"
+              ],
+              "properties": {
+                "committedPath": {
+                  "type": "string",
+                  "description": "Repo-relative path of the committed schema artifact. Must be the same path the documentation artifact set names as `schemaDoc`.",
+                  "minLength": 1
+                },
+                "exportCwd": {
+                  "type": "string",
+                  "description": "Working directory the export command runs from, relative to the repo root, when it is not the repo root itself. A repo rooted inside a larger application directory often has to run its CLI from the application root above it."
+                },
+                "export": {
+                  "$ref": "#/$defs/commandList",
+                  "description": "Command(s) that regenerate the schema artifact from the running application."
+                },
+                "diff": {
+                  "$ref": "#/$defs/commandList",
+                  "description": "Command(s) that compare the regenerated artifact against the previously committed copy."
+                },
+                "failOnBreaking": {
+                  "type": "boolean",
+                  "description": "Whether a breaking schema change fails the check rather than warning. A breaking change is legitimate but must be an explicit decision, and it is the trigger for the cross-repo rebuild of any consumer of this schema.",
+                  "default": true
+                }
+              }
+            }
+          ]
+        },
+        "notes": {
+          "type": "string",
+          "description": "Anything a reader needs in order to run these commands correctly \u2014 required local services, ordering constraints, or a group deliberately left `null`."
+        }
+      }
+    },
+    "branches": {
+      "type": "object",
+      "description": "Task branches target main; no separate release branch is configured.",
+      "additionalProperties": false,
+      "required": [
+        "integration",
+        "production",
+        "mergeStrategy"
+      ],
+      "properties": {
+        "integration": {
+          "type": "string",
+          "description": "The sole long-lived branch; task branches target it.",
+          "minLength": 1
+        },
+        "production": {
+          "type": "null",
+          "description": "No separate production branch is configured."
+        },
+        "mergeStrategy": {
+          "enum": [
+            "squash",
+            "merge",
+            "rebase"
+          ],
+          "description": "Preferred way to land a task-branch pull request on the integration branch."
+        },
+        "mergeStrategyNotes": {
+          "type": "string",
+          "description": "Why this merge strategy, especially where it interacts with how the repo is deployed or rolled back."
+        }
+      }
+    },
+    "tracker": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "description": "Optional external tracker; null until one is adopted.",
+          "additionalProperties": false,
+          "required": [
+            "system",
+            "taskIdPrefix",
+            "listId",
+            "listName",
+            "taskUrlTemplate",
+            "branchPattern",
+            "prTitlePattern",
+            "commitTrailer"
+          ],
+          "properties": {
+            "system": {
+              "enum": [
+                "clickup"
+              ],
+              "description": "Tracker product. Enumerated rather than free-text because the traceability conventions and the MCP setup documentation are written against a specific tracker."
+            },
+            "taskIdPrefix": {
+              "type": "string",
+              "description": "Prefix that turns a bare tracker task ID into the token used in branch names, PR titles, and commit trailers. This token is also what the automated reviewer matches a PR against the mirrored task context by, so it must be present and stable.",
+              "minLength": 1
+            },
+            "listId": {
+              "type": "string",
+              "description": "ID of the tracker list that holds this project's tasks. Wrong-list writes are the most common tracker accident, so this is a required key rather than a value typed into a command file.",
+              "minLength": 1
+            },
+            "listName": {
+              "type": "string",
+              "description": "Human-readable name of that list, so a reader can confirm the ID resolves to the list they expect before writing to it.",
+              "minLength": 1
+            },
+            "spaceId": {
+              "type": "string",
+              "description": "ID of the tracker space containing the list."
+            },
+            "folderId": {
+              "type": "string",
+              "description": "ID of the tracker folder containing the list."
+            },
+            "folderName": {
+              "type": "string",
+              "description": "Human-readable name of that folder."
+            },
+            "taskUrlTemplate": {
+              "type": "string",
+              "description": "URL template for a task, containing the literal placeholder `<task-id>`. Used to build the commit trailer and the PR task link.",
+              "minLength": 1,
+              "pattern": "<task-id>"
+            },
+            "mcpUrl": {
+              "type": "string",
+              "description": "URL of the tracker's hosted MCP server, used by each agent host's one-time OAuth connection. The repo can document this but cannot verify any individual machine's authentication state.",
+              "pattern": "^https://"
+            },
+            "branchPattern": {
+              "type": "string",
+              "description": "Branch naming pattern, containing `<task-id>`. Traceability depends on it: the reviewer and the closeout tooling both read the task ID out of the branch name.",
+              "minLength": 1
+            },
+            "prTitlePattern": {
+              "type": "string",
+              "description": "PR title pattern, containing `<task-id>`.",
+              "minLength": 1
+            },
+            "commitTrailer": {
+              "type": "string",
+              "description": "Commit-body trailer that links a commit to its task, containing `<task-url>` or `<task-id>`.",
+              "minLength": 1
+            },
+            "customFields": {
+              "type": "array",
+              "description": "The custom fields that actually exist on this list. Recorded so an agent does not attempt to set a field the list does not have, and so documents do not describe automation for a field that is absent. An empty array means the list has no custom fields.",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "agentWritable"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Field name as it appears on the list.",
+                    "minLength": 1
+                  },
+                  "agentWritable": {
+                    "type": "boolean",
+                    "description": "Whether an agent may set this field without asking. Default posture is `false`: agents comment, humans and automations own fields."
+                  },
+                  "notes": {
+                    "type": "string",
+                    "description": "What the field means and who sets it."
+                  }
+                }
+              }
+            },
+            "statusWritesRequireAuthorization": {
+              "type": "boolean",
+              "description": "Whether an agent must be explicitly authorized before changing task status, priority, assignees, due dates, or acceptance criteria. Keep `true` unless a project deliberately hands status ownership to agents.",
+              "default": true
+            }
+          }
+        }
+      ]
+    },
+    "review": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "description": "Optional automated review integration; null until one is registered.",
+          "additionalProperties": false,
+          "required": [
+            "primary",
+            "repoSlug",
+            "checks",
+            "securityPaths"
+          ],
+          "properties": {
+            "primary": {
+              "type": "string",
+              "description": "Name of the primary automated reviewer. Also the display prefix of each custom check run, which the review host renders as `<primary> - <check name>`.",
+              "minLength": 1
+            },
+            "repoSlug": {
+              "type": "string",
+              "description": "`owner/repo` slug this repo is registered under with the review product. Distinct from `project.repoSlug`: each consumer repo is registered separately, so this value differs per install even within one project.",
+              "minLength": 1,
+              "pattern": "^[^/]+/[^/]+$"
+            },
+            "checks": {
+              "type": "array",
+              "description": "The checks that run on a PR in this repo: the reviewer's built-in checks plus this repo's custom check-run agents. Ordered cheapest-first.",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "kind",
+                  "blocking",
+                  "scope"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Check title. For a custom agent this is the `title` in its front matter, and it must differ between the two consumer repos so a reader can tell which repo a check run belongs to.",
+                    "minLength": 1
+                  },
+                  "kind": {
+                    "enum": [
+                      "builtin",
+                      "check-run-agent"
+                    ],
+                    "description": "`builtin` for a check the review product ships, `check-run-agent` for one this repo defines in a config file."
+                  },
+                  "configFile": {
+                    "type": "string",
+                    "description": "Repo-relative path to the agent definition, for `check-run-agent` checks."
+                  },
+                  "blocking": {
+                    "type": "boolean",
+                    "description": "Whether a finding fails the check run (`conclusion: failure`) rather than reporting neutrally."
+                  },
+                  "scope": {
+                    "enum": [
+                      "repo-wide",
+                      "path-scoped"
+                    ],
+                    "description": "Whether the check runs on every PR or only on PRs touching its configured paths."
+                  },
+                  "pathScope": {
+                    "type": "array",
+                    "description": "Glob list this check is scoped to, for `path-scoped` checks.",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "requirable": {
+                    "type": "boolean",
+                    "description": "Whether this check is safe to add as a required status check. A path-scoped check must be `false`: it never creates a check run on a PR outside its scope, so requiring it leaves those PRs waiting forever. Only a check that runs on every PR is safe to require."
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "Model this check-run agent runs on. Kept in the profile rather than in prose because model names age faster than the documents that would otherwise name them."
+                  },
+                  "effort": {
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high"
+                    ],
+                    "description": "Depth control for the agent. On models that set their own thinking budget this is the only depth lever that has an effect."
+                  },
+                  "purpose": {
+                    "type": "string",
+                    "description": "One sentence on what this check covers, and what it deliberately leaves to another check so the two do not duplicate metered work."
+                  }
+                }
+              }
+            },
+            "securityPaths": {
+              "type": "array",
+              "description": "The high-risk paths in this repo that warrant a deep, blocking security review. Also the natural seam to split PRs along, so that a change touching none of these paths skips the expensive check entirely. Empty only if the repo genuinely has no privileged surface.",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "localCli": {
+              "description": "The reviewer's local pre-PR CLI, when one is installed. Running it before pushing converges findings locally so the PR opens clean and the metered PR-side checks re-run as few times as possible. `null` when no local CLI is adopted, in which case documents omit the pre-PR review step rather than describing a tool that does not exist.",
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "tool",
+                    "autoloop",
+                    "coversCustomChecks"
+                  ],
+                  "properties": {
+                    "tool": {
+                      "type": "string",
+                      "description": "CLI name.",
+                      "minLength": 1
+                    },
+                    "autoloop": {
+                      "type": "object",
+                      "description": "Per-host command that reviews the branch, fixes confirmed findings, commits, and re-reviews. Keyed by agent host because each host namespaces its commands differently.",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "minProperties": 1
+                    },
+                    "singlePass": {
+                      "type": "object",
+                      "description": "Per-host command for one review pass with no fix loop.",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "coversCustomChecks": {
+                      "type": "boolean",
+                      "description": "Whether the local CLI also runs this repo's custom check-run agents. Normally `false`: the local pass runs the built-in correctness engine only, so the PR-side checks remain the authoritative gate and the local pass is a churn reducer, never a substitute."
+                    },
+                    "alwaysAvailable": {
+                      "type": "boolean",
+                      "description": "Whether the CLI can be assumed present. Normally `false`: cloud agent machines do not have it installed, so the pre-PR pass is `use when available` and never a hard gate."
+                    }
+                  }
+                }
+              ]
+            },
+            "agentConfig": {
+              "type": "object",
+              "description": "Behaviour of the review product itself, as distinct from any one check. These are the non-obvious facts that make review config land as intended.",
+              "additionalProperties": false,
+              "properties": {
+                "configSource": {
+                  "enum": [
+                    "default-branch",
+                    "pull-request-branch"
+                  ],
+                  "description": "Where the reviewer reads its repo config from. `default-branch` means a change to a check-run agent has no effect on open PRs until it merges to the default branch \u2014 which is why testing a new agent requires merging it first."
+                },
+                "customInstructionsSource": {
+                  "enum": [
+                    "default-branch",
+                    "pull-request-working-tree",
+                    "none"
+                  ],
+                  "description": "Where custom instructions for the built-in correctness engine are read from. `pull-request-working-tree` means they take effect on the PR branch and in local runs without merging first \u2014 the opposite of `configSource`, and easy to get backwards."
+                },
+                "ignoreReplacesDefaults": {
+                  "type": "boolean",
+                  "description": "Whether creating a review ignore file replaces the reviewer's default ignore patterns rather than extending them. When `true`, the defaults must be restated in the repo's ignore file or they are silently lost."
+                },
+                "meteredRatePerKb": {
+                  "type": "number",
+                  "description": "Cost per KB of reviewed diff, in the review product's billing currency. Recorded so the cost levers in the workflow documents can be justified with a number instead of a vibe.",
+                  "exclusiveMinimum": 0
+                },
+                "skipOnDraftPr": {
+                  "type": "boolean",
+                  "description": "Whether the repo is configured to skip review on draft PRs, custom checks included. When `true`, opening PRs as drafts and marking ready only when locally clean is the cheapest workflow."
+                },
+                "maxRunsPerCheck": {
+                  "type": "integer",
+                  "description": "Per-agent cap on review runs, when one is configured.",
+                  "minimum": 1
+                },
+                "notes": {
+                  "type": "string",
+                  "description": "Anything else about how review is configured for this repo."
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "documentation": {
+      "type": "object",
+      "description": "The documentation artifact set this repo maintains, and the file list an agent reads at session start. Every documentation pointer in the ported documents renders from here, so a repo that does not have an artifact simply never sees it referenced.",
+      "additionalProperties": false,
+      "required": [
+        "intakeSet",
+        "artifacts",
+        "planRoot",
+        "evidenceRoot",
+        "handoffRoot"
+      ],
+      "properties": {
+        "intakeSet": {
+          "type": "array",
+          "description": "Ordered list of repo-relative files an agent must read before changing anything. Rendered into the session-start checklist and into every host adapter, so the reading list is stated once and cannot drift between hosts.",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "artifacts": {
+          "type": "object",
+          "description": "The durable documentation artifacts. The agreed set is architecture docs, an operations log, a status doc, user guides, and PRDs; `schemaDoc` exists only in a repo that owns a schema artifact.",
+          "additionalProperties": false,
+          "required": [
+            "architecture",
+            "operationsLog",
+            "statusDoc",
+            "userGuides",
+            "prds",
+            "schemaDoc"
+          ],
+          "properties": {
+            "architecture": {
+              "type": "string",
+              "description": "Directory holding durable subsystem behaviour references. Starts empty in a fresh repo: it describes this repo's subsystems, not the harness.",
+              "minLength": 1
+            },
+            "operationsLog": {
+              "type": "string",
+              "description": "Append-only chronological session narrative.",
+              "minLength": 1
+            },
+            "statusDoc": {
+              "type": "string",
+              "description": "Compact pointer to active tasks, current branch, current agent, blocker, and next action. Updated at task start, at meaningful checkpoints, when blocked, and at finish.",
+              "minLength": 1
+            },
+            "userGuides": {
+              "type": "string",
+              "description": "Directory of end-user documentation, one file per user-facing feature. Its audience differs per repo role, so the index states who it is written for.",
+              "minLength": 1
+            },
+            "prds": {
+              "type": "string",
+              "description": "Directory of product requirement documents.",
+              "minLength": 1
+            },
+            "schemaDoc": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Committed schema artifact that must be updated in the same change as the schema it describes. `null` in a repo that does not define a schema. When set, it must equal `verify.schema.committedPath`, and any PR that changes the schema is expected to carry the regenerated artifact.",
+              "minLength": 1
+            },
+            "reviewLessons": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Recurring accepted review lessons file when configured; null without a reviewer.",
+              "minLength": 1
+            },
+            "templates": {
+              "type": "string",
+              "description": "Directory of short handoff, progress, completion, and session-checklist templates."
+            },
+            "fieldGuides": {
+              "type": "boolean",
+              "description": "Reserved. Whether this repo maintains long-form conceptual field guides as a distinct artifact class. Ships `false` and no document references it; the key exists so a repo can opt in later without a schema change.",
+              "default": false
+            },
+            "diagrams": {
+              "type": "boolean",
+              "description": "Whether diagram documentation is maintained; true is allowed for this repo.",
+              "default": false
+            }
+          }
+        },
+        "planRoot": {
+          "type": "string",
+          "description": "Directory holding active, completed, and archived execution plans.",
+          "minLength": 1
+        },
+        "evidenceRoot": {
+          "type": "string",
+          "description": "Directory where per-task verification evidence is committed, one subdirectory per task ID. A convention that names a directory which does not exist reads as aspirational, so the directory ships with a placeholder.",
+          "minLength": 1
+        },
+        "handoffRoot": {
+          "type": "string",
+          "description": "Directory for written cross-session handoffs, used when tracker access is unavailable \u2014 for example from a cloud agent machine with no authenticated tracker connection.",
+          "minLength": 1
+        },
+        "userGuideAudience": {
+          "type": "string",
+          "description": "Who this repo's user guides address. Differs sharply by repo role, and getting it wrong produces guides aimed at the wrong reader."
+        }
+      }
+    },
+    "designSystem": {
+      "type": "object",
+      "description": "Design-token authority for repos that ship a user interface. Present only in the role that owns the interface; in the other role the key is absent and every design-token rule disappears from the rendered documents rather than rendering empty.",
+      "additionalProperties": false,
+      "required": [
+        "sourceOfTruth",
+        "shippedImplementation"
+      ],
+      "properties": {
+        "sourceOfTruth": {
+          "type": "string",
+          "description": "Repo-relative source for design tokens. It can be the same hand-authored file as shippedImplementation.",
+          "minLength": 1
+        },
+        "shippedImplementation": {
+          "type": "string",
+          "description": "Repo-relative stylesheet that ships tokens; may also be the hand-authored source of truth.",
+          "minLength": 1
+        },
+        "tokenVocabulary": {
+          "type": "string",
+          "description": "The naming vocabulary the tokens use, so a reviewer can tell a semantic token from a raw value."
+        },
+        "generator": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Generator command when generated, otherwise null for hand-authored CSS."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Constraints a component author needs before touching tokens."
+        }
+      }
+    },
+    "ci": {
+      "type": "object",
+      "description": "The shape of this repo's continuous integration, and what it deliberately does not cover. Documenting the gap is as important as documenting the jobs: a reader who believes CI catches everything stops verifying locally.",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "workflows",
+        "jobs",
+        "triggerBranches",
+        "concurrency",
+        "ownsCrossRepoDispatch",
+        "doesNotCatch",
+        "deploy"
+      ],
+      "properties": {
+        "provider": {
+          "enum": [
+            "github-actions"
+          ],
+          "description": "CI provider."
+        },
+        "workflows": {
+          "type": "array",
+          "description": "Workflow files this repo owns.",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "jobs": {
+          "type": "array",
+          "description": "Ordered list of jobs the pre-merge workflow runs. The drift check belongs first and fast: it is the cheapest job and it fails on exactly the class of problem that is hardest to spot in review.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "runs"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The workflow job's `name:` field, verbatim \u2014 not its YAML key. GitHub reports a check context under the display name, so that is the string a branch ruleset has to require and the string a reader compares against the checks list on a pull request. Recording the lowercase job key here names a context that never reports, and a required check that never reports leaves the pull request waiting forever with nothing in the UI explaining why.",
+                "minLength": 1
+              },
+              "runs": {
+                "$ref": "#/$defs/commandList",
+                "description": "Commands this job runs, in order. Should reference the same commands as `verify.*` so CI and local verification cannot diverge."
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether this job is configured as a required status check on the protected branches."
+              },
+              "notes": {
+                "type": "string",
+                "description": "Anything non-obvious about the job."
+              }
+            }
+          }
+        },
+        "triggerBranches": {
+          "type": "array",
+          "description": "Branches whose pull requests and pushes trigger CI.",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "concurrency": {
+          "type": "object",
+          "description": "Concurrency control. Cancelling superseded in-progress runs on the same ref keeps a rapid push sequence from queueing several full pipelines.",
+          "additionalProperties": false,
+          "required": [
+            "group",
+            "cancelInProgress"
+          ],
+          "properties": {
+            "group": {
+              "type": "string",
+              "description": "Concurrency group expression, normally keyed on the ref.",
+              "minLength": 1
+            },
+            "cancelInProgress": {
+              "type": "boolean",
+              "description": "Whether a new run cancels an in-progress run in the same group."
+            }
+          }
+        },
+        "ownsCrossRepoDispatch": {
+          "type": "boolean",
+          "description": "Whether this repo's CI triggers a workflow in a sibling repo. Exactly one repo in a split-repo project should own the dispatch, and it is the repo that produces the artifact the other consumes."
+        },
+        "crossRepoDispatch": {
+          "type": "object",
+          "description": "The dispatch this repo sends to a sibling repo. Required when `ownsCrossRepoDispatch` is `true`, and must be absent otherwise. Path-scoped on purpose: dispatching on every merge would rebuild the sibling for changes that cannot affect it.",
+          "additionalProperties": false,
+          "required": [
+            "targetRepo",
+            "event",
+            "pathScope"
+          ],
+          "properties": {
+            "targetRepo": {
+              "type": "string",
+              "description": "`owner/repo` slug of the repo being dispatched to.",
+              "minLength": 1,
+              "pattern": "^[^/]+/[^/]+$"
+            },
+            "event": {
+              "type": "string",
+              "description": "Repository-dispatch event type the target workflow listens for.",
+              "minLength": 1
+            },
+            "pathScope": {
+              "type": "array",
+              "description": "Glob list of changed paths that justify a dispatch. Anything outside this list cannot affect the sibling and must not trigger a rebuild.",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "tokenSecret": {
+              "type": "string",
+              "description": "Name of the Actions secret holding the credential used to dispatch. The name only \u2014 never the value."
+            },
+            "notes": {
+              "type": "string",
+              "description": "Why the dispatch exists and what the target does with it."
+            }
+          }
+        },
+        "doesNotCatch": {
+          "type": "array",
+          "description": "What this pipeline does not verify, stated plainly. Anything that only fails against real deployment state belongs here.",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "deploy": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "description": "Deployment configuration when one actually exists; otherwise null.",
+              "additionalProperties": false,
+              "required": [
+                "mechanism",
+                "runsBuild",
+                "environments"
+              ],
+              "properties": {
+                "mechanism": {
+                  "type": "string",
+                  "description": "How code gets deployed, in a few words.",
+                  "minLength": 1
+                },
+                "runsBuild": {
+                  "type": "boolean",
+                  "description": "Whether the deploy builds the repo's own code. When `false`, every source file this repo commits is the file that runs and `verify.build` is `null` \u2014 a pipeline that only resolves dependencies in the runner is still `false`, and `ci.deploy.cautions` is where that gets described."
+                },
+                "environments": {
+                  "type": "array",
+                  "description": "The deploy targets and the branch that feeds each.",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "name",
+                      "branch"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Environment name.",
+                        "minLength": 1
+                      },
+                      "branch": {
+                        "type": "string",
+                        "description": "Branch that deploys to this environment.",
+                        "minLength": 1
+                      },
+                      "notes": {
+                        "type": "string",
+                        "description": "Anything a deployer needs to know about this environment."
+                      }
+                    }
+                  }
+                },
+                "cautions": {
+                  "type": "array",
+                  "description": "Deploy footguns specific to this mechanism \u2014 irreversible flags, sync semantics that can delete content, anything worth failing a review over.",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "env": {
+      "type": "object",
+      "description": "The repo's environment-variable convention. Each consumer repo authors its own committed example file whose keys mirror its real environment; no example file is shared between repos, because sharing one installs the wrong environment vocabulary and sends an agent looking for infrastructure the repo does not have.",
+      "additionalProperties": false,
+      "properties": {
+        "examplePath": {
+          "type": "string",
+          "description": "Repo-relative path of the committed example env file. Its keys must mirror the real environment, with placeholder values only."
+        },
+        "realFilesNeverCommitted": {
+          "type": "array",
+          "description": "Env files that must never be committed. Enforced by the gitignore fragment and by the drift check.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "skills": {
+      "type": "object",
+      "description": "Where agent skills live and how host directories reference them. One skill body, many hosts: the body lives once in a host-neutral home and each host directory holds a relative symlink to it, so a skill cannot drift between hosts.",
+      "additionalProperties": false,
+      "properties": {
+        "home": {
+          "type": "string",
+          "description": "Host-neutral directory holding one subdirectory per skill.",
+          "minLength": 1
+        },
+        "hostLinkDirs": {
+          "type": "array",
+          "description": "Host directories that hold relative symlinks into `home`. A real directory in one of these paths instead of a symlink is drift.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "lockFile": {
+          "type": "string",
+          "description": "Integrity lock recording the source and content hash of every vendored skill. Ships present and empty so that the first vendored skill without a pin is visible immediately rather than landing unnoticed."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "commandList": {
+      "type": "array",
+      "description": "An ordered, non-empty list of shell commands.",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "nullableCommandList": {
+      "description": "An ordered, non-empty list of shell commands, or `null` when this class of check does not exist in this repo.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "$comment": "Next.js workspace contract.",
+      "properties": {
+        "toolchain": {
+          "required": [
+            "node"
+          ]
+        },
+        "packageManager": {
+          "properties": {
+            "name": {
+              "const": "npm"
+            }
+          }
+        },
+        "verify": {
+          "properties": {
+            "typecheck": {
+              "type": "array"
+            },
+            "build": {
+              "type": "array"
+            },
+            "schema": {
+              "type": "null"
+            }
+          }
+        },
+        "documentation": {
+          "properties": {
+            "artifacts": {
+              "properties": {
+                "schemaDoc": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        },
+        "ci": {
+          "properties": {
+            "ownsCrossRepoDispatch": {
+              "const": false
+            }
+          }
+        }
+      },
+      "required": [
+        "designSystem"
+      ]
+    },
+    {
+      "$comment": "No tracker means no tracker traceability contract; no reviewer means no reviewer configuration.",
+      "if": {
+        "properties": {
+          "tracker": {
+            "type": "null"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "review": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "$comment": "No separate production branch for the present main-only workflow.",
+      "properties": {
+        "branches": {
+          "properties": {
+            "integration": {
+              "const": "main"
+            },
+            "production": {
+              "type": "null"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

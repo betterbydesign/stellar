@@ -1,0 +1,134 @@
+{
+  "$schema": "./harness.schema.json",
+  "$comment": "Stellar harness adaptation from altitude-agent-harness e629ae2ad1d1e8e08a4e202af243c26ba6f51c20. Integrations are null until verified and authorized.",
+  "schemaVersion": 1,
+  "harnessTemplate": {
+    "repo": "altitude-agent-harness",
+    "ref": "e629ae2ad1d1e8e08a4e202af243c26ba6f51c20"
+  },
+  "repoRole": "nextjs",
+  "project": {
+    "name": "Stellar",
+    "repoSlug": "stellar",
+    "description": "A Next.js application in an npm workspace rooted at apps/web."
+  },
+  "toolchain": {
+    "node": "22",
+    "notes": "Use a Node release supported by Next.js 16 and the repository toolchain; CI pins Node 22."
+  },
+  "packageManager": {
+    "name": "npm",
+    "installCmd": "npm ci",
+    "lockfile": "package-lock.json",
+    "forbiddenLockfiles": [
+      "bun.lock",
+      "bun.lockb",
+      "yarn.lock",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "commands": {
+    "dev": "npm run dev",
+    "devNotes": "Run from the repository root; the root script starts apps/web."
+  },
+  "verify": {
+    "docsOnly": [
+      "npm run verify:docs",
+      "npm run verify:harness"
+    ],
+    "lint": [
+      "npm run lint"
+    ],
+    "typecheck": [
+      "npm run typecheck"
+    ],
+    "test": [
+      "npm run test"
+    ],
+    "build": [
+      "npm run build"
+    ],
+    "audit": null,
+    "schema": null,
+    "notes": "Tests include harness-profile validation. Dependency audit and a committed application schema are not configured."
+  },
+  "branches": {
+    "integration": "main",
+    "production": null,
+    "mergeStrategy": "squash",
+    "mergeStrategyNotes": "Feature branches target main. No separate production branch or deployment has been configured."
+  },
+  "tracker": null,
+  "review": null,
+  "documentation": {
+    "intakeSet": [
+      "AGENTS.md",
+      "WORKFLOW.md",
+      "harness.json",
+      "docs/agent-rules.md",
+      "docs/current-work.md",
+      "docs/PLANS.md"
+    ],
+    "artifacts": {
+      "architecture": "docs/architecture/",
+      "operationsLog": "docs/agent-operations-log.md",
+      "statusDoc": "docs/current-work.md",
+      "userGuides": "docs/user-guide/",
+      "prds": "docs/prds/",
+      "schemaDoc": null,
+      "reviewLessons": null,
+      "templates": "docs/templates/",
+      "fieldGuides": false,
+      "diagrams": true
+    },
+    "planRoot": "docs/exec-plans/",
+    "evidenceRoot": "docs/evidence/",
+    "handoffRoot": "docs/handoffs/",
+    "userGuideAudience": "People using the Stellar application."
+  },
+  "designSystem": {
+    "sourceOfTruth": "apps/web/app/globals.css",
+    "shippedImplementation": "apps/web/app/globals.css",
+    "tokenVocabulary": "Hand-authored foundation and semantic CSS custom properties; follow existing names before adding tokens.",
+    "generator": null,
+    "notes": "The CSS file is both token source and shipped stylesheet. Edit it directly and review affected screens."
+  },
+  "ci": {
+    "provider": "github-actions",
+    "workflows": [
+      ".github/workflows/ci.yml"
+    ],
+    "jobs": [
+      {
+        "name": "Verify",
+        "runs": [
+          "npm ci",
+          "npm run verify",
+          "npm run build"
+        ],
+        "required": false,
+        "notes": "Matches the locally defined job display name. Remote runs and required branch rules have not been verified."
+      }
+    ],
+    "triggerBranches": [
+      "main"
+    ],
+    "concurrency": {
+      "group": "ci-${{ github.ref }}",
+      "cancelInProgress": true
+    },
+    "ownsCrossRepoDispatch": false,
+    "doesNotCatch": [
+      "Live deployment behavior; no deployment is configured."
+    ],
+    "deploy": null
+  },
+  "skills": {
+    "home": ".agents/skills/",
+    "hostLinkDirs": [
+      ".cursor/skills/",
+      ".claude/skills/"
+    ],
+    "lockFile": "skills-lock.json"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-14",
+  "sources": [
+    {
+      "id": "stacki",
+      "repository": "https://github.com/flowtricks/stacki",
+      "commit": "800fa5270523e7df3afbcaeee8bdbb3a6fe07b49",
+      "localReference": "../stacki-reference",
+      "purpose": "Editor reference; source matches the pre-bootstrap Stellar application tree",
+      "license": "MIT",
+      "notice": "third-party/stacki/LICENSE",
+      "runtimeDependency": false
+    },
+    {
+      "id": "altitude-agent-harness",
+      "repository": "https://github.com/altitudemarketing/altitude-agent-harness",
+      "commit": "e629ae2ad1d1e8e08a4e202af243c26ba6f51c20",
+      "localReference": "../altitude-agent-harness",
+      "purpose": "Development harness templates; adapted for the Stellar application",
+      "license": "No public license observed; ownership and redistribution rights unresolved",
+      "runtimeDependency": false
+    },
+    {
+      "id": "company-astro",
+      "repository": "https://github.com/altitudemarketing/altitude-astro",
+      "inspectedCommit": "0a9562813b49abcb20b96b704cdb70583504095a",
+      "localReference": "../altitude/altitude-astro",
+      "purpose": "Existing company-site POC frontend; unchanged by bootstrap",
+      "runtimeDependency": false
+    },
+    {
+      "id": "company-wordpress",
+      "repository": "https://github.com/altitudemarketing/altitude-headless-theme",
+      "inspectedCommit": "80cf5252fa329523369a2a59d74bbd1c264927fa",
+      "localReference": "../altitude/altitude-headless-theme",
+      "purpose": "Existing company-site POC WordPress code; unchanged by bootstrap",
+      "runtimeDependency": false
+    }
+  ]
+}

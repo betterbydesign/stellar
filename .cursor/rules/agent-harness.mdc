@@ -1,0 +1,6 @@
+---
+description: Pointer to Stellar's shared agent harness
+alwaysApply: true
+---
+
+Read `documentation.intakeSet` in `harness.json`, then follow `AGENTS.md`, `WORKFLOW.md`, and `docs/agent-rules.md`. Use applicable `verify.*` commands from the profile. `tracker`, `review`, and `ci.deploy` are null; do not infer integrations. Keep durable policy in shared docs.

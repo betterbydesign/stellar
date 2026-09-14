@@ -32,3 +32,9 @@ output/playwright/browser-logs/
 # worktree under the repo root. Untracked and unignored, it shows up in
 # `git status --short`, which IS the docs-only verification command.
 .worktrees/
+
+# Stellar workspace build output
+.next/
+next-env.d.ts
+coverage/
+!.env.example

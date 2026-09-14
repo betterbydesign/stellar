@@ -1,12 +1,14 @@
 # Starting the Stellar application
 
-2026-09-14 · Proposed implementation sequence. The user intends to develop Stellar in their own GitHub account and license its use to the company alongside Agent Hub. This is an intended ownership arrangement, not a determination that the user already owns all related code. Harness location, work status/jurisdiction and the company agreement remain unresolved.
+2026-09-14 · Bootstrap implementation and validation complete. The user intends to develop Stellar in their own GitHub account and license its use to the company alongside Agent Hub. The user confirmed Pennsylvania, USA, employee status and supplied all source repositories. This records an intended ownership arrangement, not a determination of ownership; the company agreement remains unresolved.
+
+The research is preserved in commit `01d43eb`; the web workspace and adapted harness are recorded in the following bootstrap commit on `codex/stellar-bootstrap`. Clean installation, full verification, four regression tests, production build and desktop/mobile browser inspection passed. See the [completed ExecPlan](exec-plans/completed/stellar-bootstrap.md) for evidence and the next proof.
 
 ## Repository layout
 
-Keep `/Users/scottfoster/git/stellar` as the product workspace. Its current origin is `https://github.com/betterbydesign/stellar.git`, but its tracked application is still Stacki at `800fa5270523e7df3afbcaeee8bdbb3a6fe07b49`. `docs/` and `output/` are currently untracked. Remote visibility and account ownership were not independently verified.
+Keep `stellar` as the product workspace. Its origin is `https://github.com/betterbydesign/stellar.git`. The initial research commit preserves the PRD, source mappings, user mockups and selected screenshots. The old application was verified against Stacki commit `800fa5270523e7df3afbcaeee8bdbb3a6fe07b49` before being removed from the current working tree; its history and MIT notice remain. The adjacent reference checkout is at that exact commit. Remote visibility and legal ownership were not independently verified.
 
-Use an adjacent Stacki reference checkout and a separate harness source repository. Proposed layout, not folders already created:
+Stacki and the harness now have adjacent source checkouts. The initial app is under `apps/web`; the two package paths below are future extraction boundaries, not implemented packages:
 
 ```text
 git/
@@ -16,7 +18,7 @@ git/
     packages/editor-core/  Selected Stacki-derived code, tests and MIT notice
     docs/                  Existing PRD, research, POC and provenance
   stacki-reference/        Preserved source checkout pinned to the audited revision
-  <harness-repo>/          Harness source and its own release history
+  altitude-agent-harness/  Harness source and its own release history
   agent-hub/               Existing product; reuse subject to ownership/license
 ```
 
@@ -29,11 +31,11 @@ Start with only the packages needed for the first proof. An adjacent reference c
 3. Make a normal bootstrap branch/commit in Stellar, preserving its existing history. Do not delete `.git`, rewrite upstream history, force-push, or assume that a fresh history establishes ownership. Move research links to the reference source where extraction removes their current targets.
 4. Replace the root application deliberately with the web scaffold. Bring over selected editor modules and tests when used, with upstream repository/revision and file provenance. Preserve their MIT notice. Select a separate licensing policy for original Stellar material after ownership is settled; do not overwrite the upstream notice with an exclusive-ownership claim.
 
-No repository move, source deletion, branch/commit, clone or push has happened as part of this plan.
+Repository work is authorized on `codex/stellar-bootstrap`. The first commit preserves research and the ignore rules; subsequent changes create the app and adapted harness. No push, upstream modification or company-site deployment is included in this bootstrap.
 
 ## Bring in the AI harness
 
-The harness repository URL/local path has been requested. Inspect its README, agent instructions, licensing, bootstrap/update mechanism and expected directory structure before running its setup. Prefer the harness's supported installer or pinned package/release if one exists; otherwise define a small, repeatable integration rather than copying the entire repo into the product.
+The supplied source is [altitude-agent-harness](https://github.com/altitudemarketing/altitude-agent-harness), cloned adjacent at commit `e629ae2ad1d1e8e08a4e202af243c26ba6f51c20`. It is a copy-based template with no runtime/package installer. Its current schema and variants support only Astro and WordPress, assume two long-lived branches and require a real tracker list. Stellar therefore uses a documented local adaptation for Next.js, a single main base and explicitly unconfigured external services, rather than claiming to be an Astro consumer or inheriting company tracker IDs.
 
 Apply only the intended project files: instructions, workflow/skill configuration, setup scripts and documented tool connections. Reconcile overlapping instructions with Stellar's requirements instead of blindly overwriting them. Keep credentials in their intended local/server secret stores and commit examples or secret references only.
 
@@ -55,7 +57,7 @@ The detailed POC still performs the independent WP import/read/render work befor
 
 ## Ownership arrangement to take to counsel
 
-Personal GitHub control, receipts, separate service accounts and development records help demonstrate provenance and spending. They do not alone resolve copyright ownership. Assuming US law, employee work within the scope of employment can be work made for hire without an express IP clause. Contractor treatment differs and the factual relationship matters. The user's jurisdiction and status are not yet known. [Copyright Office work-made-for-hire guidance](https://www.copyright.gov/register/se-hire.html), [ownership and transfers, sections 201 and 204](https://www.copyright.gov/title17/92chap2.html)
+Personal GitHub control, receipts, separate service accounts and development records help demonstrate provenance and spending. They do not alone resolve copyright ownership. The user is an employee in Pennsylvania, USA; under federal copyright law employee work within the scope of employment can be work made for hire without an express IP clause. Whether this work falls within that scope and the effect of other agreements or duties require legal review. [Copyright Office work-made-for-hire guidance](https://www.copyright.gov/register/se-hire.html), [ownership and transfers, sections 201 and 204](https://www.copyright.gov/title17/92chap2.html)
 
 Ask an IP/employment attorney to prepare or review a signed project-specific ownership carve-out and company-use license. The business terms to resolve are:
 

@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "template": {
+    "source": "altitude-agent-harness",
+    "ref": "e629ae2ad1d1e8e08a4e202af243c26ba6f51c20"
+  },
+  "files": {
+    ".agents/skills/README.md": {
+      "hash": "sha256-eb383dc88f4e8aa5c67c006b5181d95d5dfbf2029aea431cbd06d07ffe28ecda"
+    },
+    ".claude/commands/cu-close.md": {
+      "hash": "sha256-f8bed4881b7f0f42addf007f720920da7ea7d7ef9927490dd6e429b9c4806fdf"
+    },
+    ".claude/commands/doc-it.md": {
+      "hash": "sha256-a6d73d1fb06e702f59e6e59dc5830c64c3613bbb7bf9b4782f0553afad32d349"
+    },
+    ".codex/prompts/cu-close.md": {
+      "hash": "sha256-02cb107584029357181e813720f5414311fe22f091818dd2813bf22265f21759"
+    },
+    ".cursor/commands/cu-close.md": {
+      "hash": "sha256-fe86bdd071a92afd4ef6f5b044aefc99402d219704f9b9629604f87db7f89393"
+    },
+    ".cursor/rules/agent-harness.mdc": {
+      "hash": "sha256-7227cfe985ce4ceea4571aea9217ff0057c6fe7c4b01efe30e75b19985692729"
+    },
+    "CLAUDE.md": {
+      "hash": "sha256-f43634927b8976a7789fdccbc7c65bf7e66e78d100361bd3f2dfdd38618b50c0"
+    },
+    "WORKFLOW.md": {
+      "hash": "sha256-d311dc62ab9ff22ac7efbfb360216caadf4d438006b0dad3ede453dcacd99e15"
+    },
+    "docs/PLANS.md": {
+      "hash": "sha256-da64e20952d62774b3d5257fa3187b33335ed30939de9ba20c71b1532177a3f1"
+    },
+    "docs/README.md": {
+      "hash": "sha256-ce26ca9e25f7671c14d389c1ba7e8bc072fe30ecd04d137eeab9a8bd545a1c21"
+    },
+    "docs/agent-harness-setup.md": {
+      "hash": "sha256-5b7c34c546518946662755fe9f7d1c6debd4d61eca0c4b5d1b3f709343c846f0"
+    },
+    "docs/agent-rules.md": {
+      "hash": "sha256-592eb26242d4a0d9deafd6ddcd5bb8e6c9ccc0f597f5073dfc650dbd4405f7bd"
+    },
+    "docs/architecture/README.md": {
+      "hash": "sha256-cb3494d953914e7422b55f49c82143fa975d30c9cce0dd995fba30a07a366b0e"
+    },
+    "docs/archive/README.md": {
+      "hash": "sha256-497bda40ca16cd851547cb958f47c65fb9c083af2af957176229a64498164573"
+    },
+    "docs/evidence/.gitkeep": {
+      "hash": "sha256-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/exec-plans/active/README.md": {
+      "hash": "sha256-f064df50ea6d6b1e70b44ab714fa41938e7489d21e2fde7ac9e8ce670532b3b0"
+    },
+    "docs/exec-plans/archived/README.md": {
+      "hash": "sha256-63920d0731bd7a3c5cac395b2f2e7a5f61cacd6cc701264f6975a4c931f64041"
+    },
+    "docs/exec-plans/completed/README.md": {
+      "hash": "sha256-9465378e322d232151a030f5f97b3d37b239b9acff5093d5eb77bfce44822abe"
+    },
+    "docs/handoffs/.gitkeep": {
+      "hash": "sha256-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/prds/.gitkeep": {
+      "hash": "sha256-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/provenance/harness-adaptation.md": {
+      "hash": "sha256-d420dcfe7ea7aa1048992402cb45394bc6b96e83b0d2dbade116e4b63c2130aa"
+    },
+    "docs/reviews/README.md": {
+      "hash": "sha256-a79612f373e7ab99bbcd32d3075c91c66a27da39f8f410f427e8c9364720732b"
+    },
+    "docs/templates/clickup-task-handoff.md": {
+      "hash": "sha256-e3fe332d28657d60fb040ef6d618b4a9ffd0ef7e50b9f26f6e9b6aa71658473b"
+    },
+    "docs/templates/completion-summary.md": {
+      "hash": "sha256-cbef4a7b2e802406dc5907497f7652993a91f7a68b5e6abcc50eb749213d0bc0"
+    },
+    "docs/templates/prd.md": {
+      "hash": "sha256-0751006bb13bcb2e8c4d2820319d399d5f160b27140654fbe8c3a6b0f7676f34"
+    },
+    "docs/templates/progress-comment.md": {
+      "hash": "sha256-330b7964a4c066d2dfaa113e38bbc198de073358b96e01989374983194fc54ef"
+    },
+    "docs/templates/session-finish-checklist.md": {
+      "hash": "sha256-2bec427ce6596cacb0d000815453c7a7651e4c3cf1dd808314a761f4a715ec57"
+    },
+    "docs/templates/session-start-checklist.md": {
+      "hash": "sha256-f7af32512fa891f4a8844e20ddfecefc5ec7166c75a6e66eb3ea49e28d549a14"
+    },
+    "docs/user-guide/README.md": {
+      "hash": "sha256-4ad5eb9890bfe0ae2342f693899c5624f98d7fdd57fec1169a2605374f84d84a"
+    },
+    "docs/user-guide/_template.md": {
+      "hash": "sha256-e543066eda55a9ac4e92d818860e02c502987bd2d72cd42172489a8e46c8dd9f"
+    },
+    "harness.schema.json": {
+      "hash": "sha256-f1864925cedd15392f6277f4bcece786149afba221c83a8b17467d1a6bbbb035"
+    },
+    "scripts/check-docs.mjs": {
+      "hash": "sha256-fc5edbc5eee65eef7e462c403d525f5e8697692067918756143ff006787620a1"
+    },
+    "scripts/check-harness-drift.mjs": {
+      "hash": "sha256-b9a798dd85747146ee69beb123d69f769c90399f4eed9b0cd8196e4ede778c0f"
+    },
+    "scripts/check-harness-profile.mjs": {
+      "hash": "sha256-8c0906a13b717d10de8bfcfe140439e1f828e8b229431452084c6a68d8befc35"
+    },
+    "skills-lock.json": {
+      "hash": "sha256-4a9abeb79e3fc91266a954d346a9dd821b55fd394e90e9e70aeb5dbae7e849ee"
+    }
+  }
+}
