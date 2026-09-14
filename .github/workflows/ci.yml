@@ -27,6 +27,11 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            fixtures/astro-style-lab/package-lock.json
       - run: npm ci
+      - run: npm run fixture:install
       - run: npm run verify
       - run: npm run build
+      - run: npm run verify:local

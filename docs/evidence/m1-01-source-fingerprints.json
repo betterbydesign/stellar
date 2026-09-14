@@ -1,0 +1,24 @@
+{
+  "date": "2026-09-14",
+  "baseCommit": "703e12c",
+  "branch": "codex/m1-01-contracts-fixture",
+  "committed": false,
+  "algorithm": "sha256(sorted(relativePath + NUL + fileBytes + NUL))",
+  "excludedDirectories": [
+    "node_modules",
+    "dist",
+    ".astro"
+  ],
+  "sources": [
+    {
+      "path": "packages/contracts",
+      "files": 11,
+      "sha256": "4dd0ed2b0e8046088a9ea5afd9941cff630399db96159260dbf477baff5dcd9a"
+    },
+    {
+      "path": "fixtures/astro-style-lab",
+      "files": 14,
+      "sha256": "6e80ad261d6b6dff0a2c29bc1e1d18b6570dd5a013d5fbe8a56235fd454f3d29"
+    }
+  ]
+}

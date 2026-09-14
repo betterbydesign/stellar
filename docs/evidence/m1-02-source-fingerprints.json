@@ -1,0 +1,65 @@
+{
+  "date": "2026-09-14",
+  "baseCommit": "703e12c",
+  "branch": "codex/m1-02-project-runner",
+  "committed": false,
+  "algorithm": "sha256(sorted(relativePath + NUL + fileBytes + NUL))",
+  "excludedDirectories": [
+    ".astro",
+    ".git",
+    ".next",
+    "dist",
+    "node_modules"
+  ],
+  "excludedFiles": [
+    "next-env.d.ts",
+    "*.tsbuildinfo"
+  ],
+  "sources": [
+    {
+      "path": "apps/runner",
+      "files": 13,
+      "sha256": "174e3495493071896fde2424accb3832a3ce9e9462da3b901f611d5697b85293"
+    },
+    {
+      "path": "apps/web",
+      "files": 18,
+      "sha256": "390ec93024d441c3044d75c7be5d0d579bc376991063d1e3aaaa3386eb15ffde"
+    },
+    {
+      "path": "packages/contracts",
+      "files": 11,
+      "sha256": "4dd0ed2b0e8046088a9ea5afd9941cff630399db96159260dbf477baff5dcd9a"
+    },
+    {
+      "path": "packages/editor-core",
+      "files": 7,
+      "sha256": "5714c60104f8dec2ac16b5d06fbd16e6a9834b46c3dcfd022a08eb38f68f7f3d"
+    },
+    {
+      "path": "fixtures/astro-style-lab",
+      "files": 14,
+      "sha256": "6e80ad261d6b6dff0a2c29bc1e1d18b6570dd5a013d5fbe8a56235fd454f3d29"
+    },
+    {
+      "path": "scripts/verify-local-runner.mjs",
+      "files": 1,
+      "sha256": "c7b3ec5913249328d3cbf767668fde5a294bb9b4aa7a803eb8c1c37f80f30512"
+    },
+    {
+      "path": "package.json",
+      "files": 1,
+      "sha256": "689c0c393399ef992ddad048def7e12a400022411746512ee383874e42bd47d9"
+    },
+    {
+      "path": "package-lock.json",
+      "files": 1,
+      "sha256": "9a3e53cd5e215ffb5e71d3659be2518c1fc1a4a91a90d51a5c01b1a85a91fb9d"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "files": 1,
+      "sha256": "70929424032377fcae1841f0b182a39da09e01cc20a6fa94388d24ac58022712"
+    }
+  ]
+}

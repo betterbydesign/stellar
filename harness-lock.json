@@ -27,7 +27,7 @@
       "hash": "sha256-f43634927b8976a7789fdccbc7c65bf7e66e78d100361bd3f2dfdd38618b50c0"
     },
     "WORKFLOW.md": {
-      "hash": "sha256-d311dc62ab9ff22ac7efbfb360216caadf4d438006b0dad3ede453dcacd99e15"
+      "hash": "sha256-9e9fa2239904ed2a71ad1ae853213cc18188ee67c40bae2cfd6ae408db278200"
     },
     "docs/PLANS.md": {
       "hash": "sha256-da64e20952d62774b3d5257fa3187b33335ed30939de9ba20c71b1532177a3f1"
@@ -36,7 +36,7 @@
       "hash": "sha256-ce26ca9e25f7671c14d389c1ba7e8bc072fe30ecd04d137eeab9a8bd545a1c21"
     },
     "docs/agent-harness-setup.md": {
-      "hash": "sha256-5b7c34c546518946662755fe9f7d1c6debd4d61eca0c4b5d1b3f709343c846f0"
+      "hash": "sha256-bcd71377f8ed295aa2fe9648234fb446233ee02e7110d5134d26af5d1ac1c559"
     },
     "docs/agent-rules.md": {
       "hash": "sha256-592eb26242d4a0d9deafd6ddcd5bb8e6c9ccc0f597f5073dfc650dbd4405f7bd"
@@ -105,7 +105,7 @@
       "hash": "sha256-b9a798dd85747146ee69beb123d69f769c90399f4eed9b0cd8196e4ede778c0f"
     },
     "scripts/check-harness-profile.mjs": {
-      "hash": "sha256-8c0906a13b717d10de8bfcfe140439e1f828e8b229431452084c6a68d8befc35"
+      "hash": "sha256-932a7afe7370ccc17b99f8f4e745eef321f9cd72a1a5060b320c05d28d78ac20"
     },
     "skills-lock.json": {
       "hash": "sha256-4a9abeb79e3fc91266a954d346a9dd821b55fd394e90e9e70aeb5dbae7e849ee"

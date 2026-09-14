@@ -1,6 +1,6 @@
 # Initial editor milestone: M1
 
-Status: scoped for implementation planning; implementation has not started. These are local PRD identifiers, not ClickUp task IDs. Follow the root [harness workflow](../../WORKFLOW.md) and the [PRD template](../templates/prd.md) when implementing them.
+Status: M1-01 through M1-03 are implemented and reviewed locally; included in the authorized foundation commit. M1-04 through M1-06 are the next implementation wave. These are local PRD identifiers, not ClickUp task IDs. Follow the root [harness workflow](../../WORKFLOW.md) and the [PRD template](../templates/prd.md) when implementing them.
 
 M1 proves this workflow: open a registered project, view a real Astro page, switch viewport width, select an element, inspect its style source, apply a supported local style or shared-token change, undo/redo, then close and reopen without losing the change. The code on disk is authoritative. A CSS change that exists only in an iframe or browser storage does not pass.
 

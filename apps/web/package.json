@@ -7,13 +7,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint app next.config.ts",
-    "typecheck": "next typegen && tsc --noEmit"
+    "lint": "eslint app lib test next.config.ts",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "node --conditions=react-server -r ./test/register.cjs --test test/broker.test.cjs"
   },
   "dependencies": {
     "next": "16.3.5",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "@stellar/contracts": "0.1.0",
+    "server-only": "0.0.1"
   },
   "devDependencies": {
     "@eslint/compat": "2.1.1",
@@ -22,6 +25,7 @@
     "@types/react-dom": "19.3.0",
     "eslint": "10.10.0",
     "eslint-config-next": "16.3.5",
-    "typescript": "7.0.2"
+    "typescript": "7.0.2",
+    "typescript-compiler": "npm:typescript@6.0.3"
   }
 }

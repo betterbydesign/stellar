@@ -16,7 +16,7 @@ const staticFiles = [
   "docs/provenance/harness-adaptation.md",
 ];
 const requiredScripts = ["dev", "lint", "typecheck", "test", "build", "verify", "verify:docs", "verify:harness"];
-const ciCommands = ["npm ci", "npm run verify", "npm run build"];
+const ciCommands = ["npm ci", "npm run fixture:install", "npm run verify", "npm run build", "npm run verify:local"];
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, "utf8"));

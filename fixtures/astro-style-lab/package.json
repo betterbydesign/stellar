@@ -1,0 +1,20 @@
+{
+  "name": "astro-style-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Original two-page Astro site used as Stellar's local style-editing fixture.",
+  "engines": {
+    "node": "22.23.2",
+    "npm": "10.9.8"
+  },
+  "packageManager": "npm@10.9.8",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "7.3.2"
+  }
+}

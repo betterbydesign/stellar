@@ -1,0 +1,699 @@
+{
+  "manifestVersion": 1,
+  "renderer": "astro",
+  "project": {
+    "slug": "astro-style-lab",
+    "name": "Fieldnote Studio style lab"
+  },
+  "capabilities": {
+    "styleEdits": true,
+    "tokenEdits": true,
+    "htmlEditing": false,
+    "arbitraryAstroImport": false,
+    "clientAuthorization": false
+  },
+  "pages": [
+    {
+      "id": "home",
+      "route": "/",
+      "label": "Home",
+      "sourceFile": "src/pages/index.astro"
+    },
+    {
+      "id": "contact",
+      "route": "/contact/",
+      "label": "Contact",
+      "sourceFile": "src/pages/contact.astro"
+    }
+  ],
+  "styleScopes": [
+    {
+      "id": "base",
+      "kind": "base"
+    },
+    {
+      "id": "mobile",
+      "kind": "media",
+      "query": "(max-width: 767px)",
+      "maxWidthPx": 767
+    }
+  ],
+  "allowedCssFiles": [
+    "src/styles/tokens.css",
+    "src/styles/site.css"
+  ],
+  "targets": [
+    {
+      "anchor": "home-hero-title",
+      "pageId": "home",
+      "source": {
+        "file": "src/pages/index.astro",
+        "locator": "#home-hero-title",
+        "componentDefinitionFile": null,
+        "componentCallSiteFile": null
+      },
+      "editable": true,
+      "readOnlyReason": null
+    },
+    {
+      "anchor": "home-hero-accent",
+      "pageId": "home",
+      "source": {
+        "file": "src/pages/index.astro",
+        "locator": "#home-hero-accent",
+        "componentDefinitionFile": null,
+        "componentCallSiteFile": null
+      },
+      "editable": true,
+      "readOnlyReason": null
+    },
+    {
+      "anchor": "home-hero-actions",
+      "pageId": "home",
+      "source": {
+        "file": "src/pages/index.astro",
+        "locator": "#home-hero-actions",
+        "componentDefinitionFile": null,
+        "componentCallSiteFile": null
+      },
+      "editable": true,
+      "readOnlyReason": null
+    },
+    {
+      "anchor": "home-primary-cta",
+      "pageId": "home",
+      "source": {
+        "file": "src/pages/index.astro",
+        "locator": "#home-primary-cta",
+        "componentDefinitionFile": null,
+        "componentCallSiteFile": null
+      },
+      "editable": true,
+      "readOnlyReason": null
+    },
+    {
+      "anchor": "contact-panel-title",
+      "pageId": "contact",
+      "source": {
+        "file": "src/pages/contact.astro",
+        "locator": "#contact-panel-title",
+        "componentDefinitionFile": null,
+        "componentCallSiteFile": null
+      },
+      "editable": true,
+      "readOnlyReason": null
+    },
+    {
+      "anchor": "contact-primary-cta",
+      "pageId": "contact",
+      "source": {
+        "file": "src/pages/contact.astro",
+        "locator": "#contact-primary-cta",
+        "componentDefinitionFile": null,
+        "componentCallSiteFile": null
+      },
+      "editable": true,
+      "readOnlyReason": null
+    },
+    {
+      "anchor": "home-feature-clarity",
+      "pageId": "home",
+      "source": {
+        "file": "src/components/FeatureCard.astro",
+        "locator": ".feature-card__title",
+        "componentDefinitionFile": "src/components/FeatureCard.astro",
+        "componentCallSiteFile": "src/pages/index.astro"
+      },
+      "editable": false,
+      "readOnlyReason": "repeated-component"
+    },
+    {
+      "anchor": "home-feature-rhythm",
+      "pageId": "home",
+      "source": {
+        "file": "src/components/FeatureCard.astro",
+        "locator": ".feature-card__title",
+        "componentDefinitionFile": "src/components/FeatureCard.astro",
+        "componentCallSiteFile": "src/pages/index.astro"
+      },
+      "editable": false,
+      "readOnlyReason": "repeated-component"
+    },
+    {
+      "anchor": "contact-method-email",
+      "pageId": "contact",
+      "source": {
+        "file": "src/components/ContactMethod.astro",
+        "locator": ".contact-method__title",
+        "componentDefinitionFile": "src/components/ContactMethod.astro",
+        "componentCallSiteFile": "src/pages/contact.astro"
+      },
+      "editable": false,
+      "readOnlyReason": "repeated-component"
+    },
+    {
+      "anchor": "contact-method-visit",
+      "pageId": "contact",
+      "source": {
+        "file": "src/components/ContactMethod.astro",
+        "locator": ".contact-method__title",
+        "componentDefinitionFile": "src/components/ContactMethod.astro",
+        "componentCallSiteFile": "src/pages/contact.astro"
+      },
+      "editable": false,
+      "readOnlyReason": "repeated-component"
+    },
+    {
+      "anchor": "home-process-steps",
+      "pageId": "home",
+      "source": {
+        "file": "src/pages/index.astro",
+        "locator": "#home-process-steps",
+        "componentDefinitionFile": null,
+        "componentCallSiteFile": null
+      },
+      "editable": false,
+      "readOnlyReason": "dynamic-source"
+    }
+  ],
+  "tokens": [
+    {
+      "kind": "definition",
+      "id": "token-action-color",
+      "name": "--lab-color-action-base",
+      "valueType": "color",
+      "source": {
+        "file": "src/styles/tokens.css",
+        "selector": ":root",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "--lab-color-action-base"
+      },
+      "allowedUnits": [],
+      "min": null,
+      "max": null,
+      "impact": {
+        "pageIds": [
+          "home",
+          "contact"
+        ],
+        "anchors": [
+          "home-primary-cta",
+          "contact-primary-cta"
+        ],
+        "coverage": "declared"
+      }
+    },
+    {
+      "kind": "definition",
+      "id": "token-action-space",
+      "name": "--lab-space-action",
+      "valueType": "length",
+      "source": {
+        "file": "src/styles/tokens.css",
+        "selector": ":root",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "--lab-space-action"
+      },
+      "allowedUnits": [
+        "rem"
+      ],
+      "min": 0,
+      "max": 4,
+      "impact": {
+        "pageIds": [
+          "home",
+          "contact"
+        ],
+        "anchors": [
+          "home-primary-cta",
+          "contact-primary-cta"
+        ],
+        "coverage": "declared"
+      }
+    },
+    {
+      "kind": "alias",
+      "id": "token-action-color-alias",
+      "name": "--lab-color-action",
+      "valueType": "color",
+      "reference": "--lab-color-action-base",
+      "source": {
+        "file": "src/styles/tokens.css",
+        "selector": ":root",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "--lab-color-action"
+      }
+    },
+    {
+      "kind": "alias",
+      "id": "token-action-space-alias",
+      "name": "--lab-space-button",
+      "valueType": "length",
+      "reference": "--lab-space-action",
+      "source": {
+        "file": "src/styles/tokens.css",
+        "selector": ":root",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "--lab-space-button"
+      }
+    }
+  ],
+  "styleRules": [
+    {
+      "anchor": "home-hero-title",
+      "property": "color",
+      "scopeId": "base",
+      "valueType": "color",
+      "allowedUnits": [],
+      "min": null,
+      "max": null,
+      "allowedTokenNames": [],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".hero__title",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "color"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#home-hero-title",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "color"
+      }
+    },
+    {
+      "anchor": "home-hero-accent",
+      "property": "color",
+      "scopeId": "base",
+      "valueType": "color",
+      "allowedUnits": [],
+      "min": null,
+      "max": null,
+      "allowedTokenNames": [],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".hero__accent",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "color"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#home-hero-accent",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "color"
+      }
+    },
+    {
+      "anchor": "home-hero-actions",
+      "property": "gap",
+      "scopeId": "base",
+      "valueType": "length",
+      "allowedUnits": [
+        "rem"
+      ],
+      "min": 0,
+      "max": 4,
+      "allowedTokenNames": [],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".hero__actions",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "gap"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#home-hero-actions",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "gap"
+      }
+    },
+    {
+      "anchor": "home-hero-actions",
+      "property": "gap",
+      "scopeId": "mobile",
+      "valueType": "length",
+      "allowedUnits": [
+        "rem"
+      ],
+      "min": 0,
+      "max": 4,
+      "allowedTokenNames": [],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".hero__actions",
+        "scopeId": "mobile",
+        "atRule": "(max-width: 767px)",
+        "theme": null,
+        "property": "gap"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#home-hero-actions",
+        "scopeId": "mobile",
+        "atRule": "(max-width: 767px)",
+        "theme": null,
+        "property": "gap"
+      }
+    },
+    {
+      "anchor": "home-primary-cta",
+      "property": "background-color",
+      "scopeId": "base",
+      "valueType": "color",
+      "allowedUnits": [],
+      "min": null,
+      "max": null,
+      "allowedTokenNames": [
+        "--lab-color-action",
+        "--lab-color-action-base"
+      ],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".button--primary",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "background-color"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#home-primary-cta",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "background-color"
+      }
+    },
+    {
+      "anchor": "home-primary-cta",
+      "property": "padding-inline",
+      "scopeId": "base",
+      "valueType": "length",
+      "allowedUnits": [
+        "rem"
+      ],
+      "min": 0,
+      "max": 4,
+      "allowedTokenNames": [
+        "--lab-space-button",
+        "--lab-space-action"
+      ],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".button--primary",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "padding-inline"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#home-primary-cta",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "padding-inline"
+      }
+    },
+    {
+      "anchor": "home-primary-cta",
+      "property": "padding-inline",
+      "scopeId": "mobile",
+      "valueType": "length",
+      "allowedUnits": [
+        "rem"
+      ],
+      "min": 0,
+      "max": 4,
+      "allowedTokenNames": [
+        "--lab-space-button",
+        "--lab-space-action"
+      ],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".button--primary",
+        "scopeId": "mobile",
+        "atRule": "(max-width: 767px)",
+        "theme": null,
+        "property": "padding-inline"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#home-primary-cta",
+        "scopeId": "mobile",
+        "atRule": "(max-width: 767px)",
+        "theme": null,
+        "property": "padding-inline"
+      }
+    },
+    {
+      "anchor": "home-primary-cta",
+      "property": "padding-block",
+      "scopeId": "base",
+      "valueType": "length",
+      "allowedUnits": [
+        "rem"
+      ],
+      "min": 0,
+      "max": 3,
+      "allowedTokenNames": [],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".button--primary",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "padding-block"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#home-primary-cta",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "padding-block"
+      }
+    },
+    {
+      "anchor": "home-primary-cta",
+      "property": "border-radius",
+      "scopeId": "base",
+      "valueType": "length",
+      "allowedUnits": [
+        "px"
+      ],
+      "min": 0,
+      "max": 999,
+      "allowedTokenNames": [],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".button--primary",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "border-radius"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#home-primary-cta",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "border-radius"
+      }
+    },
+    {
+      "anchor": "contact-panel-title",
+      "property": "color",
+      "scopeId": "base",
+      "valueType": "color",
+      "allowedUnits": [],
+      "min": null,
+      "max": null,
+      "allowedTokenNames": [],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".contact-panel__title",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "color"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#contact-panel-title",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "color"
+      }
+    },
+    {
+      "anchor": "contact-primary-cta",
+      "property": "background-color",
+      "scopeId": "base",
+      "valueType": "color",
+      "allowedUnits": [],
+      "min": null,
+      "max": null,
+      "allowedTokenNames": [
+        "--lab-color-action",
+        "--lab-color-action-base"
+      ],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".button--primary",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "background-color"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#contact-primary-cta",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "background-color"
+      }
+    },
+    {
+      "anchor": "contact-primary-cta",
+      "property": "padding-inline",
+      "scopeId": "base",
+      "valueType": "length",
+      "allowedUnits": [
+        "rem"
+      ],
+      "min": 0,
+      "max": 4,
+      "allowedTokenNames": [
+        "--lab-space-button",
+        "--lab-space-action"
+      ],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".button--primary",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "padding-inline"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#contact-primary-cta",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "padding-inline"
+      }
+    },
+    {
+      "anchor": "contact-primary-cta",
+      "property": "padding-inline",
+      "scopeId": "mobile",
+      "valueType": "length",
+      "allowedUnits": [
+        "rem"
+      ],
+      "min": 0,
+      "max": 4,
+      "allowedTokenNames": [
+        "--lab-space-button",
+        "--lab-space-action"
+      ],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".button--primary",
+        "scopeId": "mobile",
+        "atRule": "(max-width: 767px)",
+        "theme": null,
+        "property": "padding-inline"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#contact-primary-cta",
+        "scopeId": "mobile",
+        "atRule": "(max-width: 767px)",
+        "theme": null,
+        "property": "padding-inline"
+      }
+    },
+    {
+      "anchor": "contact-primary-cta",
+      "property": "padding-block",
+      "scopeId": "base",
+      "valueType": "length",
+      "allowedUnits": [
+        "rem"
+      ],
+      "min": 0,
+      "max": 3,
+      "allowedTokenNames": [],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".button--primary",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "padding-block"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#contact-primary-cta",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "padding-block"
+      }
+    },
+    {
+      "anchor": "contact-primary-cta",
+      "property": "border-radius",
+      "scopeId": "base",
+      "valueType": "length",
+      "allowedUnits": [
+        "px"
+      ],
+      "min": 0,
+      "max": 999,
+      "allowedTokenNames": [],
+      "fallback": {
+        "file": "src/styles/site.css",
+        "selector": ".button--primary",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "border-radius"
+      },
+      "override": {
+        "file": "src/styles/site.css",
+        "selector": "#contact-primary-cta",
+        "scopeId": "base",
+        "atRule": null,
+        "theme": null,
+        "property": "border-radius"
+      }
+    }
+  ]
+}

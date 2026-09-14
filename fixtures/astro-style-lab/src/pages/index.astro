@@ -1,0 +1,63 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+
+const workshopSteps = [
+  { number: '01', label: 'Listen first' },
+  { number: '02', label: 'Find the pattern' },
+  { number: '03', label: 'Make it real' },
+];
+---
+
+<SiteLayout
+  title="Home"
+  description="Fieldnote Studio shapes useful digital experiences with clarity, curiosity and care."
+  currentPage="home"
+>
+  <section class="hero" aria-labelledby="home-hero-title">
+    <div class="hero__copy">
+      <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span> Independent creative studio · Est. 2024</p>
+      <h1 class="hero__title" id="home-hero-title">
+        Good ideas grow <span class="hero__accent" id="home-hero-accent">with attention.</span>
+      </h1>
+      <p class="hero__lede">We bring strategy, design and a little wonder together to make digital places people want to return to.</p>
+      <div class="hero__actions" id="home-hero-actions">
+        <a class="button button--primary" id="home-primary-cta" href="/contact/">Tell us your idea <span aria-hidden="true">↗</span></a>
+        <a class="text-link" href="#our-approach">Explore our approach <span aria-hidden="true">↓</span></a>
+      </div>
+    </div>
+    <div class="hero__art" aria-hidden="true">
+      <div class="hero__art-ring hero__art-ring--outer"></div>
+      <div class="hero__art-ring hero__art-ring--middle"></div>
+      <div class="hero__art-ring hero__art-ring--inner"></div>
+      <div class="hero__art-core">f<span>.</span></div>
+      <span class="hero__art-note hero__art-note--top">a fresh perspective</span>
+      <span class="hero__art-note hero__art-note--bottom">every small detail counts</span>
+    </div>
+    <div class="hero__footer"><span>01 / 03</span><span>Ideas made tangible</span><span aria-hidden="true">↓</span></div>
+  </section>
+
+  <section class="approach" id="our-approach" aria-labelledby="approach-title">
+    <div class="section-intro">
+      <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span> What we believe</p>
+      <h2 id="approach-title">A little more <em>considered.</em><br />A lot more human.</h2>
+      <p>We make room for the questions that matter. That is where useful, lasting work begins.</p>
+    </div>
+    <div class="feature-grid">
+      <FeatureCard id="home-feature-clarity" number="01" title="Clarity before color" description="We learn what matters, remove the noise and give the best ideas space to breathe." />
+      <FeatureCard id="home-feature-rhythm" number="02" title="Built to keep moving" description="Flexible systems make it easier to evolve without losing the thread that makes you, you." />
+    </div>
+  </section>
+
+  <section class="process" aria-labelledby="process-title">
+    <div class="process__lead">
+      <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span> Our working rhythm</p>
+      <h2 id="process-title">Simple by design.</h2>
+    </div>
+    <ol class="process__steps" id="home-process-steps">
+      {workshopSteps.map((step) => (
+        <li><span>{step.number}</span><strong>{step.label}</strong></li>
+      ))}
+    </ol>
+  </section>
+</SiteLayout>

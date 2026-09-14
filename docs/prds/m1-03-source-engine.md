@@ -1,6 +1,6 @@
 # M1-03 — Source engine and bounded CSS edits
 
-Status: dependent on M1-01. Local identifier M1-03. Parent: [M1 index](README.md); bounded source-preservation and token-editing foundations for product R04/R06/R07.
+Status: implemented and independently reviewed locally; included in the authorized foundation commit. Local identifier M1-03. Parent: [M1 index](README.md); bounded source-preservation and token-editing foundations for product R04/R06/R07.
 
 ## Overview
 
@@ -47,14 +47,14 @@ M1-02 will provide trusted project snapshots and guarded single-file writes. M1-
 
 ## Acceptance Criteria
 
-- [ ] M1-03-A: The M1-01 fixture's supported Astro element resolves from a preview source key to one revision-scoped `targetId`; an unsupported or ambiguous selection produces an explicit non-editable reason.
-- [ ] M1-03-B: The same component rendered more than once cannot cause an accidental per-instance CSS edit. A repeated occurrence is editable only when M1-01 supplies a unique authored instance target and the engine proves its source scope.
-- [ ] M1-03-C: `style.set` changes or inserts exactly one allowed declaration in an existing local fixture rule at base or declared mobile scope. `style.reset` removes only that explicit declaration; unrelated source bytes are identical.
-- [ ] M1-03-D: `token.set` changes exactly one approved shared base color or length token declaration. The proposal identifies its file, selector/at-rule context, raw value, alias relationship when present, and manifest-bounded impact; duplicate-name declarations cannot be silently conflated.
-- [ ] M1-03-E: Each accepted prepare result has a one-file, reviewable patch and guarded inverse. Repeating a no-op edit yields no source change or new history entry.
-- [ ] M1-03-F: The engine rejects invalid values, disallowed properties/scopes, stale or missing revision-scoped targets, ambiguous inheritance, unresolved/cyclic aliases, and source shapes that would require a whole-file rewrite.
-- [ ] M1-03-G: Read and prepare operations perform no filesystem writes or process spawning. Imported code and tests are self-contained in Stellar, retain required Stacki MIT attribution, and need no sibling checkout.
-- [ ] M1-03-H: The supported fixture remains byte-identical after read/no-op and after applying a prepared patch to an in-memory snapshot and reparsing without a new edit. One accepted edit alters only the intended declaration span, and the resulting source passes the engine's Astro/CSS parsing checks. Real rendered behavior is a downstream M1-06 acceptance gate, not a prerequisite for closing M1-03.
+- [x] M1-03-A: The M1-01 fixture's supported Astro element resolves from a preview source key to one revision-scoped `targetId`; an unsupported or ambiguous selection produces an explicit non-editable reason.
+- [x] M1-03-B: The same component rendered more than once cannot cause an accidental per-instance CSS edit. A repeated occurrence is editable only when M1-01 supplies a unique authored instance target and the engine proves its source scope.
+- [x] M1-03-C: `style.set` changes or inserts exactly one allowed declaration in an existing local fixture rule at base or declared mobile scope. `style.reset` removes only that explicit declaration; unrelated source bytes are identical.
+- [x] M1-03-D: `token.set` changes exactly one approved shared base color or length token declaration. The proposal identifies its file, selector/at-rule context, raw value, alias relationship when present, and manifest-bounded impact; duplicate-name declarations cannot be silently conflated.
+- [x] M1-03-E: Each accepted prepare result has a one-file, reviewable patch and guarded inverse. Repeating a no-op edit yields no source change or new history entry.
+- [x] M1-03-F: The engine rejects invalid values, disallowed properties/scopes, stale or missing revision-scoped targets, ambiguous inheritance, unresolved/cyclic aliases, and source shapes that would require a whole-file rewrite.
+- [x] M1-03-G: Read and prepare operations perform no filesystem writes or process spawning. Imported code and tests are self-contained in Stellar, retain required Stacki MIT attribution, and need no sibling checkout.
+- [x] M1-03-H: The supported fixture remains byte-identical after read/no-op and after applying a prepared patch to an in-memory snapshot and reparsing without a new edit. One accepted edit alters only the intended declaration span, and the resulting source passes the engine's Astro/CSS parsing checks. Real rendered behavior is a downstream M1-06 acceptance gate, not a prerequisite for closing M1-03.
 
 ## Testing Plan
 
@@ -84,3 +84,7 @@ Remove or revert the editor-core package and its imports while leaving the regis
 - **Upstream provenance:** inspect `../stacki-reference/electron/astroParser.js` for parse/source-location behavior, `electron/cssVars.js` for PostCSS declaration offsets, `test/roundtrip.test.js` and `test/expectations.json` for preservation gaps, all pinned to commit `800fa5270523e7df3afbcaeee8bdbb3a6fe07b49`. Copy only selected code that is needed, record exact file/revision provenance, and retain the preserved MIT notice. The Stacki parser's generated node IDs, disk-reading `locateSelection`, and whole-model `page:write` are not the M1 identity or write contract.
 - **Prerequisite handoff:** obtain M1-01's manifest and command-envelope definitions. Return to the runner owner a pure patch/apply input shape and to the selection owner the source-key/occurrence rules before either integration hardens its API.
 - **Evidence to provide:** test output for byte identity, one-declaration diff, scoped duplicate-token selection, repeated-occurrence refusal, invalid alias/value refusal, and inverse behavior; example proposal and typed refusal payloads; exact code provenance for any ported lines. Update the active ExecPlan and architecture docs only through the coordinating parent when cross-slice behavior becomes settled.
+
+## Implementation evidence
+
+Implemented with the shared runner/source-engine handoff on 2026-09-14. See the [reviewed handoff](../handoffs/m1-02-and-m1-03.md) and [completed execution plan](../exec-plans/completed/m1-02-project-runner.md) for exact checks, source fingerprints and downstream limits.

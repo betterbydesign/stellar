@@ -1,0 +1,37 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ContactMethod from '../components/ContactMethod.astro';
+---
+
+<SiteLayout
+  title="Contact"
+  description="Start a conversation with Fieldnote Studio about your next website, product or idea."
+  currentPage="contact"
+>
+  <section class="contact-hero" aria-labelledby="contact-title">
+    <div>
+      <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span> Let's talk</p>
+      <h1 id="contact-title">Something good<br />starts <em>here.</em></h1>
+    </div>
+    <div class="contact-hero__aside">
+      <span class="contact-hero__asterisk" aria-hidden="true">✳</span>
+      <p>Tell us where you are and where you want to go. We'll help make the path feel possible.</p>
+    </div>
+  </section>
+
+  <section class="contact-layout" aria-labelledby="contact-panel-title">
+    <div class="contact-panel">
+      <p class="eyebrow">A note from us</p>
+      <h2 class="contact-panel__title" id="contact-panel-title">Let's make room<br />for your next idea.</h2>
+      <p>Big brief or first spark, we’re ready to hear it. A thoughtful first conversation is the best place to start.</p>
+      <a class="button button--primary" id="contact-primary-cta" href="mailto:hello@fieldnote.example?subject=Hello%20Fieldnote">Email the studio <span aria-hidden="true">↗</span></a>
+      <span class="contact-panel__aside">No forms. Just a real conversation.</span>
+    </div>
+    <div class="contact-details">
+      <p class="eyebrow">Find your way in</p>
+      <ContactMethod id="contact-method-email" number="01" label="By email" detail="The best place to share a brief, a question or a hello." href="mailto:hello@fieldnote.example" linkLabel="hello@fieldnote.example" />
+      <ContactMethod id="contact-method-visit" number="02" label="A little introduction" detail="Get a feel for how we think and what we care about." href="/#our-approach" linkLabel="Meet our approach" />
+      <div class="contact-details__note"><span aria-hidden="true">✳</span><p>Good work begins with open minds and a shared table.</p></div>
+    </div>
+  </section>
+</SiteLayout>

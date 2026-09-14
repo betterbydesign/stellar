@@ -4,7 +4,7 @@ The harness is installed in this repository. `../harness.json` is the profile, a
 
 ## Local Setup
 
-From the repository root, run `npm ci`, then `npm run verify` and `npm run build`. Use `npm run dev` to start `apps/web`. `npm run verify:docs` runs the upstream documentation scan; `npm run verify:harness` validates the profile and checks referenced files and commands. The scan reads changed Markdown from Git, so run it inside a checkout.
+From the repository root, run `npm ci` and `npm run fixture:install`, then `npm run verify`, `npm run build` and `npm run verify:local`. Use `npm run dev` to start the shell or `npm run dev:local` for the authenticated local fixture runner. See [local projects](user-guide/local-projects.md) for connection and recovery. `npm run verify:docs` runs the upstream documentation scan; `npm run verify:harness` validates the profile and checks referenced files and commands. The scan reads changed Markdown from Git, so run it inside a checkout.
 
 ## Profile And Provenance
 
@@ -12,7 +12,7 @@ From the repository root, run `npm ci`, then `npm run verify` and `npm run build
 
 ## Branch And CI
 
-`branches.integration` is `main`; `branches.production` is null. Feature branches and pull requests target main. CI's locally defined `Verify` job runs `npm ci`, `npm run verify`, and `npm run build`; remote runs have not been verified. The profile records `required: false` until branch protection is verified. CI does not deploy or register any review product.
+`branches.integration` is `main`; `branches.production` is null. Feature branches and pull requests target main. CI's locally defined `Verify` job runs `npm ci`, `npm run fixture:install`, `npm run verify`, `npm run build`, and `npm run verify:local`; remote runs have not been verified. The profile records `required: false` until branch protection is verified. CI does not deploy or register any review product.
 
 ## Tracker And Reviewer
 

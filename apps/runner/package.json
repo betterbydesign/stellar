@@ -1,0 +1,24 @@
+{
+  "name": "@stellar/runner",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint src",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test dist/*.test.js",
+    "start": "node dist/server.js",
+    "launch": "node src/launcher.mjs"
+  },
+  "dependencies": {
+    "@stellar/contracts": "0.1.0",
+    "@stellar/editor-core": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.2",
+    "eslint": "10.10.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.70.0"
+  }
+}

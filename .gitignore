@@ -38,3 +38,9 @@ output/playwright/browser-logs/
 next-env.d.ts
 coverage/
 !.env.example
+
+# Independent Astro fixture generated metadata
+.astro/
+
+# Trusted local runner copies, credentials and journals
+.stellar-local/

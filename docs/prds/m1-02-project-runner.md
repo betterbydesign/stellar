@@ -1,6 +1,6 @@
 # M1-02 — Open registered projects and run real Astro previews
 
-Status: dependent on M1-01. Local identifier M1-02. Parent: [M1 index](README.md); partial R01 and the workspace foundations of R04/R06.
+Status: implemented and independently reviewed locally; included in the authorized foundation commit. Local identifier M1-02. Parent: [M1 index](README.md); partial R01 and the workspace foundations of R04/R06.
 
 ## Overview
 
@@ -58,13 +58,13 @@ M1-04 provides the Astro integration. M1-02 owns the launch/configuration seam s
 
 ## Acceptance Criteria
 
-- [ ] M1-02-A: Two registered copies open/reopen with distinct source roots and IDs; retries do not create duplicate copies or processes.
-- [ ] M1-02-B: Ready means a real Astro route responded; failed startup, occupied port and compiler failure show actionable state and can be retried.
-- [ ] M1-02-C: Close/restart cleans up the process tree and watchers, preserves source and rotates the preview generation.
-- [ ] M1-02-D: An unauthorized origin/operator, mismatched project/session, traversal or symlink escape cannot read or mutate project source.
-- [ ] M1-02-E: Real M1-03 proposals apply atomically to one file and return a durable receipt; duplicate apply returns the same result, and changed reuse of a request ID fails.
-- [ ] M1-02-F: An observed newer revision makes prepare/apply stale with no overwrite. Simulated interruption around file replacement recovers or reports a conflict without replaying an edit.
-- [ ] M1-02-G: No server credentials appear in preview code, logs or bundles. The trusted-local limitation is explicit in setup and the UI connection state.
+- [x] M1-02-A: Two registered copies open/reopen with distinct source roots and IDs; retries do not create duplicate copies or processes.
+- [x] M1-02-B: Ready means a real Astro route responded; failed startup, occupied port and compiler failure show actionable state and can be retried.
+- [x] M1-02-C: Close/restart cleans up the process tree and watchers, preserves source and rotates the preview generation.
+- [x] M1-02-D: An unauthorized origin/operator, mismatched project/session, traversal or symlink escape cannot read or mutate project source.
+- [x] M1-02-E: Real M1-03 proposals apply atomically to one file and return a durable receipt; duplicate apply returns the same result, and changed reuse of a request ID fails.
+- [x] M1-02-F: An observed newer revision makes prepare/apply stale with no overwrite. Simulated interruption around file replacement recovers or reports a conflict without replaying an edit.
+- [x] M1-02-G: No server credentials appear in preview code, logs or bundles. The trusted-local limitation is explicit in setup and the UI connection state.
 
 ## Testing Plan
 
@@ -87,3 +87,7 @@ M1-01 is required. M1-03 can progress independently after contract freeze but mu
 ## Agent handoff
 
 Own `apps/runner/**`, `apps/web/app/api/projects/**`, `apps/web/lib/server/projects/**` and `apps/web/lib/server/runner/**`, runner tests and implemented runtime architecture/setup docs. Do not edit engine internals, contracts, fixture source or inspector UI. Root lock/CI wiring is coordinated with the integrator. Deliver a lifecycle/state matrix, launch instructions, repeatable A/B project setup, guarded-write tests and documented local security limits. Use SOL high and a separate worktree when parallel with M1-03.
+
+## Implementation evidence
+
+Implemented with the shared runner/source-engine handoff on 2026-09-14. See the [reviewed handoff](../handoffs/m1-02-and-m1-03.md) and [completed execution plan](../exec-plans/completed/m1-02-project-runner.md) for exact checks, source fingerprints and downstream limits.

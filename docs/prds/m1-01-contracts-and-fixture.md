@@ -1,10 +1,10 @@
 # M1-01 — Editor contracts and reproducible project fixture
 
-Status: ready for implementation planning. Local identifier M1-01; no external tracker task. Parent: [M1 index](README.md), bootstrap slices 2–3, partial foundations for product R01/R04/R06/R07/R08.
+Status: implemented and reviewed locally; included in the authorized foundation commit. Local identifier M1-01; no external tracker task. Parent: [M1 index](README.md), bootstrap slices 2–3, partial foundations for product R01/R04/R06/R07/R08.
 
 ## Overview
 
-Define the smallest shared contract that lets independent agents build a real source-backed editor, and provide the Astro project against which every milestone claim can be checked. This is a planning PRD; none of the packages or fixture below exists yet. The first shipped slice is a validated fixture manifest plus importable TypeScript contracts with runtime validation.
+Define the smallest shared contract that lets independent agents build a real source-backed editor, and provide the Astro project against which every milestone claim can be checked. The local implementation provides a validated fixture manifest plus importable TypeScript contracts with runtime validation. See the [implemented architecture](../architecture/editor-contracts.md) and [handoff](../handoffs/m1-01.md).
 
 M1 does not need the complete future `.stellar` handoff schema, a database, OAuth or a universal design-system builder. Version these editor contracts so later renderers and hosted scope can be added without treating Astro output as HTML authoring support.
 
@@ -77,12 +77,12 @@ No WorkOS, Convex, Agent Hub, CMS or agent runtime integration. `renderer` and c
 
 ## Acceptance Criteria
 
-- [ ] M1-01-A: Every request/example validates; unknown protocol versions, mismatched scope, unsupported commands and invalid values fail with the agreed errors.
-- [ ] M1-01-B: A clean checkout builds the fixture without sibling repos or Stellar services. Dependencies and assets have explicit provenance.
-- [ ] M1-01-C: Two pages, unique/nested targets, repeated-component ambiguity, shared token/alias and base/mobile CSS scope cases exist and have expected outcomes.
-- [ ] M1-01-D: Source identity, command idempotency, proposal/receipt and preview envelope fields are sufficient for M1-02/03/04 without duplicate contracts.
-- [ ] M1-01-E: Fixture edit capabilities do not advertise general HTML, arbitrary Astro import, client authorization or full design-system coverage.
-- [ ] M1-01-F: Root checks include contract/fixture validation and the clean fixture build; setup and supported cases are documented for the next agents.
+- [x] M1-01-A: Every request/example validates; unknown protocol versions, mismatched scope, unsupported commands and invalid values fail with the agreed errors.
+- [x] M1-01-B: A clean checkout builds the fixture without sibling repos or Stellar services. Dependencies and assets have explicit provenance.
+- [x] M1-01-C: Two pages, unique/nested targets, repeated-component ambiguity, shared token/alias and base/mobile CSS scope cases exist and have expected outcomes.
+- [x] M1-01-D: Source identity, command idempotency, proposal/receipt and preview envelope fields are sufficient for M1-02/03/04 without duplicate contracts.
+- [x] M1-01-E: Fixture edit capabilities do not advertise general HTML, arbitrary Astro import, client authorization or full design-system coverage.
+- [x] M1-01-F: Root checks include contract/fixture validation and the clean fixture build; setup and supported cases are documented for the next agents.
 
 ## Testing Plan
 

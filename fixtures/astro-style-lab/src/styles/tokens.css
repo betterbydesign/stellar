@@ -1,0 +1,18 @@
+:root {
+  /* Approved concrete definitions. M1 token.set may edit these base declarations. */
+  --lab-color-action-base: #146d69;
+  --lab-space-action: 1.25rem;
+
+  /* Semantic aliases are followed for impact review; their declarations are read-only. */
+  --lab-color-action: var(--lab-color-action-base);
+  --lab-space-button: var(--lab-space-action);
+
+  /* Other authored defaults are intentionally outside this fixture's edit manifest. */
+  --lab-color-ink: #173a3d;
+  --lab-color-brand: #146d69;
+  --lab-color-muted: #516769;
+  --lab-color-paper: #f4f0e8;
+  --lab-color-white: #fffdf9;
+  --lab-color-line: #cdd8d2;
+  --lab-color-soft: #e6ede6;
+}
