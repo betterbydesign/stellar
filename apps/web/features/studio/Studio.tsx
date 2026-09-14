@@ -290,12 +290,19 @@ export function Studio({ projectId }: { projectId: string }) {
     setRefreshCount((count) => count + 1);
   };
   const refreshAfterReceipt = useCallback((receipt: ChangeReceipt) => {
-    if (receipt.projectId !== projectId || receipt.sessionId !== session?.id) return;
+    if (receipt.projectId !== projectId || !session) return;
     if (selectedRef.current && pageId) pendingRemapRef.current = { projectId, pageId, anchor: selectedRef.current.target.anchor };
     invalidate();
     setRefreshCount((current) => current + 1);
     void getSession(projectId, session.id).then((latest) => {
-      if (latest.id === session.id && latest.sourceRevision === receipt.newRevision) setSession(latest);
+      // A reconciled save may belong to a previous, now-expired session. Only
+      // the current authenticated session establishes fresh source authority.
+      if (latest.id === session.id) {
+        setSession((current) => current?.id === latest.id &&
+          (current.sourceRevision !== latest.sourceRevision || current.state !== latest.state || current.previewGeneration !== latest.previewGeneration)
+          ? latest : current);
+        setModelRefreshCount((count) => count + 1);
+      }
     }).catch((cause: unknown) => setError(errorText(cause)));
   }, [invalidate, pageId, projectId, session]);
   const refreshSource = useCallback(() => {
