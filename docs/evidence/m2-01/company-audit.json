@@ -1,0 +1,56 @@
+{
+  "auditVersion": 1,
+  "status": "blocked",
+  "writesAttempted": 0,
+  "summary": {
+    "bindings": 71,
+    "bodySections": 7,
+    "fields": 176,
+    "globalSections": 1,
+    "selectedRoots": 1,
+    "tables": 16
+  },
+  "errors": [],
+  "blockers": [
+    {
+      "code": "GLOBAL_OPTIONS_NOT_DRAFTABLE",
+      "path": "globals.target",
+      "message": "The legacy global-options proposal has no verified draft boundary."
+    },
+    {
+      "code": "LEGACY_DRAFT_NOT_EXECUTABLE",
+      "path": "contractVersion",
+      "message": "The 0.1.0 research mapping cannot authorize or produce an import plan."
+    },
+    {
+      "code": "MEDIA_EVIDENCE_MISSING",
+      "path": "source",
+      "message": "Attachment identities and content digests are absent from the research evidence."
+    },
+    {
+      "code": "RECORD_SNAPSHOT_MISSING",
+      "path": "source",
+      "message": "No source record-value snapshot is available for a deterministic content plan."
+    },
+    {
+      "code": "TARGET_FIELD_KEYS_UNRESOLVED",
+      "path": "schema.targetFieldKeys",
+      "message": "Actual versioned ACF field keys and types are absent."
+    },
+    {
+      "code": "TARGET_INVENTORY_MISSING",
+      "path": "schema",
+      "message": "No target object, identity or revision inventory is available for comparison."
+    },
+    {
+      "code": "TARGET_SCHEMA_UNAPPROVED",
+      "path": "schema.targetSchemaVerified",
+      "message": "The proposed WordPress schema has not been approved or verified."
+    },
+    {
+      "code": "TAXONOMY_MAPPING_UNRESOLVED",
+      "path": "taxonomies",
+      "message": "Taxonomy definitions, terms and assignments are unresolved."
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "contractVersion": "stellar.content-import.v1",
+  "planDigest": "sha256:d86995f72ed6666fc65354c160839b4d5e7bb193e08b96fa6292e706d0ecd88c",
+  "inputDigests": {
+    "mapping": "sha256:5db8ba6b69843d0023314497fb75f224922f1a587c05b0f5edc464bc77e4143a",
+    "source": "sha256:e54221dfbd352998ac365c41e26c79b64433ceea4143edc17da3af2424bc2527",
+    "target": "sha256:08442c29d4dc865335e5927e2ebc0f0f62d67b1767593b900acf5c243beb34a7"
+  },
+  "readiness": "ready",
+  "writesAttempted": 0,
+  "counts": {
+    "create": 6,
+    "update": 0,
+    "noop": 0,
+    "blocked": 0
+  },
+  "diagnostics": [],
+  "operations": [
+    {
+      "operationId": "op_47294e3d16f1c679025dc618",
+      "intentDigest": "sha256:b82411bf1beb376ee6a8056ccd741104443cf508d12f1b95ed1c7eb892884fed",
+      "order": 0,
+      "kind": "media",
+      "action": "create",
+      "identity": "airtable:base_fixture:tbl_shared:rec_shared:fld_image:att_shared",
+      "targetType": "attachment",
+      "targetId": null,
+      "expectedRevision": null,
+      "dependsOn": [],
+      "desired": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "fileName": "synthetic-image.png",
+        "mimeType": "image/png",
+        "byteSize": 128
+      },
+      "diagnosticCodes": []
+    },
+    {
+      "operationId": "op_866360b3cf77b84986c61ea1",
+      "intentDigest": "sha256:ed3c3988ac87e255b33359a8b739f32ca2a62f42dc367a03198afda2af800035",
+      "order": 1,
+      "kind": "term",
+      "action": "create",
+      "identity": "industry:airtable:base_fixture:tbl_terms:rec_term_parent",
+      "targetType": "industry",
+      "targetId": null,
+      "expectedRevision": null,
+      "dependsOn": [],
+      "desired": {
+        "name": "Technology",
+        "slug": "technology",
+        "parentSourceIdentity": null
+      },
+      "diagnosticCodes": []
+    },
+    {
+      "operationId": "op_48c216aac8076b22a92ad21a",
+      "intentDigest": "sha256:398d8e1dcd5e0ff6b22b2bfa7dae3d8e5166fdfba8224e597fb1d2722e654217",
+      "order": 2,
+      "kind": "term",
+      "action": "create",
+      "identity": "industry:airtable:base_fixture:tbl_terms:rec_term_child",
+      "targetType": "industry",
+      "targetId": null,
+      "expectedRevision": null,
+      "dependsOn": [
+        "op_866360b3cf77b84986c61ea1"
+      ],
+      "desired": {
+        "name": "Software",
+        "slug": "software",
+        "parentSourceIdentity": {
+          "system": "airtable",
+          "baseId": "base_fixture",
+          "tableId": "tbl_terms",
+          "recordId": "rec_term_parent"
+        }
+      },
+      "diagnosticCodes": []
+    },
+    {
+      "operationId": "op_7b212ff188d525a53bc18545",
+      "intentDigest": "sha256:bbae397fd7b55a7fc00f84ffba52bedae2dbd51f0a926fdc11f2358e8926fc95",
+      "order": 3,
+      "kind": "post",
+      "action": "create",
+      "identity": "airtable:base_fixture:tbl_shared:rec_shared",
+      "targetType": "shared_post",
+      "targetId": null,
+      "expectedRevision": null,
+      "dependsOn": [
+        "op_47294e3d16f1c679025dc618"
+      ],
+      "desired": {
+        "status": "draft",
+        "fields": [
+          {
+            "target": {
+              "kind": "acf",
+              "groupKey": "group_shared",
+              "fieldKey": "field_image"
+            },
+            "bindingId": "shared_image",
+            "value": {
+              "sourceIdentity": {
+                "system": "airtable",
+                "baseId": "base_fixture",
+                "tableId": "tbl_shared",
+                "recordId": "rec_shared",
+                "fieldId": "fld_image",
+                "attachmentId": "att_shared"
+              },
+              "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          },
+          {
+            "target": {
+              "kind": "acf",
+              "groupKey": "group_shared",
+              "fieldKey": "field_summary"
+            },
+            "bindingId": "shared_summary",
+            "value": "A **synthetic** shared record."
+          },
+          {
+            "target": {
+              "kind": "core",
+              "field": "title"
+            },
+            "bindingId": "shared_title",
+            "value": "Shared case study"
+          }
+        ]
+      },
+      "diagnosticCodes": []
+    },
+    {
+      "operationId": "op_8ee6ae08a7ece55113909ada",
+      "intentDigest": "sha256:1d71b14f8d82ebf72c867ef5eee8b6c0d8eded14dfd8e210e945d223f2b70d2f",
+      "order": 4,
+      "kind": "post",
+      "action": "create",
+      "identity": "airtable:base_fixture:tbl_pages:rec_page",
+      "targetType": "page",
+      "targetId": null,
+      "expectedRevision": null,
+      "dependsOn": [
+        "op_7b212ff188d525a53bc18545"
+      ],
+      "desired": {
+        "status": "draft",
+        "fields": [
+          {
+            "target": {
+              "kind": "acf",
+              "groupKey": "group_page",
+              "fieldKey": "field_related"
+            },
+            "bindingId": "page_related",
+            "value": [
+              {
+                "system": "airtable",
+                "baseId": "base_fixture",
+                "tableId": "tbl_shared",
+                "recordId": "rec_shared"
+              }
+            ]
+          },
+          {
+            "target": {
+              "kind": "core",
+              "field": "slug"
+            },
+            "bindingId": "page_slug",
+            "value": "synthetic-services"
+          },
+          {
+            "target": {
+              "kind": "core",
+              "field": "title"
+            },
+            "bindingId": "page_title",
+            "value": "Synthetic Services"
+          }
+        ]
+      },
+      "diagnosticCodes": []
+    },
+    {
+      "operationId": "op_8df50b535c5db972b173c7c7",
+      "intentDigest": "sha256:b0b17334bfa3e9fce47af4c59dbbbfcab34d96c54d8cf6b267fa35d71380b8ed",
+      "order": 5,
+      "kind": "taxonomy_assignment",
+      "action": "create",
+      "identity": "airtable:base_fixture:tbl_pages:rec_page:industry:page_industry",
+      "targetType": "industry",
+      "targetId": null,
+      "expectedRevision": null,
+      "dependsOn": [
+        "op_48c216aac8076b22a92ad21a",
+        "op_8ee6ae08a7ece55113909ada"
+      ],
+      "desired": {
+        "termSourceIdentities": [
+          {
+            "system": "airtable",
+            "baseId": "base_fixture",
+            "tableId": "tbl_terms",
+            "recordId": "rec_term_child"
+          }
+        ]
+      },
+      "diagnosticCodes": []
+    }
+  ]
+}

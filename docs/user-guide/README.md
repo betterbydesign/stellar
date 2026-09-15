@@ -8,3 +8,4 @@ Write one guide per shipped, user-facing feature for the audience in `documentat
 - [Browse a local site in Studio](studio.md)
 - [Edit styles](style-inspector.md)
 - [Undo, redo and source history](source-history.md)
+- [Review an offline content import plan](content-planning.md)

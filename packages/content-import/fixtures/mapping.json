@@ -1,0 +1,144 @@
+{
+  "contractVersion": "stellar.content-import.v1",
+  "mappingId": "synthetic_company_page",
+  "mappingVersion": "1.0.0",
+  "status": "approved_for_planning",
+  "source": {
+    "system": "airtable",
+    "baseId": "base_fixture",
+    "rootTableId": "tbl_pages",
+    "rootViewId": "view_selected"
+  },
+  "targetSchema": {
+    "schemaId": "fixture_wordpress",
+    "schemaVersion": "1.0.0",
+    "schemaDigest": "sha256:b9a9407a80e105d0353a79efc2d6b7edb2893f9c32565a0dd6a2395177ee91e0",
+    "postTypes": [
+      { "key": "page", "coreFields": ["title", "slug"] },
+      { "key": "shared_post", "coreFields": ["title"] }
+    ],
+    "acfGroups": [
+      {
+        "key": "group_page",
+        "postTypes": ["page"],
+        "fields": [{ "key": "field_related", "type": "relationship" }]
+      },
+      {
+        "key": "group_shared",
+        "postTypes": ["shared_post"],
+        "fields": [
+          { "key": "field_summary", "type": "markdown" },
+          { "key": "field_image", "type": "media" }
+        ]
+      }
+    ],
+    "taxonomies": [{ "key": "industry", "postTypes": ["page"], "hierarchical": true }]
+  },
+  "policy": {
+    "allowedEnvironments": ["staging"],
+    "nonDraftableWrites": "allow_disposable_and_staging"
+  },
+  "entities": [
+    {
+      "id": "page_entity",
+      "sourceTableId": "tbl_pages",
+      "targetPostType": "page",
+      "bindings": [
+        {
+          "kind": "field",
+          "id": "page_title",
+          "sourceFieldId": "fld_title",
+          "target": { "kind": "core", "field": "title" },
+          "transform": "text",
+          "ownership": "managed",
+          "required": true
+        },
+        {
+          "kind": "field",
+          "id": "page_slug",
+          "sourceFieldId": "fld_slug",
+          "target": { "kind": "core", "field": "slug" },
+          "transform": "text",
+          "ownership": "managed",
+          "required": true
+        },
+        {
+          "kind": "relationship",
+          "id": "page_related",
+          "sourceFieldId": "fld_related",
+          "target": { "kind": "acf", "groupKey": "group_page", "fieldKey": "field_related" },
+          "relatedTableId": "tbl_shared",
+          "relatedPostType": "shared_post",
+          "cardinality": { "min": 1, "max": 2 },
+          "ordered": true,
+          "ownership": "managed",
+          "required": true
+        }
+      ],
+      "taxonomyAssignments": [
+        {
+          "id": "page_industry",
+          "sourceFieldId": "fld_industries",
+          "taxonomyKey": "industry",
+          "cardinality": { "min": 1, "max": 3 },
+          "ordered": false,
+          "ownership": "managed",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "shared_entity",
+      "sourceTableId": "tbl_shared",
+      "targetPostType": "shared_post",
+      "bindings": [
+        {
+          "kind": "field",
+          "id": "shared_title",
+          "sourceFieldId": "fld_title",
+          "target": { "kind": "core", "field": "title" },
+          "transform": "text",
+          "ownership": "managed",
+          "required": true
+        },
+        {
+          "kind": "field",
+          "id": "shared_summary",
+          "sourceFieldId": "fld_summary",
+          "target": { "kind": "acf", "groupKey": "group_shared", "fieldKey": "field_summary" },
+          "transform": "markdown",
+          "ownership": "managed",
+          "required": true
+        },
+        {
+          "kind": "media",
+          "id": "shared_image",
+          "sourceFieldId": "fld_image",
+          "target": { "kind": "acf", "groupKey": "group_shared", "fieldKey": "field_image" },
+          "cardinality": { "min": 1, "max": 1 },
+          "ordered": true,
+          "ownership": "managed",
+          "required": true
+        }
+      ],
+      "taxonomyAssignments": []
+    }
+  ],
+  "taxonomies": {
+    "complete": true,
+    "mappings": [
+      {
+        "taxonomyKey": "industry",
+        "sourceTableId": "tbl_terms",
+        "nameFieldId": "fld_name",
+        "slugFieldId": "fld_slug",
+        "parentFieldId": "fld_parent",
+        "termOwnership": "managed"
+      }
+    ]
+  },
+  "exclusions": [
+    { "system": "airtable", "baseId": "base_fixture", "tableId": "tbl_pages", "recordId": "rec_excluded" },
+    { "system": "airtable", "baseId": "base_fixture", "tableId": "tbl_shared", "recordId": "rec_unrelated" }
+  ]
+}

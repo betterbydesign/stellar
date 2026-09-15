@@ -363,6 +363,8 @@ Pilot success measures: time from brief to reviewed first page, time from approv
 
 The [initial local editor PRDs (M1)](prds/README.md) break bootstrap slices 2–3 into agent-sized work: contracts/fixture, project runner, source engine, canvas/selection, style inspector and durable history. This trusted-local Astro proof precedes integration with the company-site Milestone A below. It uses bounded CSS/token edits and does not claim full R01/R04/R06/R07/R08, HTML support, hosted isolation or the WP/ACF release workflow.
 
+The [M2 company-site PRDs](prds/m2.md) define the next path: offline content mapping/plans, WP schema/ownership service, independent importer, typed Astro page, company Studio integration and staging release proof. M2-01 begins with a portable planner and evidence audit; it does not approve or apply the company schema. WordPress and Astro implementation stays with the existing company repositories.
+
 No calendar estimates are assigned yet; source editing and runtime/hosting proofs should determine them. Each epic becomes a smaller PRD or decision record before detailed tasks are created.
 
 | Epic | Deliverable | Dependencies | Exit evidence |

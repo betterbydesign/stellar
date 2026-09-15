@@ -1,19 +1,15 @@
 # Current Work
 
-This is a compact pointer for work that needs a cross-session handoff. The current user request and any active ExecPlan hold detailed scope and acceptance criteria. Do not invent an external task ID while `tracker` is null in `../harness.json`.
+Compact handoff pointer. No external task IDs are registered while `tracker` is null in `../harness.json`.
 
 ## Active Work
 
-No implementation is currently running. The M1 local editor is ready for user visual review; no external tracker or review service is connected.
+No implementation is running. Next: [M2-02 — WordPress model and ownership](prds/m2-02-wordpress-model-and-ownership.md), beginning with a concrete company schema proposal and verification of repository/runtime inputs. The [M2 dispatch index](prds/m2.md) records dependencies and repository ownership. Live schema/import/publication/deployment remains unperformed; prepare the reviewable result before requesting any missing authorization. No Agent Hub access is needed for this step.
 
 ## Latest completed work
 
-Local startup follow-up (2026-09-14): the authenticated launcher now uses a separate Next development cache, avoiding the web-only server lock conflict. Actual concurrent startup, browser connection/preview/selection, 33 web tests and production build passed. See [startup troubleshooting](user-guide/local-projects.md#development-server-conflicts).
+[M2-01](handoffs/m2-01-review.md), on `codex/m2-content-contracts`: portable offline content contracts/planner, synthetic fixture, command-line review and a blocked company evidence audit. Three SOL high subagents contributed package implementation, source audit, PRDs and independent review; the orchestrator integrated and reviewed the result. Full root verification passed 103 tests plus docs/harness/lint/typechecks/fixture checks; production packages/Next/Astro builds passed. See the [completed plan](exec-plans/completed/m2-content-contracts.md), [decision](decisions/005-content-plan-and-company-poc.md), [architecture](architecture/content-import-planning.md) and [operator guide](user-guide/content-planning.md). M2-02–06 are proposed, not implemented.
 
-[M1-04 through M1-06](handoffs/m1-editor-review.md) are implemented, integrated and reviewed on `codex/m1-02-project-runner`. Three SOL high agents built canvas, inspector and history in isolated worktrees; the coordinator completed integration, recovery review, production builds and the real browser proof. The [completed plan](exec-plans/completed/m1-04-through-m1-06.md), [M1 PRD index](prds/README.md), [decisions](decisions/004-studio-source-and-recovery-boundaries.md) and evidence record the result. Foundation commit: `29cac07`; integration and evidence commits follow on the same branch.
+The company audit confirms 71 source references across 16 tables/176 fields and keeps the research format non-executable. Actual ACF keys/schema, taxonomy, record values, media evidence and target inventory are missing. No company checkout, live data, remote integration, push, merge or deployment changed.
 
-The root opens Projects. Start the complete app with `npm run dev:local` from the repository root and use the one-time connection link. Studio now supports source-linked selection, responsive widths, supported local/token edits, reset and durable undo/redo. The broader CMS/IA/client portal remains follow-on work after the local workflow review and company WP/ACF POC planning.
-
-The [repository bootstrap](exec-plans/completed/stellar-bootstrap.md) establishes `apps/web`, the adapted development harness and local verification/CI. On 2026-09-14 the user authorized integrating and publishing it on `main`, superseding the initial local-only scope. The repository's configured squash strategy combines the bootstrap into one main-branch commit. The original research commit `01d43eb` and foundation commit `76e58d5` remain on `codex/stellar-bootstrap` for provenance.
-
-The next product slice follows review of the local editor and integration planning for the company WP/ACF POC. Follow [bootstrap sequencing](BOOTSTRAP-PLAN.md); the [company-site POC](POC-01-company-site.md) continues to seed WP/ACF outside Stellar. M1 is a preparatory local editor proof, not completion of the parent product's broader Milestone A.
+[M1](handoffs/m1-editor-review.md) remains the usable local Projects/Studio foundation. Start from the repository root with `npm run dev:local` and use the launcher's connection link. Source-linked selection, responsive widths, supported CSS/token edits, reset and durable undo/redo work on registered Astro fixtures. The local launcher uses `.next-local`; web-only development and production use `.next`. M1 user visual review is separate from this CLI-only M2 slice. General CMS/IA, hosted accounts, agents, HTML and deployment UI remain follow-on product work.

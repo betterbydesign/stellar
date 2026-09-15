@@ -4,6 +4,16 @@ Append concise entries for meaningful implementation sessions. Record the behavi
 
 ## Session Log
 
+### 2026-09-14 — M2 PRDs and offline content planning
+
+Executed the next-agent kickoff in the isolated `a4d4/stellar` worktree on `codex/m2-content-contracts`, starting from `bb5a310`. Three SOL high subagents provided source/UX review, the standalone planner, company evidence audit and five dependent PRDs; the coordinator integrated root commands, CLI tests and documentation and reviewed the complete result. Created the six-PRD M2 sequence, [Decision 005](decisions/005-content-plan-and-company-poc.md), [architecture](architecture/content-import-planning.md), operator guide and [review handoff](handoffs/m2-01-review.md).
+
+M2-01 now validates versioned offline mapping/source/target inputs and emits deterministic, ownership-aware intent with schema/mapping/target binding, durable identities, dependency blockers and revisions. The synthetic fixture plans six creates and its replay test yields six no-ops. The legacy company audit verifies 71 source references across 16 tables/176 fields while deliberately reporting eight blockers; it performs no source/target writes and cannot accept fake approval flags. M2-02–06 remain proposed.
+
+Review fixed view-scope back-links, WP-owned dependency traversal, target/type and hash binding, collisions, draft and non-draftable boundaries, batch assignment identities, unordered media comparison, blocked dependency propagation and retained conflicting-field details. Full root verification passed 103 tests plus docs/harness/lint/typechecks/fixture checks; production packages/Next/Astro builds passed. The guide-index hash was refreshed only after inspecting its intentional addition. Existing localhost runner tests required a permissioned rerun after sandbox listener denial; no tests or locks were disabled. CLI process checks and actual report capture passed; no new app UI or browser evidence is claimed.
+
+Read-only company checkout inspection matched the recorded scaffolds; no remote/runtime refresh or company repository modification occurred. Evidence includes exact M2 source fingerprints and deterministic JSON reports. Work is prepared for local commit under the continuing authorization. No external tracker, Macroscope, live WP/Airtable data, push, merge or deployment changed. Next: M2-02 concrete company schema/ownership proposal and runtime inputs.
+
 ### 2026-09-14 — M1-02 runner and required M1-03 source engine
 
 Three SOL high agents implemented isolated runner, authenticated web broker and pure source-engine packages. The coordinator integrated them over the preserved uncommitted M1-01 prerequisite, wired both locks and real runtime acceptance into the root/CI commands, and reviewed parser ownership, inverse guards, process lifecycle, exact origin validation, source isolation, stale edits, journal recovery and competing writes.

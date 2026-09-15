@@ -1,0 +1,124 @@
+{
+  "observedOn": "2026-09-14",
+  "baselineCommit": "bb5a31047f3da9c806cedcf93f17ff6b8351d892",
+  "scope": "Reviewed working tree committed with this evidence; fingerprints identify the M2 implementation.",
+  "verification": {
+    "command": "npm run verify",
+    "passed": true,
+    "tests": 103,
+    "groups": {
+      "contracts": 9,
+      "contentImport": 14,
+      "editorCore": 5,
+      "runner": 14,
+      "web": 33,
+      "astroIntegration": 2,
+      "root": 26
+    },
+    "localServerPermissionRequired": true
+  },
+  "productionBuild": {
+    "command": "npm run build",
+    "passed": true,
+    "outputs": [
+      "workspace packages",
+      "Next.js app",
+      "standalone Astro fixture"
+    ]
+  },
+  "cli": {
+    "syntheticExit": 0,
+    "syntheticCreates": 6,
+    "companyAuditExit": 2,
+    "companyAuditBlockers": 8,
+    "writesAttempted": 0
+  },
+  "review": {
+    "models": "SOL high subagents with orchestrator integration review",
+    "remainingInScopeFindings": 0,
+    "userVisualReview": "No new app UI in this slice; prior M1 visual review remains separate."
+  },
+  "sourceFingerprint": "01bab8e9e1cbc4047f0f1b57fd1b76d95e66b24952cf652825f5fee626ce28ad",
+  "sources": [
+    {
+      "path": "eslint.config.mjs",
+      "sha256": "7348c8e44defb6c1719d463e2bd67ab5463718237dc71ffd91f7af215a1f18b2"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "9c43f5d723325ab7b5af1a538a8d8b07f18ad74e029c5133b3980643409eda75"
+    },
+    {
+      "path": "package.json",
+      "sha256": "fedcfeec3c2b3fcbc3096b60c21e7e57ae6c4bdbb54e394bff156466f0a35db0"
+    },
+    {
+      "path": "packages/content-import/README.md",
+      "sha256": "331197b8cd322ab6a98327584adc58cb746c5b1acf373f82ad400fa0878a5afe"
+    },
+    {
+      "path": "packages/content-import/eslint.config.mjs",
+      "sha256": "3754aaa30e0b6e44894349982d2d6a4d73ac6bc35b0d9c0ea10122df0076a4ba"
+    },
+    {
+      "path": "packages/content-import/fixtures/mapping.json",
+      "sha256": "e374922b414f85fb048b3a972bbcbf6f36d94abce81afc48bb9ca9920979d5a4"
+    },
+    {
+      "path": "packages/content-import/fixtures/source.json",
+      "sha256": "be93abb87c4aead02e15b0414bb4ea8808c84a895a26bd917470993ef5017054"
+    },
+    {
+      "path": "packages/content-import/fixtures/target.json",
+      "sha256": "f79191f209ad1bc8e74cbe834a85f6711efa659433143527f49670d2dab780e0"
+    },
+    {
+      "path": "packages/content-import/package.json",
+      "sha256": "83af8a0f4c6e81576f31b48f743089d43034af41b15a94b0e6441db1e809561b"
+    },
+    {
+      "path": "packages/content-import/src/canonical.ts",
+      "sha256": "396dfed0641c490b37972fa0826e12177f5e52a103f1dac3a5e1bd386089f9f5"
+    },
+    {
+      "path": "packages/content-import/src/contracts.ts",
+      "sha256": "20941caa84dc76a30f9394b731aa30d2a52d42ac63014a373abaade9fdcda05d"
+    },
+    {
+      "path": "packages/content-import/src/errors.ts",
+      "sha256": "7a4acddeced463fc35c2208d74db9951b9ca5ca27d34cc56d6d61f79f205cafd"
+    },
+    {
+      "path": "packages/content-import/src/index.ts",
+      "sha256": "b89ac85ab23e87351c39b35fbd957357f884565025662977becae42d7ad6d14e"
+    },
+    {
+      "path": "packages/content-import/src/planner.test.ts",
+      "sha256": "50a0606e08abc13f49d9ab16f7355c468e6882027917d5d8b686b30dffe7b88f"
+    },
+    {
+      "path": "packages/content-import/src/planner.ts",
+      "sha256": "8022ecfb30bb3595a803db810df2ed97c84ce627510c8001791ad13ed9bf754a"
+    },
+    {
+      "path": "packages/content-import/tsconfig.json",
+      "sha256": "284c1df47b9a308e5cb8846d21b5ec7d2f95739f766160f856fd483e409e7393"
+    },
+    {
+      "path": "scripts/audit-company-content-map.mjs",
+      "sha256": "09972eada37c1892326cb109cf73718a44e22ef81840e4529069dd0ce8de63e2"
+    },
+    {
+      "path": "scripts/plan-content-import.mjs",
+      "sha256": "234aa09a4d3314d15d156448ea9c61f5741a5231a3e76095391abd9c5c90120f"
+    },
+    {
+      "path": "test/company-content-map.test.mjs",
+      "sha256": "2696ea07a175121f031e9845f8160add5795ce95082e9d7df4442adcf60ad7e5"
+    },
+    {
+      "path": "test/content-plan-cli.test.mjs",
+      "sha256": "60c6204e7f20b90cbf635805a0dec52c3b700ed3c7f48da75bdb8350d41725b4"
+    }
+  ]
+}

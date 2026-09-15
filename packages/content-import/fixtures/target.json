@@ -1,0 +1,24 @@
+{
+  "contractVersion": "stellar.content-import.v1",
+  "targetId": "site_fixture_staging",
+  "environment": "staging",
+  "snapshotComplete": true,
+  "schema": {
+    "schemaId": "fixture_wordpress",
+    "schemaVersion": "1.0.0",
+    "schemaDigest": "sha256:b9a9407a80e105d0353a79efc2d6b7edb2893f9c32565a0dd6a2395177ee91e0"
+  },
+  "approval": {
+    "status": "approved_for_planning",
+    "mappingId": "synthetic_company_page",
+    "mappingVersion": "1.0.0",
+    "mappingDigest": "sha256:5db8ba6b69843d0023314497fb75f224922f1a587c05b0f5edc464bc77e4143a",
+    "targetId": "site_fixture_staging",
+    "environment": "staging",
+    "schemaDigest": "sha256:b9a9407a80e105d0353a79efc2d6b7edb2893f9c32565a0dd6a2395177ee91e0"
+  },
+  "posts": [],
+  "terms": [],
+  "media": [],
+  "taxonomyAssignments": []
+}

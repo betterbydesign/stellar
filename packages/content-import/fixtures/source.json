@@ -1,0 +1,94 @@
+{
+  "contractVersion": "stellar.content-import.v1",
+  "source": { "system": "airtable", "baseId": "base_fixture" },
+  "root": {
+    "tableId": "tbl_pages",
+    "viewId": "view_selected",
+    "complete": true,
+    "recordIds": ["rec_page"]
+  },
+  "tables": [
+    {
+      "tableId": "tbl_pages",
+      "records": [
+        {
+          "recordId": "rec_page",
+          "fields": {
+            "fld_title": { "type": "text", "value": "Synthetic Services" },
+            "fld_slug": { "type": "text", "value": "synthetic-services" },
+            "fld_related": { "type": "record_links", "recordIds": ["rec_shared"] },
+            "fld_industries": { "type": "record_links", "recordIds": ["rec_term_child"] }
+          }
+        },
+        {
+          "recordId": "rec_excluded",
+          "fields": {
+            "fld_title": { "type": "text", "value": "Outside selected view" },
+            "fld_slug": { "type": "text", "value": "outside-selected-view" },
+            "fld_related": { "type": "record_links", "recordIds": ["rec_unrelated"] },
+            "fld_industries": { "type": "record_links", "recordIds": [] }
+          }
+        }
+      ]
+    },
+    {
+      "tableId": "tbl_shared",
+      "records": [
+        {
+          "recordId": "rec_shared",
+          "fields": {
+            "fld_title": { "type": "text", "value": "Shared case study" },
+            "fld_summary": { "type": "markdown", "value": "A **synthetic** shared record." },
+            "fld_image": { "type": "attachments", "attachmentIds": ["att_shared"] },
+            "fld_inverse_pages": { "type": "record_links", "recordIds": ["rec_page", "rec_excluded"] }
+          }
+        },
+        {
+          "recordId": "rec_unrelated",
+          "fields": {
+            "fld_title": { "type": "text", "value": "Unrelated shared record" },
+            "fld_summary": { "type": "markdown", "value": "Must remain outside closure." },
+            "fld_image": { "type": "attachments", "attachmentIds": [] }
+          }
+        }
+      ]
+    },
+    {
+      "tableId": "tbl_terms",
+      "records": [
+        {
+          "recordId": "rec_term_parent",
+          "fields": {
+            "fld_name": { "type": "text", "value": "Technology" },
+            "fld_slug": { "type": "text", "value": "technology" },
+            "fld_parent": { "type": "record_links", "recordIds": [] }
+          }
+        },
+        {
+          "recordId": "rec_term_child",
+          "fields": {
+            "fld_name": { "type": "text", "value": "Software" },
+            "fld_slug": { "type": "text", "value": "software" },
+            "fld_parent": { "type": "record_links", "recordIds": ["rec_term_parent"] }
+          }
+        }
+      ]
+    }
+  ],
+  "attachments": [
+    {
+      "identity": {
+        "system": "airtable",
+        "baseId": "base_fixture",
+        "tableId": "tbl_shared",
+        "recordId": "rec_shared",
+        "fieldId": "fld_image",
+        "attachmentId": "att_shared"
+      },
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fileName": "synthetic-image.png",
+      "mimeType": "image/png",
+      "byteSize": 128
+    }
+  ]
+}

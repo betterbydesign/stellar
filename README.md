@@ -26,11 +26,16 @@ npm run verify:editor
 
 Verification checks the harness, documentation, lint, TypeScript, source engine, real Astro runner/recovery, authenticated broker and fixture mappings. The production build includes the app, packages and standalone fixture. `verify:local` then tests the real authenticated app-to-runner flow using temporary working copies. `verify:editor` runs the real browser workflow, records screenshots/video, checks source isolation and recovery, and builds the edited site after stopping Stellar. It uses temporary copies and requires the production build above. CI uses these root commands and installs Chromium; no remote CI result is claimed.
 
+## Plan content imports offline
+
+The [content planning guide](docs/user-guide/content-planning.md) covers the standalone JSON planner and company mapping audit. After installing, run `npm run build --workspace=@stellar/content-import`, then `npm run content:plan:example` for synthetic intent or `npm run content:audit:company` for the saved company research. The latter intentionally exits 2 with unresolved evidence. These commands perform no live imports or writes.
+
 ## Project documents
 
 - [Product requirements](docs/STELLAR-PRD.md)
 - [Bootstrap plan and ownership discussion](docs/BOOTSTRAP-PLAN.md)
 - [Company-site proof](docs/POC-01-company-site.md)
+- [M2 implementation PRDs](docs/prds/m2.md)
 - [Editor contracts and fixture](docs/architecture/editor-contracts.md)
 - [Local runner and source engine](docs/architecture/local-project-runner.md)
 - [Studio guide](docs/user-guide/studio.md)

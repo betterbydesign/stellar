@@ -16,9 +16,9 @@
     "dev": "npm run dev --workspace=@stellar/web --",
     "build": "npm run build:packages && npm run build --workspace=@stellar/web && npm run build:fixture",
     "start": "npm run start --workspace=@stellar/web --",
-    "lint": "npm run lint --workspaces --if-present && eslint scripts/check-fixture.mjs scripts/verify-local-runner.mjs test/fixture.test.mjs eslint.config.mjs test/editor-e2e",
+    "lint": "npm run lint --workspaces --if-present && eslint scripts/check-fixture.mjs scripts/verify-local-runner.mjs scripts/plan-content-import.mjs scripts/audit-company-content-map.mjs test/content-plan-cli.test.mjs test/company-content-map.test.mjs test/fixture.test.mjs eslint.config.mjs test/editor-e2e",
     "typecheck": "npm run build:packages && npm run typecheck --workspaces --if-present",
-    "test": "npm run build:packages && npm run test --workspace=@stellar/contracts && npm run test --workspace=@stellar/editor-core && npm run test --workspace=@stellar/runner && npm run test --workspace=@stellar/web && npm run test --workspace=@stellar/astro-editor-integration && node --test test/*.test.mjs",
+    "test": "npm run build:packages && npm run test --workspace=@stellar/contracts && npm run test --workspace=@stellar/content-import && npm run test --workspace=@stellar/editor-core && npm run test --workspace=@stellar/runner && npm run test --workspace=@stellar/web && npm run test --workspace=@stellar/astro-editor-integration && node --test test/*.test.mjs",
     "verify:docs": "node scripts/check-docs.mjs --all",
     "verify:harness": "node scripts/check-harness-profile.mjs && node scripts/check-harness-drift.mjs --strict",
     "verify": "npm run verify:harness && npm run verify:docs && npm run lint && npm run typecheck && npm run test && npm run verify:fixture",
@@ -26,10 +26,13 @@
     "fixture:install": "npm ci --prefix fixtures/astro-style-lab",
     "build:fixture": "npm run build --prefix fixtures/astro-style-lab",
     "verify:fixture": "npm run build:contracts && node scripts/check-fixture.mjs",
-    "build:packages": "npm run build:contracts && npm run build --workspace=@stellar/editor-core && npm run build --workspace=@stellar/runner",
+    "build:packages": "npm run build:contracts && npm run build --workspace=@stellar/content-import && npm run build --workspace=@stellar/editor-core && npm run build --workspace=@stellar/runner",
     "dev:local": "npm run build:packages && npm run launch --workspace=@stellar/runner",
     "verify:local": "node scripts/verify-local-runner.mjs",
-    "verify:editor": "node test/editor-e2e/run.mjs"
+    "verify:editor": "node test/editor-e2e/run.mjs",
+    "content:plan": "node scripts/plan-content-import.mjs",
+    "content:plan:example": "node scripts/plan-content-import.mjs --mapping packages/content-import/fixtures/mapping.json --source packages/content-import/fixtures/source.json --target packages/content-import/fixtures/target.json",
+    "content:audit:company": "node scripts/audit-company-content-map.mjs"
   },
   "devDependencies": {
     "@astrojs/compiler": "4.0.0",

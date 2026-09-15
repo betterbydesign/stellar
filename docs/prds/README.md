@@ -1,5 +1,7 @@
 # Initial editor milestone: M1
 
+The next wave is [M2 — Company WordPress proof](m2.md), starting with offline mapping validation and dry-run planning. This page preserves the completed M1 scope and evidence.
+
 Status: M1-01 through M1-06 are implemented and reviewed locally. The integrated browser proof passed on 2026-09-14; see the [review and evidence](../handoffs/m1-editor-review.md). User visual review is ready. These are local identifiers; ClickUp and Macroscope remain unconfigured.
 
 M1 proves this workflow: open a registered project, view a real Astro page, switch viewport width, select an element, inspect its style source, apply a supported local style or shared-token change, undo/redo, then close and reopen without losing the change. The code on disk is authoritative. A CSS change that exists only in an iframe or browser storage does not pass.
