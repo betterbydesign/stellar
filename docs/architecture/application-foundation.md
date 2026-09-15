@@ -23,3 +23,7 @@ The development harness is an installed local adaptation, not Stellar's end-user
 ## Next proof
 
 M1 now supplies the registered fixture, bounded local runner, source-backed canvas and supported CSS/token commands. Prop editing and structural composition remain later work. The next product integration is the company POC's independently verified WPGraphQL content path, after reviewing the local editor workflow. See [bootstrap sequencing](../BOOTSTRAP-PLAN.md) and [POC-01](../POC-01-company-site.md).
+
+## Local development output
+
+The Next configuration uses `.next-local` only during the development phase with `STELLAR_LOCAL_MODE=1`. The local launcher can coexist with a web-only development process that uses `.next`. Next retains its normal output locking; production build/start always use `.next`, including authenticated production acceptance runs. Both generated directories are ignored, and their generated type paths are declared in the web TypeScript configuration.

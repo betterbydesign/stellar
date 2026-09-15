@@ -35,6 +35,7 @@ output/playwright/browser-logs/
 
 # Stellar workspace build output
 .next/
+.next-local/
 next-env.d.ts
 coverage/
 !.env.example
