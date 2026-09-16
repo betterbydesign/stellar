@@ -2,6 +2,8 @@
 
 Branch: `codex/independent-platform-foundation`. Baseline: kickoff commit eac9459, fast-forwarded in the isolated task worktree from stale main. No main/saved-checkout sync, push, shared merge, provider deployment or paid operation was performed.
 
+Implementation commit: `a1006f9`. The worktree was clean after that source/evidence commit; the subsequent documentation closeout adds this checkpoint only. Temporary browser and preview servers were stopped.
+
 ## Delivered
 
 - Standalone WorkOS AuthKit sign-in/callback/session/sign-out wiring and fail-closed mode/configuration.

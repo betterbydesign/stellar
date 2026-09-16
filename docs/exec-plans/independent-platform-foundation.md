@@ -36,6 +36,8 @@ Own platform/auth/project membership contracts, WorkOS integration, Convex appli
 - 2026-09-16: Full verification passed 143 tests, root production packages/Next/Astro build passed, and real temporary local-runner acceptance passed. Built-app setup UI checked at desktop/mobile; offline component recovery proof is labeled separately.
 - 2026-09-16: Prepared gated [Letta proof draft](../prds/e01-letta-command-proof.md) and [OpenRouter draft-generation PRD](../prds/e13-openrouter-draft-generation.md). Execution awaits foundation acceptance, scoped runner proof and explicit spending authorization.
 
+- 2026-09-16: Committed the verified source/evidence slice locally as `a1006f9`; the worktree was clean at that checkpoint. All temporary browser/preview services were stopped.
+
 ## Surprises & Discoveries
 No provider environment exists in this worktree/process. Convex codegen requires a configured deployment; offline-compatible typed wrappers permit local tests/builds but are not deployment evidence. The harness profile fixes the schema-doc slot to null, so the new schema is documented in architecture while deployment/schema verification remains unconfigured. Existing template hashes were intentionally refreshed for the user-guide index addition.
 
