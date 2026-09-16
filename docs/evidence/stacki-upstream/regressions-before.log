@@ -1,0 +1,807 @@
+Evidence note: repetitive numeric byte-array dumps are compacted; failure messages, test names, stacks and totals are retained.
+
+> @stellar/editor-core@0.1.0 test
+> npm run build && node --test dist/*.test.js
+
+
+> @stellar/editor-core@0.1.0 build
+> tsc -p tsconfig.json
+
+TAP version 13
+# Subtest: read preserves bytes, resolves authored source keys and refuses repeated component instances
+ok 1 - read preserves bytes, resolves authored source keys and refuses repeated component instances
+  ---
+  duration_ms: 57.847167
+  type: 'test'
+  ...
+# Subtest: base and mobile edits change one declaration, reset it and keep neighboring bytes
+ok 2 - base and mobile edits change one declaration, reset it and keep neighboring bytes
+  ---
+  duration_ms: 73.28025
+  type: 'test'
+  ...
+# Subtest: token leaf change leaves aliases intact, scoped duplicates separate, no-op unchanged
+ok 3 - token leaf change leaves aliases intact, scoped duplicates separate, no-op unchanged
+  ---
+  duration_ms: 44.656291
+  type: 'test'
+  ...
+# Subtest: invalid values, alias corruption, unsupported Astro and malformed CSS refuse edits
+ok 4 - invalid values, alias corruption, unsupported Astro and malformed CSS refuse edits
+  ---
+  duration_ms: 61.387083
+  type: 'test'
+  ...
+# Subtest: UTF-8 prefixes preserve exact byte offsets and inverse bytes
+ok 5 - UTF-8 prefixes preserve exact byte offsets and inverse bytes
+  ---
+  duration_ms: 19.607875
+  type: 'test'
+  ...
+# Subtest: standard property casing identifies the authored declaration and refuses duplicate owners
+not ok 6 - standard property casing identifies the authored declaration and refuses duplicate owners
+  ---
+  duration_ms: 54.729584
+  type: 'test'
+  location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:22:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    color: #214d4c; COLOR: #abcdef;
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:30:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: generated source variants preserve every byte outside the owned span and reverse exactly
+    # Subtest: seed 0
+    ok 1 - seed 0
+      ---
+      duration_ms: 165.331208
+      type: 'test'
+      ...
+    # Subtest: seed 1
+    ok 2 - seed 1
+      ---
+      duration_ms: 133.0185
+      type: 'test'
+      ...
+    # Subtest: seed 2
+    not ok 3 - seed 2
+      ---
+      duration_ms: 16.280084
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 2
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 3
+    not ok 4 - seed 3
+      ---
+      duration_ms: 15.32775
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 3
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 4
+    ok 5 - seed 4
+      ---
+      duration_ms: 123.2335
+      type: 'test'
+      ...
+    # Subtest: seed 5
+    ok 6 - seed 5
+      ---
+      duration_ms: 119.668667
+      type: 'test'
+      ...
+    # Subtest: seed 6
+    not ok 7 - seed 6
+      ---
+      duration_ms: 15.440042
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 6
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 7
+    not ok 8 - seed 7
+      ---
+      duration_ms: 14.274125
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 7
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 8
+    not ok 9 - seed 8
+      ---
+      duration_ms: 19.661084
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace changes only its authored declaration
+        + actual - expected
+        ... Skipped lines
+
+        + Buffer(13814) [Uint8Array] [
+        - Buffer(13798) [Uint8Array] [
+        [omitted 5 repetitive numeric byte-dump lines]
+        ...
+        [omitted 23 repetitive numeric byte-dump lines]
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        [omitted 13798 repetitive numeric byte-dump lines]
+      actual:
+        [omitted 13814 repetitive numeric byte-dump lines]
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:76:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 9
+    not ok 10 - seed 9
+      ---
+      duration_ms: 19.184584
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace changes only its authored declaration
+        + actual - expected
+        ... Skipped lines
+
+        + Buffer(13979) [Uint8Array] [
+        - Buffer(13963) [Uint8Array] [
+        [omitted 5 repetitive numeric byte-dump lines]
+        ...
+        [omitted 23 repetitive numeric byte-dump lines]
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        [omitted 13963 repetitive numeric byte-dump lines]
+      actual:
+        [omitted 13979 repetitive numeric byte-dump lines]
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:76:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 10
+    not ok 11 - seed 10
+      ---
+      duration_ms: 15.440125
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 10
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 11
+    not ok 12 - seed 11
+      ---
+      duration_ms: 15.552791
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 11
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 12
+    not ok 13 - seed 12
+      ---
+      duration_ms: 16.689542
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace changes only its authored declaration
+        + actual - expected
+        ... Skipped lines
+
+        + Buffer(13813) [Uint8Array] [
+        - Buffer(13797) [Uint8Array] [
+        [omitted 5 repetitive numeric byte-dump lines]
+        ...
+        [omitted 23 repetitive numeric byte-dump lines]
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        [omitted 13797 repetitive numeric byte-dump lines]
+      actual:
+        [omitted 13813 repetitive numeric byte-dump lines]
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:76:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 13
+    not ok 14 - seed 13
+      ---
+      duration_ms: 17.1415
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace changes only its authored declaration
+        + actual - expected
+        ... Skipped lines
+
+        + Buffer(13978) [Uint8Array] [
+        - Buffer(13962) [Uint8Array] [
+        [omitted 5 repetitive numeric byte-dump lines]
+        ...
+        [omitted 23 repetitive numeric byte-dump lines]
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        [omitted 13962 repetitive numeric byte-dump lines]
+      actual:
+        [omitted 13978 repetitive numeric byte-dump lines]
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:76:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 14
+    not ok 15 - seed 14
+      ---
+      duration_ms: 14.767709
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 14
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 15
+    not ok 16 - seed 15
+      ---
+      duration_ms: 15.769625
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 15
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 16
+    ok 17 - seed 16
+      ---
+      duration_ms: 122.054
+      type: 'test'
+      ...
+    # Subtest: seed 17
+    ok 18 - seed 17
+      ---
+      duration_ms: 120.884
+      type: 'test'
+      ...
+    # Subtest: seed 18
+    not ok 19 - seed 18
+      ---
+      duration_ms: 15.574875
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 18
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 19
+    not ok 20 - seed 19
+      ---
+      duration_ms: 14.859208
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 19
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 20
+    ok 21 - seed 20
+      ---
+      duration_ms: 118.830292
+      type: 'test'
+      ...
+    # Subtest: seed 21
+    ok 22 - seed 21
+      ---
+      duration_ms: 121.499541
+      type: 'test'
+      ...
+    # Subtest: seed 22
+    not ok 23 - seed 22
+      ---
+      duration_ms: 14.408708
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 22
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 23
+    not ok 24 - seed 23
+      ---
+      duration_ms: 15.392708
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 23
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 24
+    not ok 25 - seed 24
+      ---
+      duration_ms: 17.382167
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace changes only its authored declaration
+        + actual - expected
+        ... Skipped lines
+
+        + Buffer(13811) [Uint8Array] [
+        - Buffer(13795) [Uint8Array] [
+        [omitted 5 repetitive numeric byte-dump lines]
+        ...
+        [omitted 23 repetitive numeric byte-dump lines]
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        [omitted 13795 repetitive numeric byte-dump lines]
+      actual:
+        [omitted 13811 repetitive numeric byte-dump lines]
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:76:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 25
+    not ok 26 - seed 25
+      ---
+      duration_ms: 16.276
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace changes only its authored declaration
+        + actual - expected
+        ... Skipped lines
+
+        + Buffer(13976) [Uint8Array] [
+        - Buffer(13960) [Uint8Array] [
+        [omitted 5 repetitive numeric byte-dump lines]
+        ...
+        [omitted 23 repetitive numeric byte-dump lines]
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        [omitted 13960 repetitive numeric byte-dump lines]
+      actual:
+        [omitted 13976 repetitive numeric byte-dump lines]
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:76:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 26
+    not ok 27 - seed 26
+      ---
+      duration_ms: 15.163041
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 26
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 27
+    not ok 28 - seed 27
+      ---
+      duration_ms: 14.986042
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 27
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 28
+    not ok 29 - seed 28
+      ---
+      duration_ms: 16.981542
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace changes only its authored declaration
+        + actual - expected
+        ... Skipped lines
+
+        + Buffer(13810) [Uint8Array] [
+        - Buffer(13794) [Uint8Array] [
+        [omitted 5 repetitive numeric byte-dump lines]
+        ...
+        [omitted 23 repetitive numeric byte-dump lines]
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        [omitted 13794 repetitive numeric byte-dump lines]
+      actual:
+        [omitted 13810 repetitive numeric byte-dump lines]
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:76:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 29
+    not ok 30 - seed 29
+      ---
+      duration_ms: 16.431167
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace changes only its authored declaration
+        + actual - expected
+        ... Skipped lines
+
+        + Buffer(13975) [Uint8Array] [
+        - Buffer(13959) [Uint8Array] [
+        [omitted 5 repetitive numeric byte-dump lines]
+        ...
+        [omitted 23 repetitive numeric byte-dump lines]
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        [omitted 13959 repetitive numeric byte-dump lines]
+      actual:
+        [omitted 13975 repetitive numeric byte-dump lines]
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:76:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 30
+    not ok 31 - seed 30
+      ---
+      duration_ms: 14.500042
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 30
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seed 31
+    not ok 32 - seed 31
+      ---
+      duration_ms: 15.144959
+      type: 'test'
+      location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:17'
+      failureType: 'testCodeFailure'
+      error: |-
+        replace, seed 31
+
+        'refused' !== 'ready'
+
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ready'
+      actual: 'refused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:63:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:43:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..32
+not ok 7 - generated source variants preserve every byte outside the owned span and reverse exactly
+  ---
+  duration_ms: 1409.212667
+  type: 'test'
+  location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:39:1'
+  failureType: 'subtestsFailed'
+  error: '24 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: a BOM-only source change invalidates the old target even if the revision is reused
+not ok 8 - a BOM-only source change invalidates the old target even if the revision is reused
+  ---
+  duration_ms: 15.452459
+  type: 'test'
+  location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:91:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'UNSUPPORTED_TARGET'
+    - 'STALE_REVISION'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'STALE_REVISION'
+  actual: 'UNSUPPORTED_TARGET'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:100:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: custom property names keep their case-sensitive ownership
+ok 9 - custom property names keep their case-sensitive ownership
+  ---
+  duration_ms: 14.154958
+  type: 'test'
+  ...
+1..9
+# tests 41
+# suites 0
+# pass 14
+# fail 27
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2592.330958
+npm error Lifecycle script `test` failed with error:
+npm error code 1
+npm error path /Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core
+npm error workspace @stellar/editor-core@0.1.0
+npm error location /Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core
+npm error command failed
+npm error command sh -c npm run build && node --test dist/*.test.js

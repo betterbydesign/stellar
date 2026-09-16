@@ -1,0 +1,9 @@
+
+> stellar@0.0.0 verify:harness
+> node scripts/check-harness-profile.mjs && node scripts/check-harness-drift.mjs --strict
+
+Harness profile: valid schema, paths, package scripts, and CI commands.
+Harness drift check — consumer repo at /Users/scottfoster/.codex/worktrees/5f1e/stellar
+
+Checks run: denied strings, absolute local paths, denied paths, relative links, forbidden lockfiles, vendored skills are pinned, closeout commands agree across hosts, profile invariants (harness.json), harness files against the template lock
+OK — no hard failures and no drift.

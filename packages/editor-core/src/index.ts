@@ -19,7 +19,8 @@ export type PrepareSourceInput = {
 };
 export type SourceSelection = { sourceKey: string; anchor: string; occurrenceId: string };
 
-const decoder = new TextDecoder("utf-8", { fatal: true });
+// Keep the BOM in source identity and byte offsets; it is part of the file.
+const decoder = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
 const encoder = new TextEncoder();
 const sha = (bytes: Uint8Array | string): string => createHash("sha256").update(bytes).digest("hex");
 const sourceText = (snapshot: SourceSnapshot, file: string): string => {
@@ -31,15 +32,22 @@ const byteAt = (text: string, index: number): number => encoder.encode(text.slic
 const identity = (revision: string, kind: string, key: string, snapshotHash: string): string =>
   `target-${sha(`${revision}\0${kind}\0${key}\0${snapshotHash}`).slice(0, 32)}`;
 
-type CssFile = { text: string; root: Root };
+type CssFile = { text: string; root: Root; offset: number };
 type CssFiles = ReadonlyMap<string, CssFile>;
 type Located = { status: "ok"; rule: Rule; declaration: Declaration | null; file: CssFile } | { status: "missing" | "ambiguous" };
+
+function parseCssFile(text: string, file: string): CssFile {
+  const root = postcss.parse(text, { from: file });
+  // PostCSS removes a leading BOM from its input before calculating locations.
+  // Translate those locations back to the original, unmodified source text.
+  return { text, root, offset: text.length - root.source!.input.css.length };
+}
 
 function parseCssFiles(snapshot: SourceSnapshot, manifest: ProjectManifest): CssFiles {
   const files = new Map<string, CssFile>();
   for (const file of manifest.allowedCssFiles) {
     const text = sourceText(snapshot, file);
-    files.set(file, { text, root: postcss.parse(text, { from: file }) });
+    files.set(file, parseCssFile(text, file));
   }
   return files;
 }
@@ -64,13 +72,24 @@ function locate(files: CssFiles, ref: CssDeclarationRef): Located {
   if (rules.length === 0) return { status: "missing" };
   if (rules.length !== 1) return { status: "ambiguous" };
   const rule = rules[0]!;
-  const declarations = (rule.nodes ?? []).filter((node): node is Declaration => node.type === "decl" && node.prop === ref.property);
+  // M1 does not decode CSS identifier escapes. An escaped declaration may be
+  // another spelling of the owned property, so this rule cannot prove ownership.
+  if (rule.nodes.some((node) => node.type === "decl" && node.prop.includes("\\"))) return { status: "ambiguous" };
+  const propertyKey = (property: string): string => property.startsWith("--") ? property : property.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+  const declarations = (rule.nodes ?? []).filter((node): node is Declaration => node.type === "decl" && propertyKey(node.prop) === propertyKey(ref.property));
   if (declarations.length > 1) return { status: "ambiguous" };
   return { status: "ok", rule, declaration: declarations[0] ?? null, file };
 }
 
 function ambiguousTokenNames(files: CssFiles, manifest: ProjectManifest): ReadonlySet<string> {
   const ambiguous = new Set<string>();
+  // Escaped identifiers can also hide token overrides in another selector or
+  // scope. Until decoded ownership is supported, token uniqueness is unproven.
+  let escapedProperty = false;
+  for (const file of files.values()) file.root.walkDecls((declaration) => {
+    if (declaration.prop.includes("\\")) escapedProperty = true;
+  });
+  if (escapedProperty) return new Set(manifest.tokens.map((token) => token.name));
   for (const token of manifest.tokens) {
     let count = 0;
     for (const file of files.values()) file.root.walkDecls(token.name, () => { count++; });
@@ -286,9 +305,9 @@ function formatValue(value: StyleValue): string {
 }
 
 function valueSpan(file: CssFile, declaration: Declaration): { start: number; end: number; oldText: string } | null {
-  const start = declaration.source?.start?.offset;
-  const end = declaration.source?.end?.offset;
-  if (start === undefined || end === undefined) return null;
+  if (declaration.source?.start?.offset === undefined || declaration.source.end?.offset === undefined) return null;
+  const start = declaration.source.start.offset + file.offset;
+  const end = declaration.source.end.offset + file.offset;
   const raw = file.text.slice(start, end);
   const colon = raw.indexOf(":");
   if (colon < 0 || raw.slice(0, colon).trim() !== declaration.prop || declaration.important || raw.includes("/*")) return null;
@@ -306,9 +325,9 @@ function patchForValue(ref: CssDeclarationRef, located: Extract<Located, { statu
     if (!span) return null;
     if (replacement === span.oldText) return null;
     if (replacement === null) {
-      const start = located.declaration.source?.start?.offset;
-      const end = located.declaration.source?.end?.offset;
-      if (start === undefined || end === undefined) return null;
+      if (located.declaration.source?.start?.offset === undefined || located.declaration.source.end?.offset === undefined) return null;
+      const start = located.declaration.source.start.offset + located.file.offset;
+      const end = located.declaration.source.end.offset + located.file.offset;
       return SourcePatchSchema.parse({ file: ref.file, startByte: byteAt(located.file.text, start), endByte: byteAt(located.file.text, end),
         expectedOldText: located.file.text.slice(start, end), replacementText: "", expectedFileSha256: sha(bytes) });
     }
@@ -316,8 +335,9 @@ function patchForValue(ref: CssDeclarationRef, located: Extract<Located, { statu
       expectedOldText: span.oldText, replacementText: replacement, expectedFileSha256: sha(bytes) });
   }
   if (replacement === null) return null;
-  const closing = located.rule.source?.end?.offset;
-  if (closing === undefined || located.file.text[closing - 1] !== "}") return null;
+  if (located.rule.source?.end?.offset === undefined) return null;
+  const closing = located.rule.source.end.offset + located.file.offset;
+  if (located.file.text[closing - 1] !== "}") return null;
   const index = closing - 1;
   const prefix = /\s/.test(located.file.text[index - 1] ?? "") ? "" : " ";
   return SourcePatchSchema.parse({ file: ref.file, startByte: byteAt(located.file.text, index), endByte: byteAt(located.file.text, index),
@@ -373,7 +393,7 @@ export async function prepareSourceChange(input: PrepareSourceInput): Promise<Pr
     // The edited CSS must parse and still contain exactly the intended one
     // declaration (or none after reset). This rejects unsafe insertion shapes.
     const editedText = decoder.decode(applySourcePatch(snapshot[patch.file]!, patch));
-    const edited = locate(new Map([[patch.file, { text: editedText, root: postcss.parse(editedText, { from: patch.file }) }]]), ref);
+    const edited = locate(new Map([[patch.file, parseCssFile(editedText, patch.file)]]), ref);
     if (edited.status !== "ok" || (replacement === null ? edited.declaration !== null : edited.declaration?.value.trim() !== replacement)) {
       return refusal(model, requestId, "UNSUPPORTED_TARGET");
     }

@@ -88,3 +88,11 @@ The user authorized committing M1-07 and syncing it locally. The saved checkout'
 ## 2026-09-16 — Parallel upstream and platform plans
 
 Scheduled selective Stacki review immediately, in parallel with a WorkOS/Convex foundation task. Applicable editor correctness fixes precede the first write-enabled Letta proof; OpenRouter draft generation follows that controlled agent boundary. Company M2 remains separate. Added two ExecPlans and a coordination handoff with isolated ownership, verification, provider prerequisites and no automatic cross-task integration. Separate user-owned Codex tasks are requested for execution.
+
+## 2026-09-16 — Selective upstream audit and source-preservation fixes
+
+On isolated `codex/stacki-selective-upstream` from kickoff `eac9459`, audited Stacki `800fa52..fd2a38f` (60 commits, 397 files). Three SOL high agents handled upstream behavior, queue/preview comparison and independent review. Adapted generated property-testing methodology and implemented original Stellar BOM/byte-coordinate and standard CSS property ownership fixes; escaped identifiers conservatively refuse edits after a reviewed counterexample. No upstream code, dependencies, history or preview runtime was imported.
+
+Full root verification, production build, authenticated local acceptance and dedicated browser save/preview/undo/redo/independent-build evidence passed. Editor package: 42 tests/subtests, with 128 generated edit cases. Independent re-review found no residual actionable defects. See [audit](research/stacki-selective-upstream-audit.md), [plan](exec-plans/stacki-selective-upstream-adoption.md), and [handoff](handoffs/stacki-upstream-first-batch.md).
+
+The audit reproduced watcher backlog only under slow refresh conditions; ordinary editing passed. Coalescing is explicitly deferred to separately owned runner work, not labeled a platform prerequisite. Only a local work-branch commit is authorized; no saved data/services, default ports, main, shared checkout sync, push or deployment changed.
