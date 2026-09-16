@@ -1,6 +1,6 @@
 import "server-only";
 import {
-  ApplyChangeSchema, ErrorEnvelopeSchema, HistoryCommandSchema, IdentifierSchema, makeError,
+  CreateProjectRequestSchema, ApplyChangeSchema, ErrorEnvelopeSchema, HistoryCommandSchema, IdentifierSchema, makeError,
   OpenSessionRequestSchema, PrepareChangeSchema, PROTOCOL_VERSION,
   ReconcileRequestSchema, RequestScopeSchema,
   type ErrorCode,
@@ -65,6 +65,15 @@ export async function handleProjectApi(request: Request, segments: string[]): Pr
   if (segments.length === 0 && request.method === "GET") {
     if (!requestId) return error(scope, "INVALID_REQUEST");
     return invoke("listProjects", { requestId }, { requestId });
+  }
+  if (segments.length === 0 && request.method === "POST") {
+    const parsed = CreateProjectRequestSchema.safeParse(await body(request));
+    if (!parsed.success) return error(scope, "INVALID_REQUEST");
+    return invoke("createProject", parsed.data, { requestId: parsed.data.requestId });
+  }
+  if (segments.length === 1 && segments[0] === "blueprints" && request.method === "GET") {
+    if (!requestId) return error({ requestId: undefined }, "INVALID_REQUEST");
+    return invoke("listBlueprints", { requestId }, { requestId });
   }
   if (!projectId) return error(scope, "INVALID_REQUEST");
 

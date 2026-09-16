@@ -1,6 +1,8 @@
 import {
-  ErrorEnvelopeSchema, GetProjectResponseSchema, ListPagesResponseSchema,
+  CreateProjectRequestSchema, CreateProjectResponseSchema, ErrorEnvelopeSchema,
+  GetProjectResponseSchema, ListBlueprintsResponseSchema, ListPagesResponseSchema,
   ListProjectsResponseSchema, PROTOCOL_VERSION, SessionResponseSchema, SourceModelSchema,
+  type BlueprintCatalogEntry, type CreateProjectRequest, type CreateProjectResponse,
   type Page, type RegisteredWorkspace, type Session, type SourceModel,
 } from "@stellar/contracts";
 
@@ -30,7 +32,7 @@ async function csrf(): Promise<string> {
   window.sessionStorage.setItem("stellar.csrf", value.csrfToken);
   return value.csrfToken;
 }
-const mutation = async (path: string, method: "POST" | "DELETE", body?: Record<string, unknown>) => responseData(await fetch(endpoint(path), {
+const mutation = async (path: string, method: "POST" | "DELETE", body?: Record<string, unknown>, id?: string) => responseData(await fetch(endpoint(path, id), {
   method, credentials: "same-origin", cache: "no-store",
   headers: { "content-type": "application/json", "x-stellar-csrf": await csrf() },
   ...(body ? { body: JSON.stringify(body) } : {}),
@@ -39,6 +41,22 @@ const mutation = async (path: string, method: "POST" | "DELETE", body?: Record<s
 export async function listProjects(signal?: AbortSignal): Promise<RegisteredWorkspace[]> {
   const value = await responseData(await fetch(endpoint(""), { credentials: "same-origin", cache: "no-store", signal }));
   return ListProjectsResponseSchema.parse(value).projects;
+}
+
+export async function listBlueprints(signal?: AbortSignal): Promise<BlueprintCatalogEntry[]> {
+  const value = await responseData(await fetch(endpoint("/blueprints"), { credentials: "same-origin", cache: "no-store", signal }));
+  return ListBlueprintsResponseSchema.parse(value).blueprints;
+}
+
+export async function createProject(input: CreateProjectRequest): Promise<CreateProjectResponse> {
+  const request = CreateProjectRequestSchema.parse(input);
+  try {
+    const value = await mutation("", "POST", request, request.requestId);
+    return CreateProjectResponseSchema.parse(value);
+  } catch (cause) {
+    if (cause instanceof StudioApiError) throw cause;
+    throw new StudioApiError("The project may have been created, but Stellar could not confirm it. Retry to check the same request safely.", "UNCERTAIN_RESULT", true);
+  }
 }
 
 export async function getProject(projectId: string, signal?: AbortSignal): Promise<RegisteredWorkspace> {

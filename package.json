@@ -30,6 +30,7 @@
     "dev:local": "npm run build:packages && npm run launch --workspace=@stellar/runner",
     "verify:local": "node scripts/verify-local-runner.mjs",
     "verify:editor": "node test/editor-e2e/run.mjs",
+    "verify:projects": "node test/editor-e2e/projects.mjs",
     "content:plan": "node scripts/plan-content-import.mjs",
     "content:plan:example": "node scripts/plan-content-import.mjs --mapping packages/content-import/fixtures/mapping.json --source packages/content-import/fixtures/source.json --target packages/content-import/fixtures/target.json",
     "content:audit:company": "node scripts/audit-company-content-map.mjs"

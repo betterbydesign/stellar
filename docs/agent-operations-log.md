@@ -69,3 +69,17 @@ Web lint/typecheck and all 33 web tests passed. The actual root local launcher s
 Created [the next-agent handoff prompt](handoffs/next-agent-kickoff.md), grounded in completed M1 and the independent Airtable → WP/ACF → WPGraphQL → Astro POC. It preserves the current orchestrator configuration and SOL high subagent requirement, directs creation of the next local PRD wave and implementation of its first unblocked slice, and records verification, ownership and external-action boundaries. Docs and harness checks passed.
 
 A remote ref check found main at `f12d3a5` with no remote implementation branch; cloud coding cannot assume the local editor is available there. The cloud task tool cannot pin the requested models. Destination/model choice is pending; no new task, push or deployment has been performed at this checkpoint.
+
+
+## 2026-09-16 — Reviewed blueprint project creation
+
+Implemented M1-07 in isolated `codex/reviewed-blueprint-projects`, based on local foundation e8eefbc. Added one pinned Astro blueprint, additive registry v2 migration, authenticated named creation with idempotent recovery, independent source/history and a responsive Projects catalog. SOL high agents implemented registry/contracts and UI; a separate SOL high reviewer found no remaining P0–P2 defects after fixes.
+
+Validation: full verify passed (112 tests), final focused registry recovery 7/7, production build, real named-project browser proof and legacy local acceptance all passed. Evidence is in [the ExecPlan](exec-plans/m1-07-reviewed-blueprint-projects.md), `docs/evidence/m1-07` and `output/playwright/m1-projects`.
+
+No commit, push, shared branch merge or deployment. The user's saved data/services were untouched. Preserve the originating task's launcher lifecycle fix separately; only disjoint imports/Runner-class versus startup/entrypoint sections overlap in `server.ts`.
+
+
+### Local commit and sync authorization
+
+The user authorized committing M1-07 and syncing it locally. The saved checkout's separate launcher lifecycle changes must be preserved as uncommitted work, including disjoint server and local-project guide edits. No remote push or deployment is included.

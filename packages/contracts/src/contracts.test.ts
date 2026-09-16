@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
-  ApplyChangeResponseSchema, ChangeProposalSchema, EditStateSchema, ErrorEnvelopeSchema, HistoryResponseSchema,
+  ApplyChangeResponseSchema, ChangeProposalSchema, CreateProjectRequestSchema, CreateProjectResponseSchema,
+  EditStateSchema, ErrorEnvelopeSchema, HistoryResponseSchema,
   ListPagesResponseSchema, ListProjectsResponseSchema, PrepareChangeResponseSchema, ProjectManifestSchema, RequestOutcomeSchema, SessionResponseSchema, SourceModelSchema,
   PreviewEnvelopeSchema, ProjectSchema, SessionSchema, PageSchema, SourceTargetSchema,
   StyleControlSchema, TokenDefinitionTargetSchema, ChangeReceiptSchema,
@@ -10,7 +11,7 @@ import {
 import {
   exampleApplyResponse, exampleDraftState, exampleElementTarget, exampleHistory, exampleListPages,
   exampleListProjects, exampleManifest, examplePage, examplePrepareChange, examplePrepareResponse,
-  examplePreviewSelection, exampleProject, exampleProposal, exampleReadOnlyTarget,
+  examplePreviewSelection, exampleProject, exampleProposal, exampleReadOnlyTarget, exampleRegisteredWorkspace,
   exampleReadyToApplyState, exampleReceipt, exampleSavedState, exampleSession,
   exampleSessionResponse, exampleTokenTarget,
 } from "./examples.js";
@@ -241,4 +242,17 @@ test("responses keep status and nested scope coherent; errors have stable HTTP s
   const html = ProjectSchema.parse({ ...exampleProject, renderer: "html" });
   const executable = assertExecutableProject(html, { projectId: "project-a", sessionId: "session-a", requestId: "open-1" });
   assert.equal(executable.ok ? null : executable.error.error.code, "UNSUPPORTED_RENDERER");
+});
+
+test("project creation contracts keep names separate from paths and bind blueprint identity", () => {
+  const valid = { protocolVersion: PROTOCOL_VERSION, requestId: "create-0001", name: "Client garden",
+    blueprintId: "astro-style-lab", blueprintVersion: "1.0.0" };
+  assert.equal(CreateProjectRequestSchema.safeParse(valid).success, true);
+  for (const name of ["../escape", "/absolute", "trailing/", " leading", "trailing ", "name\\escape", "."]) {
+    assert.equal(CreateProjectRequestSchema.safeParse({ ...valid, name }).success, false);
+  }
+  assert.equal(CreateProjectRequestSchema.safeParse({ ...valid, sourcePath: "/tmp/source" }).success, false);
+  assert.equal(CreateProjectRequestSchema.safeParse({ ...valid, blueprintVersion: "1" }).success, false);
+  assert.equal(CreateProjectResponseSchema.safeParse({ protocolVersion: PROTOCOL_VERSION, requestId: valid.requestId,
+    status: "created", workspace: exampleRegisteredWorkspace }).success, true);
 });

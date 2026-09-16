@@ -25,6 +25,7 @@ const errorStatus: Record<ErrorCode, { status: ErrorEnvelope["error"]["httpStatu
   INVALID_SCOPE: { status: 403, recoverable: true, message: "The workspace context changed. Reopen it and retry." },
   UNKNOWN_PROJECT: { status: 404, recoverable: false, message: "Project not found." },
   UNKNOWN_TARGET: { status: 404, recoverable: true, message: "The selected target is no longer available." },
+  UNKNOWN_BLUEPRINT: { status: 404, recoverable: false, message: "Blueprint not found." },
   STALE_REVISION: { status: 409, recoverable: true, message: "The project changed. Refresh before editing." },
   HISTORY_CONFLICT: { status: 409, recoverable: true, message: "History changed. Refresh before continuing." },
   IDEMPOTENCY_CONFLICT: { status: 409, recoverable: false, message: "This request ID was already used for a different action." },

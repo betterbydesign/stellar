@@ -1,6 +1,6 @@
 import "server-only";
 import {
-  ApplyChangeResponseSchema, ErrorEnvelopeSchema, GetProjectResponseSchema,
+  CreateProjectResponseSchema, ListBlueprintsResponseSchema, ApplyChangeResponseSchema, ErrorEnvelopeSchema, GetProjectResponseSchema,
   HistoryResponseSchema, ListPagesResponseSchema, ListProjectsResponseSchema,
   makeError, PrepareChangeResponseSchema, RequestOutcomeSchema,
   SessionResponseSchema, SourceModelSchema,
@@ -9,7 +9,7 @@ import {
 import { isSafePreviewUrl, type LocalConfig } from "./local-config";
 
 export const RUNNER_METHODS = [
-  "listProjects", "getProject", "openSession", "getSession", "closeSession",
+  "listBlueprints", "createProject", "listProjects", "getProject", "openSession", "getSession", "closeSession",
   "restartSession", "listPages", "sourceModel", "prepareChange", "applyChange",
   "requestOutcome", "history", "historyCommand",
 ] as const;
@@ -18,6 +18,8 @@ type Scope = { projectId?: string; sessionId?: string; requestId?: string; pageI
 type Parseable = { safeParse(input: unknown): { success: boolean; data?: unknown } };
 
 const schemas: Record<RunnerMethod, Parseable> = {
+  listBlueprints: ListBlueprintsResponseSchema,
+  createProject: CreateProjectResponseSchema,
   listProjects: ListProjectsResponseSchema,
   getProject: GetProjectResponseSchema,
   openSession: SessionResponseSchema,
@@ -124,6 +126,11 @@ export async function callRunner(
     }
     if (response.status !== 200) return makeError(scope, "RUNNER_UNAVAILABLE");
     const safe = safeResponse(value, method, config, scope);
+    if (method === "createProject" && safe && typeof safe === "object" && "workspace" in safe) {
+      const created = safe.workspace as { project: { name: string; blueprint?: { id: string; version: number | string } } };
+      if (created.project.name !== params.name || created.project.blueprint?.id !== params.blueprintId ||
+        created.project.blueprint?.version !== params.blueprintVersion) return makeError(scope, "RUNNER_UNAVAILABLE");
+    }
     if (safe && typeof safe === "object" && "status" in safe && safe.status === "applied" && "receipt" in safe) {
       const receipt = safe.receipt as { operation?: unknown };
       if (method === "applyChange" && receipt.operation !== "apply" ||

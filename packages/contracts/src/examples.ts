@@ -37,6 +37,8 @@ export const exampleManifest = parseProjectManifest({
 
 export const exampleProject = ProjectSchema.parse({
   id: "project-a", name: "Astro Style Lab A", renderer: "astro", pageCount: 2,
+  blueprint: { id: "astro-style-lab", version: "1.0.0" },
+  designSystem: { id: "stellar-style-lab", version: "1.0.0" },
   capabilities: exampleManifest.capabilities,
 });
 export const exampleRegisteredWorkspace = RegisteredWorkspaceSchema.parse({

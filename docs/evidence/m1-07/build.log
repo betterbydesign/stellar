@@ -1,0 +1,90 @@
+
+> stellar@0.0.0 build
+> npm run build:packages && npm run build --workspace=@stellar/web && npm run build:fixture
+
+
+> stellar@0.0.0 build:packages
+> npm run build:contracts && npm run build --workspace=@stellar/content-import && npm run build --workspace=@stellar/editor-core && npm run build --workspace=@stellar/runner
+
+
+> stellar@0.0.0 build:contracts
+> npm run build --workspace=@stellar/contracts
+
+
+> @stellar/contracts@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/content-import@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/editor-core@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/runner@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/web@0.0.0 build
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+✓ Running next.config.ts took 54ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 278ms
+  Running TypeScript ...
+  Finished TypeScript in 196ms ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/5) ...
+  Generating static pages using 11 workers (1/5) 
+  Generating static pages using 11 workers (2/5) 
+  Generating static pages using 11 workers (3/5) 
+✓ Generating static pages using 11 workers (5/5) in 273ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/operator/bootstrap
+├ ƒ /api/operator/session
+├ ƒ /api/projects
+├ ƒ /api/projects/[...segments]
+├ ○ /connect
+├ ○ /projects
+└ ƒ /projects/[projectId]/studio
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+> stellar@0.0.0 build:fixture
+> npm run build --prefix fixtures/astro-style-lab
+
+
+> astro-style-lab@1.0.0 build
+> astro build
+
+00:01:20 [vite] Re-optimizing dependencies because vite config has changed
+00:01:20 [types] Generated 85ms
+00:01:20 [build] output: "static"
+00:01:20 [build] mode: "static"
+00:01:20 [build] directory: /Users/scottfoster/.codex/worktrees/b63d/stellar/fixtures/astro-style-lab/dist/
+00:01:20 [build] Collecting build info...
+00:01:20 [build] ✓ Completed in 93ms.
+00:01:20 [build] Building static entrypoints...
+00:01:20 [vite] ✓ built in 82ms
+00:01:20 [vite] ✓ built in 9ms
+00:01:20 [build] Rearranging server assets...
+
+ generating static routes 
+00:01:20   ├─ /contact/index.html (+6ms) 
+00:01:20   ├─ /index.html (+1ms) 
+00:01:20 ✓ Completed in 13ms.
+
+00:01:20 [build] ✓ Completed in 120ms.
+00:01:20 [build] 2 page(s) built in 213ms
+00:01:20 [build] Complete!

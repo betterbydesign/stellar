@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: v1 migration preserves legacy source and metadata while adding blueprint identity
+ok 1 - v1 migration preserves legacy source and metadata while adding blueprint identity
+  ---
+  duration_ms: 62.443375
+  type: 'test'
+  ...
+# Subtest: named creation is isolated, persistent and idempotent with changed-intent refusal
+ok 2 - named creation is isolated, persistent and idempotent with changed-intent refusal
+  ---
+  duration_ms: 84.431459
+  type: 'test'
+  ...
+# Subtest: pending journal recovery removes only owned staging and binds one creation to one entry
+ok 3 - pending journal recovery removes only owned staging and binds one creation to one entry
+  ---
+  duration_ms: 68.505875
+  type: 'test'
+  ...
+# Subtest: a pending request with only partial staging resumes without duplicating the project
+ok 4 - a pending request with only partial staging resumes without duplicating the project
+  ---
+  duration_ms: 79.6005
+  type: 'test'
+  ...
+# Subtest: same-process retry registers a durably completed creation after metadata setup fails
+ok 5 - same-process retry registers a durably completed creation after metadata setup fails
+  ---
+  duration_ms: 49.379625
+  type: 'test'
+  ...
+# Subtest: registry, copies and metadata symlinks are refused without touching targets
+ok 6 - registry, copies and metadata symlinks are refused without touching targets
+  ---
+  duration_ms: 61.7715
+  type: 'test'
+  ...
+# Subtest: created projects refuse source files outside the reviewed blueprint inventory
+ok 7 - created projects refuse source files outside the reviewed blueprint inventory
+  ---
+  duration_ms: 59.673833
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 566.051792

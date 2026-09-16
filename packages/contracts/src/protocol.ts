@@ -1,5 +1,9 @@
 import { z } from "zod";
 import {
+  BlueprintCatalogEntrySchema, BlueprintReferenceSchema, BlueprintVersionSchema, CapabilitiesSchema,
+  DesignSystemReferenceSchema, ProjectNameSchema,
+} from "./blueprint.js";
+import {
   CssDeclarationRefSchema, IdentifierSchema, ImpactSchema, RelativePathSchema,
   SUPPORTED_PROPERTIES, TokenNameSchema,
 } from "./manifest.js";
@@ -18,20 +22,20 @@ export type RequestScope = z.infer<typeof RequestScopeSchema>;
 
 export const ErrorCodeSchema = z.enum([
   "INVALID_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "INVALID_SCOPE", "UNKNOWN_PROJECT",
-  "UNKNOWN_TARGET", "STALE_REVISION", "HISTORY_CONFLICT", "IDEMPOTENCY_CONFLICT",
+  "UNKNOWN_TARGET", "UNKNOWN_BLUEPRINT", "STALE_REVISION", "HISTORY_CONFLICT", "IDEMPOTENCY_CONFLICT",
   "UNSUPPORTED_TARGET", "INVALID_VALUE", "UNSUPPORTED_RENDERER", "RUNNER_UNAVAILABLE", "NOT_READY",
 ]);
 export type ErrorCode = z.infer<typeof ErrorCodeSchema>;
 export const ERROR_HTTP_STATUS: Record<ErrorCode, 400 | 401 | 403 | 404 | 409 | 422 | 503> = {
   INVALID_REQUEST: 400, UNAUTHORIZED: 401, FORBIDDEN: 403, INVALID_SCOPE: 403,
-  UNKNOWN_PROJECT: 404, UNKNOWN_TARGET: 404, STALE_REVISION: 409,
+  UNKNOWN_PROJECT: 404, UNKNOWN_TARGET: 404, UNKNOWN_BLUEPRINT: 404, STALE_REVISION: 409,
   HISTORY_CONFLICT: 409, IDEMPOTENCY_CONFLICT: 409,
   UNSUPPORTED_TARGET: 422, INVALID_VALUE: 422, UNSUPPORTED_RENDERER: 422,
   RUNNER_UNAVAILABLE: 503, NOT_READY: 503,
 };
 export const ERROR_RECOVERABLE: Record<ErrorCode, boolean> = {
   INVALID_REQUEST: false, UNAUTHORIZED: true, FORBIDDEN: false, INVALID_SCOPE: true,
-  UNKNOWN_PROJECT: false, UNKNOWN_TARGET: true, STALE_REVISION: true,
+  UNKNOWN_PROJECT: false, UNKNOWN_TARGET: true, UNKNOWN_BLUEPRINT: false, STALE_REVISION: true,
   HISTORY_CONFLICT: true, IDEMPOTENCY_CONFLICT: false,
   UNSUPPORTED_TARGET: false, INVALID_VALUE: false, UNSUPPORTED_RENDERER: false,
   RUNNER_UNAVAILABLE: true, NOT_READY: true,
@@ -48,12 +52,9 @@ export const ErrorEnvelopeSchema = z.strictObject({
 });
 export type ErrorEnvelope = z.infer<typeof ErrorEnvelopeSchema>;
 
-export const CapabilitiesSchema = z.strictObject({
-  styleEdits: z.boolean(), tokenEdits: z.boolean(), htmlEditing: z.literal(false),
-  arbitraryAstroImport: z.literal(false), clientAuthorization: z.literal(false),
-});
 export const ProjectSchema = z.strictObject({
-  id: OpaqueIdSchema, name: z.string().min(1).max(100), renderer: z.enum(["astro", "html"]),
+  id: OpaqueIdSchema, name: ProjectNameSchema, renderer: z.enum(["astro", "html"]),
+  blueprint: BlueprintReferenceSchema, designSystem: DesignSystemReferenceSchema,
   capabilities: CapabilitiesSchema, pageCount: z.int().nonnegative().max(100),
 });
 export type Project = z.infer<typeof ProjectSchema>;
@@ -79,6 +80,21 @@ export const ListProjectsResponseSchema = z.strictObject({
   projects: z.array(RegisteredWorkspaceSchema).max(100),
 });
 export type ListProjectsResponse = z.infer<typeof ListProjectsResponseSchema>;
+export const ListBlueprintsResponseSchema = z.strictObject({
+  protocolVersion: z.literal(PROTOCOL_VERSION), requestId: OpaqueIdSchema,
+  blueprints: z.array(BlueprintCatalogEntrySchema).max(100),
+});
+export type ListBlueprintsResponse = z.infer<typeof ListBlueprintsResponseSchema>;
+export const CreateProjectRequestSchema = z.strictObject({
+  protocolVersion: z.literal(PROTOCOL_VERSION), requestId: OpaqueIdSchema,
+  name: ProjectNameSchema, blueprintId: OpaqueIdSchema, blueprintVersion: BlueprintVersionSchema,
+});
+export type CreateProjectRequest = z.infer<typeof CreateProjectRequestSchema>;
+export const CreateProjectResponseSchema = z.strictObject({
+  protocolVersion: z.literal(PROTOCOL_VERSION), requestId: OpaqueIdSchema,
+  status: z.enum(["created", "existing"]), workspace: RegisteredWorkspaceSchema,
+});
+export type CreateProjectResponse = z.infer<typeof CreateProjectResponseSchema>;
 export const GetProjectResponseSchema = z.strictObject({
   protocolVersion: z.literal(PROTOCOL_VERSION), projectId: OpaqueIdSchema, requestId: OpaqueIdSchema,
   workspace: RegisteredWorkspaceSchema,

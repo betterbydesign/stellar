@@ -101,11 +101,12 @@ export async function startRuntime() {
       appOrigin, connectUrl: appOrigin + "/connect#" + nonce, seed, data,
       async restartRunner() { await stop(runner); await startRunner(); },
       async stopServices() { for (const child of [...children]) await stop(child); },
-      async buildEdited() {
-        const child = start([join(seed, "node_modules/astro/bin/astro.mjs"), "build"], join(data, "copies/a"));
+      async buildEdited(directory = "a") {
+        if (!/^(?:a|b|project-[a-zA-Z0-9-]+)$/.test(directory)) throw new Error("Invalid registered build directory");
+        const child = start([join(seed, "node_modules/astro/bin/astro.mjs"), "build"], join(data, "copies", directory));
         const code = await new Promise((resolve, reject) => { child.once("error", reject); child.once("exit", resolve); });
         if (code !== 0) throw new Error(`Independent edited build failed: ${child.log}`);
-        return join(data, "copies/a/dist");
+        return join(data, "copies", directory, "dist");
       }, close,
     };
   } catch (error) { await close(); throw error; }

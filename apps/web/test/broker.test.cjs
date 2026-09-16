@@ -238,3 +238,49 @@ test("history POST requires operator, exact origin and CSRF before forwarding", 
     for (const key of Object.keys(settings)) delete process.env[key];
   }
 });
+
+test("named project creation requires authentication, origin, CSRF and a strict reviewed blueprint request", async () => {
+  const settings = env();
+  Object.assign(process.env, settings);
+  const config = readLocalConfig();
+  const issued = await bootstrapOperator(config.bootstrapNonce, config);
+  const command = { protocolVersion: PROTOCOL_VERSION, requestId: "create-proof", name: "Client garden", blueprintId: "astro-style-lab", blueprintVersion: "1.0.0" };
+  const headers = { cookie: cookie(issued), origin: config.appOrigin, "x-stellar-csrf": issued.operator.csrfToken, "content-type": "application/json" };
+  const originalFetch = global.fetch;
+  let calls = 0;
+  global.fetch = async (_url, init) => {
+    calls++;
+    assert.deepEqual(JSON.parse(init.body), { method: "createProject", params: command });
+    return runnerJson(makeError({ requestId: command.requestId }, "RUNNER_UNAVAILABLE"), 503);
+  };
+  try {
+    assert.equal((await handleProjectApi(request("/api/projects", "POST", { origin: config.appOrigin, "content-type": "application/json" }, command), [])).status, 401);
+    assert.equal((await handleProjectApi(request("/api/projects", "POST", { ...headers, origin: "http://evil.test" }, command), [])).status, 403);
+    assert.equal((await handleProjectApi(request("/api/projects", "POST", { ...headers, "x-stellar-csrf": "wrong" }, command), [])).status, 403);
+    for (const invalid of [{ ...command, name: "../escape" }, { ...command, sourcePath: "/tmp/template" }, { ...command, requestId: "../request" }]) {
+      assert.equal((await handleProjectApi(request("/api/projects", "POST", headers, invalid), [])).status, 400);
+    }
+    assert.equal(calls, 0);
+    assert.equal((await handleProjectApi(request("/api/projects", "POST", headers, command), [])).status, 503);
+    assert.equal(calls, 1);
+  } finally {
+    global.fetch = originalFetch;
+    for (const key of Object.keys(settings)) delete process.env[key];
+  }
+});
+
+test("creation broker rejects a different request or blueprint identity", async () => {
+  const config = readLocalConfig(env());
+  const params = { protocolVersion: PROTOCOL_VERSION, requestId: "create-scope", name: "Garden site", blueprintId: "astro-style-lab", blueprintVersion: "1.0.0" };
+  const workspace = { id: "workspace-new", label: "Garden site", sourceKind: "trusted-local-copy", project: {
+    id: "project-new", name: params.name, renderer: "astro", blueprint: { id: params.blueprintId, version: params.blueprintVersion },
+    designSystem: { id: "stellar-style-lab", version: "1.0.0" }, pageCount: 2,
+    capabilities: { styleEdits: true, tokenEdits: true, htmlEditing: false, arbitraryAstroImport: false, clientAuthorization: false },
+  } };
+  const response = { protocolVersion: PROTOCOL_VERSION, requestId: params.requestId, status: "created", workspace };
+  const invoke = (value) => callRunner(config, config.operatorId, "createProject", params, { requestId: params.requestId }, async () => runnerJson(value));
+  assert.equal((await invoke(response)).workspace.project.id, "project-new");
+  assert.equal((await invoke({ ...response, requestId: "wrong-request" })).error.code, "RUNNER_UNAVAILABLE");
+  assert.equal((await invoke({ ...response, workspace: { ...workspace, project: { ...workspace.project, blueprint: { id: "remote-template", version: "1.0.0" } } } })).error.code, "RUNNER_UNAVAILABLE");
+  assert.equal((await invoke({ ...response, workspace: { ...workspace, root: "/tmp/private" } })).error.code, "RUNNER_UNAVAILABLE");
+});

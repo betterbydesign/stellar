@@ -1,0 +1,20 @@
+{
+  "baseCommit": "e8eefbcc01ea1b2961f7903f2cdad484532cde3a",
+  "sourceSha256": "2594af96e8f05c2559ce8230984e60963135da1649e7b9b4c0e2b8b05f91e96d",
+  "fileCount": 128,
+  "completedAt": "2026-09-16T04:01:34.038Z",
+  "first": "project-1976a8583cedd106e3fb68f9",
+  "second": "project-74cdb025f721ac33cdc88920",
+  "legacyPreserved": true,
+  "seedPreserved": true,
+  "independentHistory": true,
+  "restartPersistence": true,
+  "lostCreationResponseReconciled": true,
+  "responsiveWidths": [
+    390,
+    768,
+    1440
+  ],
+  "independentBuild": true,
+  "browserErrors": []
+}

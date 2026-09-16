@@ -2,8 +2,8 @@ import { timingSafeEqual } from "node:crypto";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { GetProjectResponseSchema, IdentifierSchema, ListProjectsResponseSchema, PROTOCOL_VERSION, SessionResponseSchema, makeError, type ErrorEnvelope } from "@stellar/contracts";
-import { Registry } from "./registry.js";
+import { CreateProjectRequestSchema, CreateProjectResponseSchema, ListBlueprintsResponseSchema, GetProjectResponseSchema, IdentifierSchema, ListProjectsResponseSchema, PROTOCOL_VERSION, SessionResponseSchema, makeError, type ErrorEnvelope } from "@stellar/contracts";
+import { Registry, RegistryError, type RegisteredProject } from "./registry.js";
 import { DataLease } from "./lease.js";
 import { WorkspaceRuntime } from "./workspace.js";
 
@@ -35,21 +35,37 @@ export class Runner {
   readonly registry: Registry;
   readonly workspaces = new Map<string, WorkspaceRuntime>();
   private lease: DataLease | null = null;
+  private readonly initializingWorkspaces = new Map<string, Promise<WorkspaceRuntime>>();
   constructor(readonly config: RunnerConfig) { this.registry = new Registry(config.seed, config.data); }
   async initialize(): Promise<void> {
     this.lease = await DataLease.acquire(this.config.data);
     try {
       await this.registry.initialize();
       for (const project of this.registry.list()) {
-        const workspace = new WorkspaceRuntime(project, this.config.seed, this.config.data,
-          this.config.operatorId, this.config.previewPort, undefined, this.config.appOrigin);
-        await workspace.initialize();
-        this.workspaces.set(project.id, workspace);
+        await this.ensureWorkspace(project);
       }
     } catch (failure) {
       await this.shutdown();
       throw failure;
     }
+  }
+  private async ensureWorkspace(project: RegisteredProject): Promise<WorkspaceRuntime> {
+    const existing = this.workspaces.get(project.id);
+    if (existing) return existing;
+    const pending = this.initializingWorkspaces.get(project.id);
+    if (pending) return pending;
+    const initializing = (async () => {
+      const workspace = new WorkspaceRuntime(project, this.config.seed, this.config.data,
+        this.config.operatorId, this.config.previewPort, undefined, this.config.appOrigin);
+      try {
+        await workspace.initialize();
+        this.workspaces.set(project.id, workspace);
+        return workspace;
+      } catch (failure) { await workspace.shutdown(); throw failure; }
+    })();
+    this.initializingWorkspaces.set(project.id, initializing);
+    try { return await initializing; }
+    finally { this.initializingWorkspaces.delete(project.id); }
   }
   async shutdown(): Promise<void> {
     await Promise.all([...this.workspaces.values()].map((workspace) => workspace.shutdown()));
@@ -63,13 +79,32 @@ export class Runner {
     if (!requestId) return makeError({}, "INVALID_REQUEST");
     if (method === "listProjects") return ListProjectsResponseSchema.parse({ protocolVersion: PROTOCOL_VERSION,
       requestId, projects: this.registry.list().map((project) => project.workspace) });
+    if (method === "listBlueprints") {
+      if (Object.keys(body).join(",") !== "requestId") return makeError({ requestId }, "INVALID_REQUEST");
+      return ListBlueprintsResponseSchema.parse({ protocolVersion: PROTOCOL_VERSION,
+        requestId, blueprints: this.registry.catalog() });
+    }
+    if (method === "createProject") {
+      const parsed = CreateProjectRequestSchema.safeParse(body);
+      if (!parsed.success) return makeError({ requestId }, "INVALID_REQUEST");
+      try {
+        const created = await this.registry.create(parsed.data);
+        await this.ensureWorkspace(created.project);
+        return CreateProjectResponseSchema.parse({ protocolVersion: PROTOCOL_VERSION,
+          requestId, status: created.status, workspace: created.project.workspace });
+      } catch (failure) {
+        const code = failure instanceof RegistryError && failure.code !== "REGISTRY_CORRUPT"
+          ? failure.code : "RUNNER_UNAVAILABLE";
+        return makeError({ requestId }, code);
+      }
+    }
     const projectId = IdentifierSchema.safeParse(body.projectId).success ? body.projectId as string : null;
     if (!projectId) return makeError({ requestId }, "INVALID_REQUEST");
     const project = this.registry.get(projectId);
     if (!project) return makeError({ projectId, requestId }, "UNKNOWN_PROJECT");
     if (method === "getProject") return GetProjectResponseSchema.parse({ protocolVersion: PROTOCOL_VERSION,
       projectId, requestId, workspace: project.workspace });
-    const workspace = this.workspaces.get(projectId)!;
+    const workspace = await this.ensureWorkspace(project);
     if (method === "openSession") {
       const session = await workspace.open(body);
       if ("error" in session) return session;

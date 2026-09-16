@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "blueprint": {
+    "id": "astro-style-lab",
+    "version": "1.0.0"
+  },
+  "name": "Astro Style Lab",
+  "description": "A reviewed local Astro site with responsive pages and supported style and token controls.",
+  "renderer": "astro",
+  "designSystem": {
+    "id": "stellar-style-lab",
+    "version": "1.0.0"
+  },
+  "capabilities": {
+    "styleEdits": true,
+    "tokenEdits": true,
+    "htmlEditing": false,
+    "arbitraryAstroImport": false,
+    "clientAuthorization": false
+  },
+  "pageCount": 2,
+  "projectManifestSha256": "263611325ad5bf6c1efd9d1a16a7194a82bdaedb5f2623de7f1bd90abffb067e",
+  "reviewedFiles": [
+    { "path": ".nvmrc", "sha256": "08062faf0d7a2d22f5d7933c50e975dd1527034275597be7c1b3b9fd2b9d079a", "executable": true },
+    { "path": ".stellar/project.json", "sha256": "263611325ad5bf6c1efd9d1a16a7194a82bdaedb5f2623de7f1bd90abffb067e", "executable": true },
+    { "path": "astro.config.mjs", "sha256": "e5d5ea9257e249ae17fca29f597bc14551cda34cbcb5ee277491f634091ea861", "executable": true },
+    { "path": "package-lock.json", "sha256": "eab00d3b361ba55f70fe8a8e2bcd8ebade0073741baac57b65bf59b5cedf97f1", "executable": true },
+    { "path": "package.json", "sha256": "cd6ce380491b43d413ea2c37595c7529773618943338ec099d6548643f745903", "executable": true },
+    { "path": "src/components/ContactMethod.astro", "sha256": "b55e83d3659c313fc793301ce8e70b7c78840641c37cb3cdf96dfd34655d1250", "executable": true },
+    { "path": "src/components/FeatureCard.astro", "sha256": "23243f893f071641d83ee1e7e63d6861fbde0dc20f3e3392afa88b98c5214fcf", "executable": true },
+    { "path": "src/layouts/SiteLayout.astro", "sha256": "6042bc85c73b2a951c8f832d04fa2fa347dfad3e1a29e4d8fdd60a3c1ce3d45a", "executable": true },
+    { "path": "src/pages/contact.astro", "sha256": "969ad9ba4ce26ea5247fe172ccd938fc17a68cb4c39104ca8e03abc69861e887", "executable": true },
+    { "path": "src/pages/index.astro", "sha256": "9a1bd82c2425f15a0aa61963b2be3f17cf911471726a01fe22ca1287d0ce491e", "executable": true },
+    { "path": "src/styles/site.css", "sha256": "e51d247a2627951469675f97d356703961cd172e11f61cfb58a9b859f437d2f3", "executable": false },
+    { "path": "src/styles/tokens.css", "sha256": "72d4e07549d8fbb5279295dc1ee5c7eb6ba0f927a555bc06d191fa0b25db3a5e", "executable": false }
+  ]
+}
