@@ -83,3 +83,8 @@ No commit, push, shared branch merge or deployment. The user's saved data/servic
 ### Local commit and sync authorization
 
 The user authorized committing M1-07 and syncing it locally. The saved checkout's separate launcher lifecycle changes must be preserved as uncommitted work, including disjoint server and local-project guide edits. No remote push or deployment is included.
+
+
+## 2026-09-16 — Parallel upstream and platform plans
+
+Scheduled selective Stacki review immediately, in parallel with a WorkOS/Convex foundation task. Applicable editor correctness fixes precede the first write-enabled Letta proof; OpenRouter draft generation follows that controlled agent boundary. Company M2 remains separate. Added two ExecPlans and a coordination handoff with isolated ownership, verification, provider prerequisites and no automatic cross-task integration. Separate user-owned Codex tasks are requested for execution.
