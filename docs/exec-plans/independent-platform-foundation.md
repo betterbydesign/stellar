@@ -28,9 +28,17 @@ Own platform/auth/project membership contracts, WorkOS integration, Convex appli
 10. Validate and independently review the implemented platform slice, record remaining live prerequisites and produce a local integration handoff. Broader .stellar Agent Hub interoperability remains E12, not a prerequisite for standalone login/project management.
 
 ## Progress
-- 2026-09-16: Plan created; independent kickoff requested. WorkOS/Convex runtime implementation has not started.
+- 2026-09-16: Isolated `codex/independent-platform-foundation` branch fast-forwarded to kickoff commit eac9459. Full intake read. Source task acknowledged disjoint ownership with Stacki: platform owns provider dependencies and auth/project files; no contracts, runner dispatch, editor-core or preview changes.
+- 2026-09-16: Settled [first-slice PRD](../prds/e01-platform-foundation.md) and [authorization/connectivity decision](../decisions/006-independent-platform-authorization.md). No provider environment is configured in this worktree/process. SOL high agents own disjoint WorkOS identity and Convex backend implementation; root owns web/API integration and evidence. No proprietary Agent Hub implementation is imported.
+
+- 2026-09-16: Implemented WorkOS AuthKit routes/proxy/session, Convex namespaced tenants/current grants/projects/create receipts/audit, scoped API and account project UI. Local operator routes fail closed in platform/mixed mode. Provider credentials/config remain absent.
+- 2026-09-16: SOL high backend/identity agents completed bounded slices. Independent SOL review identified retry grant and pagination defects plus mode/recovery gaps; fixes landed. Follow-up SOL review/test turn hit account usage limit; root completed targeted same-tenant tests and verification without changing model policy or claiming final independent acceptance.
+- 2026-09-16: Full verification passed 143 tests, root production packages/Next/Astro build passed, and real temporary local-runner acceptance passed. Built-app setup UI checked at desktop/mobile; offline component recovery proof is labeled separately.
+- 2026-09-16: Prepared gated [Letta proof draft](../prds/e01-letta-command-proof.md) and [OpenRouter draft-generation PRD](../prds/e13-openrouter-draft-generation.md). Execution awaits foundation acceptance, scoped runner proof and explicit spending authorization.
 
 ## Surprises & Discoveries
+No provider environment exists in this worktree/process. Convex codegen requires a configured deployment; offline-compatible typed wrappers permit local tests/builds but are not deployment evidence. The harness profile fixes the schema-doc slot to null, so the new schema is documented in architecture while deployment/schema verification remains unconfigured. Existing template hashes were intentionally refreshed for the user-guide index addition.
+
 The current roadmap identifies E01 but M2 explicitly excludes hosted accounts/runtime. A separate platform task avoids silently expanding the company integration milestone. The existing authenticated loopback runner does not by itself solve hosted workspace access.
 
 ## Decision Log
@@ -39,7 +47,7 @@ The current roadmap identifies E01 but M2 explicitly excludes hosted accounts/ru
 - Shared modules do not imply shared tenant records, raw transcripts, vendor credentials or operational dependency.
 
 ## Validation
-Run docs/harness checks for plans, then the appropriate root verify/build and real-browser checks for implementation. Use temporary data and isolated ports. Tests must exercise unauthorized access and partial failures. Record live provider evidence separately from offline contract tests and fixtures.
+See [verification evidence](../evidence/e01-platform/verification.md) and [review record](../evidence/e01-platform/review.md). `npm run verify` passed 143 tests plus docs/harness/lint/typechecks/fixture validation. `npm run build` passed packages/Next and the independent Astro fixture. `npm run verify:local` passed real local source/recovery/isolation checks with temporary copies and random ports. Built-app browser setup and failure paths passed. WorkOS session/JWT and Convex persistence are not live-tested; tests distinguish SDK/config checks, mock-backed function execution, offline UI fixtures and real local-runner proof.
 
 ## Outcomes & Retrospective
-Pending execution. Deliver a reviewed WorkOS/Convex foundation or a concrete implementation plus precisely identified live prerequisites, followed by Letta/OpenRouter PRDs. Make local commits for completed verified slices. Do not push, merge shared branches, sync another task's checkout, deploy, or create paid resources without scoped authorization.
+The first source slice is implemented and locally verified, with independent review findings addressed. It provides concrete provider wiring and offline authorization proof, not accepted live hosted editing. Live WorkOS/Convex setup, end-to-end identity/persistence/revocation proof, user acceptance and a separately reviewed runner connection remain. Letta/OpenRouter PRDs are gated drafts; no job or paid request ran. See [integration handoff](../handoffs/e01-platform-foundation.md) for the next setup and ownership boundaries. Local commits are authorized; pushes, shared merges, checkout synchronization and deployment remain outside this task.

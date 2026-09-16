@@ -7,15 +7,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint app lib features test next.config.ts",
+    "lint": "eslint app lib features test convex proxy.ts vitest.config.ts next.config.ts",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "node --conditions=react-server -r ./test/register.cjs --test test/*.test.cjs"
+    "test": "node --conditions=react-server -r ./test/register.cjs --test test/*.test.cjs && vitest run"
   },
   "dependencies": {
+    "@stellar/contracts": "0.1.0",
+    "@workos-inc/authkit-nextjs": "4.3.2",
+    "@workos-inc/node": "10.13.0",
+    "convex": "1.45.0",
     "next": "16.3.5",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "@stellar/contracts": "0.1.0",
     "server-only": "0.0.1"
   },
   "devDependencies": {
@@ -23,9 +26,11 @@
     "@types/node": "22.20.2",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "convex-test": "0.0.58",
     "eslint": "10.10.0",
     "eslint-config-next": "16.3.5",
     "typescript": "7.0.2",
-    "typescript-compiler": "npm:typescript@6.0.3"
+    "typescript-compiler": "npm:typescript@6.0.3",
+    "vitest": "5.0.1"
   }
 }

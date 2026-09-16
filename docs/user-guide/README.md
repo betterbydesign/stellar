@@ -9,3 +9,5 @@ Write one guide per shipped, user-facing feature for the audience in `documentat
 - [Edit styles](style-inspector.md)
 - [Undo, redo and source history](source-history.md)
 - [Review an offline content import plan](content-planning.md)
+
+- [Account projects and platform setup](platform-projects.md) — named project metadata with explicit disconnected source state; live provider acceptance pending.

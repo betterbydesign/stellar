@@ -1,4 +1,5 @@
 import "server-only";
+import { inspectPlatformConfig } from "../platform/config";
 import { URL } from "node:url";
 
 export type LocalConfig = {
@@ -25,7 +26,7 @@ function parseLocalOrigin(value: string | undefined, hostname: string): URL | nu
 
 /** A missing or unsafe launcher configuration disables every local API route. */
 export function readLocalConfig(env: NodeJS.ProcessEnv = process.env): LocalConfig | null {
-  if (env.STELLAR_LOCAL_MODE !== "1") return null;
+  if (env.STELLAR_LOCAL_MODE !== "1" || inspectPlatformConfig(env).mode !== "disabled") return null;
   const app = parseLocalOrigin(env.STELLAR_APP_ORIGIN, "127.0.0.1");
   const runner = parseLocalOrigin(env.STELLAR_RUNNER_URL, "127.0.0.1");
   const previewHost = env.STELLAR_PREVIEW_HOST;

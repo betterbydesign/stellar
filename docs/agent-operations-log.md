@@ -88,3 +88,11 @@ The user authorized committing M1-07 and syncing it locally. The saved checkout'
 ## 2026-09-16 — Parallel upstream and platform plans
 
 Scheduled selective Stacki review immediately, in parallel with a WorkOS/Convex foundation task. Applicable editor correctness fixes precede the first write-enabled Letta proof; OpenRouter draft generation follows that controlled agent boundary. Company M2 remains separate. Added two ExecPlans and a coordination handoff with isolated ownership, verification, provider prerequisites and no automatic cross-task integration. Separate user-owned Codex tasks are requested for execution.
+
+## 2026-09-16 — Independent platform E01 source slice
+
+Created isolated `codex/independent-platform-foundation` from kickoff commit eac9459 without changing main/saved checkout. Settled provider identity, current-grant authorization, explicit local/platform modes and disconnected runner behavior before implementation. SOL high agents implemented WorkOS AuthKit and Convex backend in disjoint files; independent SOL review found retry-grant, pagination, mode and recovery gaps, all addressed. Follow-up agents hit an account usage limit; root completed final targeted tests/review without claiming final independent acceptance.
+
+Implemented standalone login/session wiring and Convex named project/membership/audit state, safe create retry/discard, scoped API and thin project UI. Hosted projects do not create or connect source workspaces. Existing local source/history behavior passed temporary-copy acceptance. No Agent Hub code/state/credentials, shared editor contracts, runner dispatch, launcher data/services, company M2 or upstream editor changes were copied or modified.
+
+Validation: full `npm run verify` (143 tests plus docs/harness/lint/typechecks/fixture), root packages/Next/Astro build, real `verify:local`, setup-page desktop/mobile browser evidence and clearly labeled offline component recovery/readonly/disconnected proof. After the final auth-error layout fallback, web lint/typechecks/64 tests and web build passed again. Evidence and remaining real-provider prerequisites are in [the handoff](handoffs/e01-platform-foundation.md). Letta/OpenRouter PRDs are gated drafts, not implementations or paid jobs. No push, merge, external provisioning or deployment occurred.

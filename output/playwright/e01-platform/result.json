@@ -1,0 +1,47 @@
+{
+  "date": "2026-09-16",
+  "mode": "unconfigured-platform",
+  "providerLoginTested": false,
+  "checks": [
+    {
+      "path": "/",
+      "status": 307,
+      "location": "/platform"
+    },
+    {
+      "path": "/projects",
+      "status": 307,
+      "location": "/platform"
+    },
+    {
+      "path": "/platform",
+      "status": 200,
+      "location": null
+    },
+    {
+      "path": "/auth/sign-in",
+      "status": 503,
+      "location": null
+    },
+    {
+      "path": "/auth/callback",
+      "status": 503,
+      "location": null
+    },
+    {
+      "path": "/api/platform/projects",
+      "status": 503,
+      "location": null
+    },
+    {
+      "path": "/api/operator/session",
+      "status": 503,
+      "location": null
+    },
+    {
+      "path": "/api/projects?requestId=check",
+      "status": 503,
+      "location": null
+    }
+  ]
+}

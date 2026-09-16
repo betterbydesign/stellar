@@ -50,7 +50,7 @@
     ],
     "audit": null,
     "schema": null,
-    "notes": "Tests include contracts, source preservation, real Astro runner/recovery, operator broker, fixture and harness checks. Build includes the independent Astro fixture. Run npm run fixture:install after npm ci, then npm run verify:local after the production build for real authenticated app-to-runner acceptance. Dependency audit and a committed application database schema are not configured. Browser editor acceptance runs with npm run verify:editor after build and Playwright Chromium installation; it produces local screenshots, video, source changes and an independent edited-site build."
+    "notes": "Tests include contracts, source preservation, real Astro runner/recovery, operator broker, fixture and harness checks. Build includes the independent Astro fixture. Run npm run fixture:install after npm ci, then npm run verify:local after the production build for real authenticated app-to-runner acceptance. Convex platform schema and offline authorization tests are committed; live provider setup/deployment and dependency audit verification remain unconfigured. Browser editor acceptance runs with npm run verify:editor after build and Playwright Chromium installation; it produces local screenshots, video, source changes and an independent edited-site build."
   },
   "branches": {
     "integration": "main",

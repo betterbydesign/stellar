@@ -1,0 +1,96 @@
+
+> stellar@0.0.0 build
+> npm run build:packages && npm run build --workspace=@stellar/web && npm run build:fixture
+
+
+> stellar@0.0.0 build:packages
+> npm run build:contracts && npm run build --workspace=@stellar/content-import && npm run build --workspace=@stellar/editor-core && npm run build --workspace=@stellar/runner
+
+
+> stellar@0.0.0 build:contracts
+> npm run build --workspace=@stellar/contracts
+
+
+> @stellar/contracts@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/content-import@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/editor-core@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/runner@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/web@0.0.0 build
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+✓ Running next.config.ts took 55ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 702ms
+  Running TypeScript ...
+  Finished TypeScript in 259ms ...
+  Collecting page data using 13 workers ...
+  Generating static pages using 13 workers (0/5) ...
+  Generating static pages using 13 workers (1/5)
+  Generating static pages using 13 workers (2/5)
+  Generating static pages using 13 workers (3/5)
+✓ Generating static pages using 13 workers (5/5) in 95ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/operator/bootstrap
+├ ƒ /api/operator/session
+├ ƒ /api/platform/[...segments]
+├ ƒ /api/projects
+├ ƒ /api/projects/[...segments]
+├ ƒ /auth/callback
+├ ƒ /auth/sign-in
+├ ○ /connect
+├ ƒ /platform
+├ ƒ /platform/projects/[projectId]
+├ ƒ /projects
+└ ƒ /projects/[projectId]/studio
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+> stellar@0.0.0 build:fixture
+> npm run build --prefix fixtures/astro-style-lab
+
+
+> astro-style-lab@1.0.0 build
+> astro build
+
+14:28:15 [types] Generated 67ms
+14:28:15 [build] output: "static"
+14:28:15 [build] mode: "static"
+14:28:15 [build] directory: /Users/scottfoster/.codex/worktrees/a70d/stellar/fixtures/astro-style-lab/dist/
+14:28:15 [build] Collecting build info...
+14:28:15 [build] ✓ Completed in 75ms.
+14:28:15 [build] Building static entrypoints...
+14:28:15 [vite] ✓ built in 323ms
+14:28:15 [vite] ✓ built in 7ms
+14:28:15 [build] Rearranging server assets...
+
+ generating static routes
+14:28:15   ├─ /contact/index.html (+7ms)
+14:28:15   ├─ /index.html (+2ms)
+14:28:15 ✓ Completed in 15ms.
+
+14:28:15 [build] ✓ Completed in 361ms.
+14:28:15 [build] 2 page(s) built in 437ms
+14:28:15 [build] Complete!

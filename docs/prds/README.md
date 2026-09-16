@@ -73,3 +73,9 @@ Use this dispatch structure, substituting the selected PRD path and a real task 
 ## Follow-on work kept explicit
 
 After M1, connect the existing [company WP/ACF POC](../POC-01-company-site.md), which seeds WordPress from Airtable outside Stellar. Plan hosted identity/storage and an isolated remote runner, general repo onboarding, Lumos adapter validation, genuine HTML authoring, full page/block composition, code editing, client permissions and agent execution as subsequent slices. None is fulfilled merely by this fixture proof.
+
+## Independent platform
+
+- [E01 identity and named projects](e01-platform-foundation.md) — standalone WorkOS/Convex first slice, independent of company M2.
+- [Letta same-command proposal proof](e01-letta-command-proof.md) — draft gated on foundation acceptance and runner connectivity.
+- [OpenRouter draft generation](e13-openrouter-draft-generation.md) — draft with budget, provenance and reconciliation controls; no paid execution.
