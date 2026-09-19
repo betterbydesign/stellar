@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { ProjectSummary } from "../../lib/platform/http";
+import { ProposalReview } from "../proposals/ProposalReview";
 import { failureMessage, platformRequest } from "./client";
 import styles from "./platform.module.css";
 
@@ -28,6 +29,7 @@ export function PlatformProject({ projectId }: { projectId: string }) {
       <p>Remote workspace connections are not available in this version. To edit an existing local project, open the connection link from your local Stellar launcher.</p>
       <button className={styles.secondary} disabled>Open Studio — connection required</button>
       <p className={styles.muted}>Created {new Date(project.createdAt).toLocaleDateString()}. This project has no linked source workspace.</p>
+      <ProposalReview projectId={projectId} />
     </>}
     <button className={styles.secondary} onClick={() => { setBusy(true); setProject(null); void load(); }} disabled={busy}>Reload project</button>
   </div>;

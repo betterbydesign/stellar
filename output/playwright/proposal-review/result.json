@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "labels": [
+    "synthetic only",
+    "no account/provider/source write"
+  ],
+  "checks": [
+    "opt-in fence",
+    "viewer",
+    "exact review content",
+    "approve duplicate retry",
+    "reject reload recovery",
+    "withdraw approval",
+    "cancel",
+    "narrow viewport"
+  ],
+  "accountRequests": [],
+  "errors": []
+}

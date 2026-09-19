@@ -16,7 +16,7 @@
     "dev": "npm run dev --workspace=@stellar/web --",
     "build": "npm run build:packages && npm run build --workspace=@stellar/web && npm run build:fixture",
     "start": "npm run start --workspace=@stellar/web --",
-    "lint": "npm run lint --workspaces --if-present && eslint scripts/check-fixture.mjs scripts/verify-local-runner.mjs scripts/plan-content-import.mjs scripts/audit-company-content-map.mjs test/content-plan-cli.test.mjs test/company-content-map.test.mjs test/fixture.test.mjs eslint.config.mjs test/editor-e2e",
+    "lint": "npm run lint --workspaces --if-present && eslint scripts/check-fixture.mjs scripts/verify-local-runner.mjs scripts/plan-content-import.mjs scripts/audit-company-content-map.mjs test/content-plan-cli.test.mjs test/company-content-map.test.mjs test/fixture.test.mjs eslint.config.mjs test/editor-e2e test/proposal-review-e2e",
     "typecheck": "npm run build:packages && npm run typecheck --workspaces --if-present",
     "test": "npm run build:packages && npm run test --workspace=@stellar/contracts && npm run test --workspace=@stellar/content-import && npm run test --workspace=@stellar/editor-core && npm run test --workspace=@stellar/runner && npm run test --workspace=@stellar/web && npm run test --workspace=@stellar/astro-editor-integration && node --test test/*.test.mjs",
     "verify:docs": "node scripts/check-docs.mjs --all",
@@ -33,7 +33,8 @@
     "verify:projects": "node test/editor-e2e/projects.mjs",
     "content:plan": "node scripts/plan-content-import.mjs",
     "content:plan:example": "node scripts/plan-content-import.mjs --mapping packages/content-import/fixtures/mapping.json --source packages/content-import/fixtures/source.json --target packages/content-import/fixtures/target.json",
-    "content:audit:company": "node scripts/audit-company-content-map.mjs"
+    "content:audit:company": "node scripts/audit-company-content-map.mjs",
+    "verify:proposals": "node test/proposal-review-e2e/run.mjs"
   },
   "devDependencies": {
     "@astrojs/compiler": "4.0.0",

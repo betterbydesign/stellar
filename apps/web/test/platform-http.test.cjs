@@ -94,3 +94,38 @@ test("explicit resolution clears only the current actor and tenant intent", () =
   assert.equal(store.has(keys[1]), true);
   assert.equal(store.has(keys[2]), true);
 });
+
+test("proposal reads forward exact project scope and bounded pagination", async () => {
+  const { deps, calls } = setup();
+  deps.backend.proposals = async (...args) => { calls.push(args); return { page: [], canReview: false }; };
+  deps.backend.proposal = async (...args) => { calls.push(args); return { proposal: { status: "proposed" } }; };
+  assert.equal((await platformHttp(request("projects/abc/proposals?cursor=next"), ["projects", "abc", "proposals"], deps)).status, 200);
+  assert.deepEqual(calls[0], ["test-private-token", "abc", "next"]);
+  assert.equal((await platformHttp(request("projects/abc/proposals/prop"), ["projects", "abc", "proposals", "prop"], deps)).status, 200);
+  assert.deepEqual(calls[1], ["test-private-token", "abc", "prop"]);
+  await expectCode(await platformHttp(request("projects/abc/proposals?cursor=" + "x".repeat(2049)), ["projects", "abc", "proposals"], deps), 400, "INVALID_REQUEST");
+});
+
+test("proposal decisions require exact reviewed bindings and reject identity injection", async () => {
+  const { deps, calls } = setup();
+  const path = ["projects", "abc", "proposals", "prop", "decisions"];
+  deps.backend.decideProposal = async (...args) => { calls.push(args); return { status: "approved", application: "unavailable" }; };
+  const input = { requestId: "review-1", action: "approve", expectedDigest: "a".repeat(64), expectedRevision: "revision_1" };
+  assert.equal((await platformHttp(request(path.join("/"), input), path, deps)).status, 200);
+  assert.deepEqual(calls[0], ["test-private-token", { projectId: "abc", proposalId: "prop", ...input }]);
+  for (const invalid of [{ ...input, actor: "victim" }, { ...input, tenantId: "other" }, { ...input, expectedDigest: "bad" },
+    { ...input, expectedRevision: "bad" }, { ...input, action: ["approve"] }, { ...input, command: {} }, { ...input, requestId: "" }]) {
+    await expectCode(await platformHttp(request(path.join("/"), invalid), path, deps), 400, "INVALID_REQUEST");
+  }
+  await expectCode(await platformHttp(request(path.join("/"), input, "https://evil.example"), path, deps), 403, "FORBIDDEN");
+  assert.equal(calls.length, 1);
+});
+
+test("proposal submission remains disconnected and no apply route exists", async () => {
+  const { deps, calls } = setup();
+  deps.backend.submitProposal = async (...args) => { calls.push(args); };
+  await expectCode(await platformHttp(request("projects/abc/proposals", { requestId: "new-1" }), ["projects", "abc", "proposals"], deps), 409, "RUNNER_DISCONNECTED");
+  assert.deepEqual(calls, [["test-private-token", "abc", "new-1"]]);
+  await expectCode(await platformHttp(request("projects/abc/proposals", { requestId: "new-1", synthetic: true }), ["projects", "abc", "proposals"], deps), 400, "INVALID_REQUEST");
+  await expectCode(await platformHttp(request("projects/abc/proposals/prop/apply", {}), ["projects", "abc", "proposals", "prop", "apply"], deps), 404, "NOT_FOUND");
+});

@@ -227,7 +227,7 @@ async function activeProjectMembership(
   return membership?.state === "active" ? membership : null;
 }
 
-async function requireProject(
+export async function requireProject(
   ctx: AuthenticatedCtx,
   projectId: Id<"projects">,
 ) {
@@ -236,6 +236,7 @@ async function requireProject(
   if (project === null || project.tenantId !== workspace.tenant._id) {
     fail("PROJECT_ACCESS_DENIED");
   }
+  let projectRole: ProjectRole | "owner" = "owner";
   if (workspace.membership.role !== "owner") {
     const membership = await activeProjectMembership(
       ctx,
@@ -246,8 +247,9 @@ async function requireProject(
     if (membership === null || membership.tenantId !== workspace.tenant._id) {
       fail("PROJECT_ACCESS_DENIED");
     }
+    projectRole = membership.role;
   }
-  return { ...workspace, project };
+  return { ...workspace, project, projectRole };
 }
 
 export const bootstrapWorkspace = mutation({

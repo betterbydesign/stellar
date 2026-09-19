@@ -96,6 +96,59 @@ export default defineSchema({
     "requestId",
   ]),
 
+  proposalJobs: defineTable({
+    tenantId: v.id("tenants"),
+    projectId: v.id("projects"),
+    identityNamespace: v.string(),
+    initiatingSubject: v.string(),
+    requestId: v.string(),
+    sourceRevision: v.string(),
+    commandDigest: v.string(),
+    adapter: v.union(v.literal("runner-prepare"), v.literal("offline-test")),
+    adapterVersion: v.string(),
+    createdAt: v.number(),
+    expiresAt: v.number(),
+    status: v.union(
+      v.literal("proposed"),
+      v.literal("approved"),
+      v.literal("rejected"),
+      v.literal("cancelled"),
+    ),
+  })
+    .index("by_project", ["projectId"])
+    .index("by_tenant_and_project_and_actor_and_request", [
+      "tenantId", "projectId", "initiatingSubject", "requestId",
+    ]),
+
+  proposals: defineTable({
+    tenantId: v.id("tenants"),
+    projectId: v.id("projects"),
+    jobId: v.id("proposalJobs"),
+    digest: v.string(),
+    prepareJson: v.string(),
+    sourceProposalJson: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_project", ["projectId"])
+    .index("by_job", ["jobId"]),
+
+  proposalDecisions: defineTable({
+    tenantId: v.id("tenants"),
+    projectId: v.id("projects"),
+    proposalId: v.id("proposals"),
+    identityNamespace: v.string(),
+    actorSubject: v.string(),
+    requestId: v.string(),
+    action: v.union(v.literal("approve"), v.literal("reject"), v.literal("cancel")),
+    expectedDigest: v.string(),
+    expectedRevision: v.string(),
+    decidedAt: v.number(),
+  })
+    .index("by_proposal", ["proposalId"])
+    .index("by_tenant_and_project_and_actor_and_request", [
+      "tenantId", "projectId", "actorSubject", "requestId",
+    ]),
+
   auditEvents: defineTable({
     tenantId: v.id("tenants"),
     projectId: v.optional(v.id("projects")),
@@ -106,6 +159,9 @@ export default defineSchema({
       v.literal("project_created"),
       v.literal("tenant_membership_set"),
       v.literal("project_membership_set"),
+      v.literal("proposal_approved"),
+      v.literal("proposal_rejected"),
+      v.literal("proposal_cancelled"),
     ),
     targetSubject: v.optional(v.string()),
     resultingRole: v.optional(

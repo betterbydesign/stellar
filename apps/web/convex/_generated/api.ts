@@ -10,9 +10,11 @@ import type {
 } from "convex/server";
 import { anyApi } from "convex/server";
 import type * as platform from "../platform.js";
+import type * as proposals from "../proposals.js";
 
 const fullApi: ApiFromModules<{
   platform: typeof platform;
+  proposals: typeof proposals;
 }> = anyApi as any;
 
 export const api: FilterApi<
