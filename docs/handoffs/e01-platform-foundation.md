@@ -19,11 +19,17 @@ Implementation commit: `a1006f9`. The worktree was clean after that source/evide
 
 ## Remaining prerequisites
 
-1. Configure a Stellar-owned WorkOS development application and Convex deployment using secure local/provider configuration, not chat. See exact environment names and URLs in the setup guide. Current branch has no configured account. Do not import another product's credentials or raw tenant records.
-2. Obtain authorization for development Convex deployment/provisioning. Set its matching WorkOS client ID, regenerate offline-compatible `_generated` helpers with Convex codegen and deploy/test the schema/functions. Current tests use convex-test, not a live database.
-3. Run real sign-in/logout/expiry, durable create/reopen, two-tenant and same-tenant project isolation, organization setup/grants, revocation and provider outage/reconnect. Record browser UI acceptance with real accounts. WorkOS organization changes are not yet synchronized; revoke Stellar grants explicitly.
-4. Review and implement a separate scoped runner connection before hosted preview or editing. The current refusal endpoint checks visibility then returns disconnected; it cannot authorize or send source commands. Registry linkage needs installation identity, exact project mapping, edit-level grants and durable allocation/reconciliation proof.
-5. After foundation acceptance, review the gated agent/media PRDs and budgets. Integrate accepted editor correctness fixes through coordinated integration before any Letta source writes. No spending is enabled by this handoff.
+Status on 2026-09-19: open and deliberately deferred at the user's request. The existing platform Codex task retains this checklist for the user's later setup and acceptance session. No prerequisite below has been completed by the offline implementation.
+
+- [ ] Configure a Stellar-owned WorkOS development application and Convex deployment using secure local/provider configuration, not chat. See exact environment names and URLs in the setup guide. Current branch has no configured account. Do not import another product's credentials or raw tenant records.
+- [ ] Obtain authorization for development Convex deployment/provisioning. Set its matching WorkOS client ID, regenerate offline-compatible `_generated` helpers with Convex codegen and deploy/test the schema/functions. Current tests use convex-test, not a live database.
+- [ ] Run real sign-in/logout/expiry, durable create/reopen, two-tenant and same-tenant project isolation, organization setup/grants, revocation and provider outage/reconnect. Record browser UI acceptance with real accounts. WorkOS organization changes are not yet synchronized; revoke Stellar grants explicitly.
+- [ ] Review and implement a separate scoped runner connection before hosted preview or editing. The current refusal endpoint checks visibility then returns disconnected; it cannot authorize or send source commands. Registry linkage needs installation identity, exact project mapping, edit-level grants and durable allocation/reconciliation proof.
+- [ ] After foundation acceptance, review the gated agent/media PRDs and budgets. Integrate accepted editor correctness fixes through coordinated integration before any Letta source writes. No spending is enabled by this handoff.
+
+## Work that can proceed independently
+
+The user authorized a separate task with bounded SOL high subagents to build the provider-independent proposal/review foundation: scoped proposal records and approval rules, review UI, cancellation/recovery semantics and offline negative tests. Reuse the existing supported command contract; preserve runner ownership of source/history. Synthetic proposals belong only in clearly labeled development/test evidence. The slice must leave provider execution, source application and spending disabled and record that live persistence and end-to-end acceptance remain unproven. The [Letta PRD](../prds/e01-letta-command-proof.md) remains gated for runtime and write-enabled execution.
 
 ## Parallel ownership
 

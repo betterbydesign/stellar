@@ -28,6 +28,7 @@ Own platform/auth/project membership contracts, WorkOS integration, Convex appli
 10. Validate and independently review the implemented platform slice, record remaining live prerequisites and produce a local integration handoff. Broader .stellar Agent Hub interoperability remains E12, not a prerequisite for standalone login/project management.
 
 ## Progress
+- 2026-09-19: User deferred remaining provider setup/live acceptance and requested useful independent work in a separate task with subagents. Keep this task and the handoff checklist open. Kick off a provider-independent proposal/review source slice with bounded SOL high subagents; preserve all live runner/runtime/spending gates.
 - 2026-09-16: Isolated `codex/independent-platform-foundation` branch fast-forwarded to kickoff commit eac9459. Full intake read. Source task acknowledged disjoint ownership with Stacki: platform owns provider dependencies and auth/project files; no contracts, runner dispatch, editor-core or preview changes.
 - 2026-09-16: Settled [first-slice PRD](../prds/e01-platform-foundation.md) and [authorization/connectivity decision](../decisions/006-independent-platform-authorization.md). No provider environment is configured in this worktree/process. SOL high agents own disjoint WorkOS identity and Convex backend implementation; root owns web/API integration and evidence. No proprietary Agent Hub implementation is imported.
 
@@ -44,6 +45,7 @@ No provider environment exists in this worktree/process. Convex codegen requires
 The current roadmap identifies E01 but M2 explicitly excludes hosted accounts/runtime. A separate platform task avoids silently expanding the company integration milestone. The existing authenticated loopback runner does not by itself solve hosted workspace access.
 
 ## Decision Log
+- 2026-09-19: Deferred prerequisites remain owned by this task for a later user session. Offline proposal/review preparation may proceed in an isolated task without claiming foundation acceptance or enabling agent source writes.
 - 2026-09-16: Start WorkOS/Convex now alongside company M2 and upstream review, using named projects as the first vertical slice.
 - Letta follows a proven authorization/project boundary; OpenRouter follows the first controlled agent/media job. Full Agent Hub handoff stays separate.
 - Shared modules do not imply shared tenant records, raw transcripts, vendor credentials or operational dependency.
