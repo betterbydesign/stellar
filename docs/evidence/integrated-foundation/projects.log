@@ -1,0 +1,5 @@
+
+> stellar@0.0.0 verify:projects
+> node test/editor-e2e/projects.mjs
+
+Named project browser proof passed: create, edit, responsive preview, independent history, reload/restart, lost response retry, legacy preservation and independent build.

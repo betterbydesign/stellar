@@ -1,0 +1,60 @@
+324832a8c3022d6ed15d979d010f38178787920a	docs: add TypeScript migration and contract plan
+9112d972bfee097592e7fe1b13cb1e00de47c68b	build: strict tsconfig with @ts-nocheck ratchet on legacy style-panel
+94dbc2d2bba503c2c8d344597a9ebc9739443a67	style: mechanical fixes required by the incoming lint gate
+69bf1f414939946d41caa3183fa88b783f9a7583	build: ESLint flat config with legacy-zone ratchets
+0f525be94c1afae130b95941dc224739af6c1200	test: update source-regex checks for the braced one-line if; quarantine pre-existing failures
+c08133475b38d639d7f9f8ba23582185e1f9d1ef	build: npm test runs the static gate first — tsc, ESLint, ratchet
+741f67acc819201f8d18511951d1716099213761	fix(parser): a lone top-level component is a layout only when imported
+533fca04a238597241ff90a8f4e536a56bdfd8b9	feat(shared): contract layer — the types every process and AI must satisfy
+a2ea16811a36ea9a3a77ddaf2cfb6c31d966a6fb	test(contracts): parse-tests per contract and a roundtrip property test
+167bd0c6c39b2bf924c838ecbaf8ea8786577cef	feat(shared): contracts compile to shared/dist; IPC shapes match the real handlers
+ea26c5cf76823369bb71608c5cab64fc79840019	feat(bridge): typed validating renderer bridge; loop caps; producer assertion
+965e82f9b0b62b37366aab287768109f2b99fcb6	build: contracts build wired into the gate, dev/build, and packaging
+b2e921cd0fd182411701cf6b7d98196bdc9e6b79	test: bring scan stubs up to the real contract
+0d440d8df40284f636158fc72cd36d8775718973	refactor(electron): convert htmlText to TypeScript — the in-place emit pattern
+8a428f1a306ab3698284bc5250346ee143e221ce	refactor(electron): convert serialQueue, selfWrites, windowBounds to TypeScript
+f62862c5ddce92c6cc27d0a948fd3db4999b50a8	refactor(electron): convert assetRefs to TypeScript; add shared/record.ts
+742abded70688fb99451eadb1b4b1e3955c914b5	refactor(electron): convert frontmatter to TypeScript
+dbfdc6db60edc4e9e845391978e3e36d860df3ff	refactor(src): convert editorTree to TypeScript against the PageNode contract
+871e7d9df534c86fe1125cd65fb76670d95abff6	refactor(src): convert pagePersistence to TypeScript; cap the file-saver drain
+4fa3a5d269959d08763ba4d59c389f338dc26da2	refactor(src): convert cleanError and branchName to TypeScript
+81e4b1ff3e508760a546b77ab82ade1958f030c1	docs: describe the codebase, its round-trip architecture, and the migration
+4f82e2a651db5a2fb7ed79a129140e854176ae70	docs: add the diff-mapping editor core plan; cross-link migration plan and codebase doc
+425fe0df823b93d6fb32f80c58321fd5fa280d7d	refactor(src): convert loopBindings to TypeScript with a minimal-fidelity LiveNode
+7404cd8660b686fd8585adf21290231c0452fe59	refactor(src): convert bindings to TypeScript
+a9c6650ae49e0b5400a78f4863483db2bc34fff8	refactor(src): convert arrayValue to TypeScript
+59627ea15c8ddd2711f9acad2f03055cd0c91c8a	test: make section-dot's settle wait race-proof
+70bb8bd99da7c6292ba64db67f15b94e80ed40fe	refactor(src): convert dataSuggest to TypeScript
+82471ec90cebfc115cc6aab1c48afb5b40de4250	refactor(electron): convert jsCollections to TypeScript
+3b6e8f56a05068ec1e0aec02d6e2e2e27984a35c	refactor(electron): convert devProbe, injectedRoutes, projectWatcher; declare tooling deps
+8df50905d8bd1f817ba552fe98affcbbb8f8ac66	refactor(electron): convert formats/{transplant,ndjson,csv,yaml,frontmatter} to TypeScript
+292d14b7b7b86f21ec2bed156c7b2db56f494a17	refactor(electron): convert componentFile and gitSnapshot to TypeScript
+9eadd30f39e539180256884237a31f6b8b4a8280	refactor(electron): convert starter and cmsRefs to TypeScript
+d8c71946b7db8ed2d76a247b0d961eb23a761089	refactor(electron): convert componentUsage and previewWorktree to TypeScript
+87ef63fd7590cb32ed97377a63274cc22fad5375	refactor(electron): convert scaffold and contentRefs to TypeScript
+55c856ddf00e144202cc39781d3c29958ee294c3	refactor(electron): convert formats/json to TypeScript
+3045f779c53143dd985b07ab33642db18493835b	fix(electron): parse json.ts object keys without an unsafe assignment
+570a320e92578c350def24429226891539bc0550	refactor(electron): convert formats/toml to TypeScript
+08414a9ac2c0f73b4c96cfcc5c8f3f0e5479532b	refactor(electron): convert thumbs to TypeScript
+571c62d43043dca764c9a644b5f337759c1c83ae	refactor(electron): convert gitBranches to TypeScript; extract electron/git.ts
+92d9fe8440d776a4c063e205d6d61ed8c2ad471c	refactor(electron): convert gitHistory to TypeScript
+c48c42f7b2c281317c37f12dd9b83b629a770398	refactor(electron): convert contentEntries to TypeScript; retire its seed d.ts
+9c069385607e1c8c862163cde7fa83fc0cc14e3e	test: pass exports through the vm module wrapper in backend-lifecycle
+c49b9a3e4100314eb4f8ad3bea0cc92fc82e3811	refactor(electron): convert conflicts to TypeScript; retire its seed d.ts
+4f43f9cd3ff00a60b8fec6d4edcae05c4e8708f4	refactor(electron): convert contentConfig to TypeScript
+9bf00956149cbb81aad531c12bf70f85f4b07da5	docs: add migration tracker — living status of the TypeScript conversion
+5265b04c93741b8c57653c7a4427a8222f690070	refactor(electron): convert terminal to TypeScript
+9eadf36ff45e603438aff6b124c84a0988a352b2	refactor(electron): convert morphClient to TypeScript, emitted as ESM
+65f81c027b4c7b7bbc106434a1dbfd523ec22855	refactor(electron): convert markdownParser to TypeScript
+e153178ec114c9ebdaf3bd9d2f3c3a7840703b9b	docs: tracker — terminal, morphClient, markdownParser converted
+4e0a3498afd158aa03c52390fb2d6161a88d2908	refactor(electron): convert cssVars to TypeScript
+de7f4968d3e83faafafdf12c53003af971c60284	docs: tracker — cssVars converted
+3f5d8cc4b5bbe6893b96cfbef6809fce4ac46895	refactor(electron): convert preload to TypeScript
+0e9591f8368f795d11bac5f9f0f75cc9aa0b8e9c	docs: tracker — preload converted
+37c6365febbf7dcd61cf46bea43c99935613f186	fix(build): let vite transform the CJS shared/dist and gate the web build
+b94457c78658deefbfe15ef39970109ab2c09de8	fix(contracts): scan schemas travel as an array of fields, not a Map
+0b64e550ba127ca78388fc0e74c97f54978c5c7f	docs: migration state for handoff — 55 commits in, preload landed, scan wire fix recorded
+a9c85a37cac14bea3b1effcb62c90ff0760daae4	docs: pin four ripwire field notes for the migration handoff
+b6cd7a3850d748bd046eefae6d9518c18ae12da5	build: declare the CodeMirror packages the editor UI already imports
+484b1578a861790d59b706a4f18d28709bf7645b	Merge pull request #26 from cusable/refactor/ts-enforcement-migration
+fd2a38fbfb556d5d10254b6fc498192346d37a37	fix: restore renderer startup and release Stacki 0.1.26

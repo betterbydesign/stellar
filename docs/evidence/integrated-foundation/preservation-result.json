@@ -1,0 +1,15 @@
+{
+  "baseCommit": "7a231b3f345ac73b03018aa131c9ce7970525731",
+  "sourceSha256": "b4d452e512d3b0c133871809a159ada657e5e2127e7801cc5ba61b453bab14f3",
+  "fileCount": 177,
+  "status": "passed",
+  "checks": [
+    "BOM and CRLF source with Unicode comment and mixed-case declaration saved through UI",
+    "computed preview color matched source",
+    "exact-byte undo and redo",
+    "mixed-case duplicate owner refused",
+    "independent edited-site build contains no editor instrumentation",
+    "fixture seed and other project unchanged",
+    "no page errors"
+  ]
+}

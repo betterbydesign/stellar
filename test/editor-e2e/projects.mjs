@@ -79,13 +79,16 @@ try {
   await page.goto(runtime.appOrigin + "/projects");
   // Lose a successful response, then reload and retry the persisted request.
   let uncertain;
-  await page.route("**/api/projects?*", async (route) => {
+  const loseCreationResponse = async (route) => {
     if (route.request().method() !== "POST") return route.continue();
     const response = await route.fetch(); uncertain = await response.json(); await route.abort();
-  }, { times: 1 });
+  };
+  // Background catalog reads must not consume the lost-POST interception.
+  await page.route("**/api/projects?*", loseCreationResponse);
   await page.getByRole("textbox", { name: "Project name", exact: true }).fill("Retry garden");
   await page.getByRole("button", { name: "Create project", exact: true }).click();
   await waitFor(async () => Boolean(uncertain), "Creation reached registry");
+  await page.unroute("**/api/projects?*", loseCreationResponse);
   await page.reload();
   await page.getByRole("button", { name: /Retry|Check creation/ }).click();
   await preview();

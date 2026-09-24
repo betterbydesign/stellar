@@ -1,0 +1,376 @@
+
+> @stellar/web@0.0.0 test
+> node --conditions=react-server -r ./test/register.cjs --test test/*.test.cjs && vitest run
+
+TAP version 13
+# Subtest: launcher config fails closed on unsafe host, mode, secret and preview URL
+ok 1 - launcher config fails closed on unsafe host, mode, secret and preview URL
+  ---
+  duration_ms: 0.799833
+  type: 'test'
+  ...
+# Subtest: bootstrap is one-use under concurrent requests and cookie is signed and expiring
+ok 2 - bootstrap is one-use under concurrent requests and cookie is signed and expiring
+  ---
+  duration_ms: 14.473458
+  type: 'test'
+  ...
+# Subtest: broker sends one authenticated loopback RPC and normalizes runner errors
+ok 3 - broker sends one authenticated loopback RPC and normalizes runner errors
+  ---
+  duration_ms: 3.405583
+  type: 'test'
+  ...
+# Subtest: restart accepts a new coherent session ID but other reads retain the requested session scope
+ok 4 - restart accepts a new coherent session ID but other reads retain the requested session scope
+  ---
+  duration_ms: 0.741083
+  type: 'test'
+  ...
+# Subtest: all project reads require operator and mutations require exact Origin plus CSRF
+ok 5 - all project reads require operator and mutations require exact Origin plus CSRF
+  ---
+  duration_ms: 3.305208
+  type: 'test'
+  ...
+# Subtest: NextURL loopback normalization preserves exact incoming Host and Origin gates
+ok 6 - NextURL loopback normalization preserves exact incoming Host and Origin gates
+  ---
+  duration_ms: 0.268625
+  type: 'test'
+  ...
+# Subtest: history broker checks command receipt operation and request scope
+ok 7 - history broker checks command receipt operation and request scope
+  ---
+  duration_ms: 0.471959
+  type: 'test'
+  ...
+# Subtest: history POST requires operator, exact origin and CSRF before forwarding
+ok 8 - history POST requires operator, exact origin and CSRF before forwarding
+  ---
+  duration_ms: 1.6695
+  type: 'test'
+  ...
+# Subtest: named project creation requires authentication, origin, CSRF and a strict reviewed blueprint request
+ok 9 - named project creation requires authentication, origin, CSRF and a strict reviewed blueprint request
+  ---
+  duration_ms: 2.0465
+  type: 'test'
+  ...
+# Subtest: creation broker rejects a different request or blueprint identity
+ok 10 - creation broker rejects a different request or blueprint identity
+  ---
+  duration_ms: 0.829084
+  type: 'test'
+  ...
+# Subtest: history shortcuts respect native editing and map platform redo
+ok 11 - history shortcuts respect native editing and map platform redo
+  ---
+  duration_ms: 0.410583
+  type: 'test'
+  ...
+# Subtest: history controls use only server-designated visible stack entries
+ok 12 - history controls use only server-designated visible stack entries
+  ---
+  duration_ms: 0.1015
+  type: 'test'
+  ...
+# Subtest: history lookup accepts a prior-session receipt but rejects mismatched scope and missing outcomes
+ok 13 - history lookup accepts a prior-session receipt but rejects mismatched scope and missing outcomes
+  ---
+  duration_ms: 1.624459
+  type: 'test'
+  ...
+# Subtest: missing history may retry only the original command in the same session, revision, and stack position
+ok 14 - missing history may retry only the original command in the same session, revision, and stack position
+  ---
+  duration_ms: 0.661292
+  type: 'test'
+  ...
+# Subtest: all 5xx history responses retain the original request for reconciliation
+ok 15 - all 5xx history responses retain the original request for reconciliation
+  ---
+  duration_ms: 0.515667
+  type: 'test'
+  ...
+# Subtest: pending history marker persists only scoped command metadata and rejects stale or malformed state
+ok 16 - pending history marker persists only scoped command metadata and rejects stale or malformed state
+  ---
+  duration_ms: 5.619083
+  type: 'test'
+  ...
+# Subtest: local and concrete token controls reject invalid values before API calls
+ok 17 - local and concrete token controls reject invalid values before API calls
+  ---
+  duration_ms: 0.69375
+  type: 'test'
+  ...
+# Subtest: late prepare response cannot replace a changed draft or authorize a stale proposal
+ok 18 - late prepare response cannot replace a changed draft or authorize a stale proposal
+  ---
+  duration_ms: 0.30125
+  type: 'test'
+  ...
+# Subtest: uncertain apply preserves request identity and blocks new drafts or discard until reconciliation
+ok 19 - uncertain apply preserves request identity and blocks new drafts or discard until reconciliation
+  ---
+  duration_ms: 0.159541
+  type: 'test'
+  ...
+# Subtest: a definite failed apply can be reviewed again without reusing the old apply request ID
+ok 20 - a definite failed apply can be reviewed again without reusing the old apply request ID
+  ---
+  duration_ms: 0.111375
+  type: 'test'
+  ...
+# Subtest: malformed, mismatched and 5xx apply responses are uncertain after request dispatch
+ok 21 - malformed, mismatched and 5xx apply responses are uncertain after request dispatch
+  ---
+  duration_ms: 10.183292
+  type: 'test'
+  ...
+# Subtest: missing outcome permits only original-request retry and rejects mismatched lookup scope
+ok 22 - missing outcome permits only original-request retry and rejects mismatched lookup scope
+  ---
+  duration_ms: 0.688417
+  type: 'test'
+  ...
+# Subtest: pending apply marker stores only bounded logical identity and never grants stale retry authority
+ok 23 - pending apply marker stores only bounded logical identity and never grants stale retry authority
+  ---
+  duration_ms: 4.715375
+  type: 'test'
+  ...
+# Subtest: reconciled reload receipt remains visible while source and preview refresh independently
+ok 24 - reconciled reload receipt remains visible while source and preview refresh independently
+  ---
+  duration_ms: 0.138417
+  type: 'test'
+  ...
+# Subtest: local development isolates its lock while production keeps the built output
+ok 25 - local development isolates its lock while production keeps the built output
+  ---
+  duration_ms: 0.730833
+  type: 'test'
+  ...
+# Subtest: platform mode is explicit and unknown or mixed modes fail closed
+ok 26 - platform mode is explicit and unknown or mixed modes fail closed
+  ---
+  duration_ms: 0.708458
+  type: 'test'
+  ...
+# Subtest: missing setup reports names only and never returns partial credentials
+ok 27 - missing setup reports names only and never returns partial credentials
+  ---
+  duration_ms: 0.10875
+  type: 'test'
+  ...
+# Subtest: ready config exposes only validated public URLs and derives the app origin
+ok 28 - ready config exposes only validated public URLs and derives the app origin
+  ---
+  duration_ms: 0.25175
+  type: 'test'
+  ...
+# Subtest: unsafe credentials, URLs, and provider endpoint overrides are rejected by name
+ok 29 - unsafe credentials, URLs, and provider endpoint overrides are rejected by name
+  ---
+  duration_ms: 0.146583
+  type: 'test'
+  ...
+# Subtest: callback and Convex URLs accept HTTPS or loopback HTTP only at their fixed paths
+ok 30 - callback and Convex URLs accept HTTPS or loopback HTTP only at their fixed paths
+  ---
+  duration_ms: 0.180625
+  type: 'test'
+  ...
+# Subtest: an unavailable platform strips spoofed AuthKit request headers
+ok 31 - an unavailable platform strips spoofed AuthKit request headers
+  ---
+  duration_ms: 1.763375
+  type: 'test'
+  ...
+# Subtest: disabled configuration never reads session or calls backend
+ok 32 - disabled configuration never reads session or calls backend
+  ---
+  duration_ms: 9.549083
+  type: 'test'
+  ...
+# Subtest: anonymous sessions and auth service failures cannot reach platform data
+ok 33 - anonymous sessions and auth service failures cannot reach platform data
+  ---
+  duration_ms: 0.580667
+  type: 'test'
+  ...
+# Subtest: mutation origins are exact and never trust forwarded hosts or local cookies
+ok 34 - mutation origins are exact and never trust forwarded hosts or local cookies
+  ---
+  duration_ms: 1.182708
+  type: 'test'
+  ...
+# Subtest: project create forwards only validated intent and private token
+ok 35 - project create forwards only validated intent and private token
+  ---
+  duration_ms: 1.396917
+  type: 'test'
+  ...
+# Subtest: bootstrap cannot accept client-selected organization or actor
+ok 36 - bootstrap cannot accept client-selected organization or actor
+  ---
+  duration_ms: 0.145083
+  type: 'test'
+  ...
+# Subtest: authorization failures pass safe codes and backend outage redacts details
+ok 37 - authorization failures pass safe codes and backend outage redacts details
+  ---
+  duration_ms: 0.445
+  type: 'test'
+  ...
+# Subtest: runner attempt authorizes through backend and remains disconnected
+ok 38 - runner attempt authorizes through backend and remains disconnected
+  ---
+  duration_ms: 0.89925
+  type: 'test'
+  ...
+# Subtest: request identity survives serialization and is isolated by actor and tenant
+ok 39 - request identity survives serialization and is isolated by actor and tenant
+  ---
+  duration_ms: 0.152542
+  type: 'test'
+  ...
+# Subtest: platform or unknown mode disables all local broker configuration
+ok 40 - platform or unknown mode disables all local broker configuration
+  ---
+  duration_ms: 0.446542
+  type: 'test'
+  ...
+# Subtest: explicit resolution clears only the current actor and tenant intent
+ok 41 - explicit resolution clears only the current actor and tenant intent
+  ---
+  duration_ms: 0.369833
+  type: 'test'
+  ...
+# Subtest: proposal reads forward exact project scope and bounded pagination
+ok 42 - proposal reads forward exact project scope and bounded pagination
+  ---
+  duration_ms: 0.712125
+  type: 'test'
+  ...
+# Subtest: proposal decisions require exact reviewed bindings and reject identity injection
+ok 43 - proposal decisions require exact reviewed bindings and reject identity injection
+  ---
+  duration_ms: 3.024583
+  type: 'test'
+  ...
+# Subtest: proposal submission remains disconnected and no apply route exists
+ok 44 - proposal submission remains disconnected and no apply route exists
+  ---
+  duration_ms: 0.318292
+  type: 'test'
+  ...
+# Subtest: account proposal transport and HTTP agree on exact decision payload
+ok 45 - account proposal transport and HTTP agree on exact decision payload
+  ---
+  duration_ms: 17.526833
+  type: 'test'
+  ...
+# Subtest: pending review keys isolate tenant, actor and project
+ok 46 - pending review keys isolate tenant, actor and project
+  ---
+  duration_ms: 0.414292
+  type: 'test'
+  ...
+# Subtest: pending review reload accepts only a bounded exact request
+ok 47 - pending review reload accepts only a bounded exact request
+  ---
+  duration_ms: 0.825792
+  type: 'test'
+  ...
+# Subtest: lost response reconciliation binds proposal, digest, revision, actor, action and request ID even after later cancellation
+ok 48 - lost response reconciliation binds proposal, digest, revision, actor, action and request ID even after later cancellation
+  ---
+  duration_ms: 0.293375
+  type: 'test'
+  ...
+# Subtest: mismatched sealed bindings never clear a pending decision
+ok 49 - mismatched sealed bindings never clear a pending decision
+  ---
+  duration_ms: 0.183584
+  type: 'test'
+  ...
+# Subtest: current exact frame selection resolves only against current source model
+ok 50 - current exact frame selection resolves only against current source model
+  ---
+  duration_ms: 0.648542
+  type: 'test'
+  ...
+# Subtest: wrong origin, window, scope, route and stale revision cannot select
+ok 51 - wrong origin, window, scope, route and stale revision cannot select
+  ---
+  duration_ms: 0.943875
+  type: 'test'
+  ...
+# Subtest: malformed frame payload and spoofed target cannot select
+ok 52 - malformed frame payload and spoofed target cannot select
+  ---
+  duration_ms: 0.276
+  type: 'test'
+  ...
+# Subtest: hello only reveals a route from the exact frame
+ok 53 - hello only reveals a route from the exact frame
+  ---
+  duration_ms: 0.065041
+  type: 'test'
+  ...
+# Subtest: preview origin accepts only exact local preview hostname
+ok 54 - preview origin accepts only exact local preview hostname
+  ---
+  duration_ms: 0.093958
+  type: 'test'
+  ...
+# Subtest: browser Back waits for dirty draft resolution and repeated Back cannot skip it
+ok 55 - browser Back waits for dirty draft resolution and repeated Back cannot skip it
+  ---
+  duration_ms: 0.41675
+  type: 'test'
+  ...
+# Subtest: browser Back from a deep link falls back to Projects after guard approval
+ok 56 - browser Back from a deep link falls back to Projects after guard approval
+  ---
+  duration_ms: 0.072792
+  type: 'test'
+  ...
+# Subtest: remount and reload reuse the existing Studio sentinel
+ok 57 - remount and reload reuse the existing Studio sentinel
+  ---
+  duration_ms: 0.120292
+  type: 'test'
+  ...
+# Subtest: deep-link remount retains fallback behavior instead of navigating to an unknown prior entry
+ok 58 - deep-link remount retains fallback behavior instead of navigating to an unknown prior entry
+  ---
+  duration_ms: 0.256625
+  type: 'test'
+  ...
+# Subtest: Keep editing then reload preserves the dashboard as the Back destination
+ok 59 - Keep editing then reload preserves the dashboard as the Back destination
+  ---
+  duration_ms: 0.288666
+  type: 'test'
+  ...
+1..59
+# tests 59
+# suites 0
+# pass 59
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 347.497084
+
+ RUN  v5.0.1 /Users/scottfoster/.codex/worktrees/b63d/stellar/apps/web
+
+
+ Test Files  2 passed (2)
+      Tests  21 passed (21)
+   Start at  19:50:47
+   Duration  251ms (tests 38%, transform 35%, import 26%, worker 1%)

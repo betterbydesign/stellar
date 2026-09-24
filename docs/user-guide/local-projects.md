@@ -14,7 +14,7 @@ If the preview is still starting, the Studio shows its actual runner state. A fa
 
 ## Saved work and stopping
 
-The runner stores named projects and the retained `project-a` and `project-b` copies under the ignored `.stellar-local` directory. Project names are display labels; generated identities determine storage paths. Each copy has its own source and saved history; neither edits the example's original files. Closing a session stops its preview while retaining its copy. Stop the launcher with the terminal's interrupt action when finished. Restarting the launcher retains saved source and receipts.
+The runner stores named projects and the retained `project-a` and `project-b` copies under the ignored `.stellar-local` directory. Project names are display labels; generated identities determine storage paths. Each copy has its own source and saved history; neither edits the example's original files. Closing a session stops its preview while retaining its copy. Keep the launcher terminal open while working; Ctrl-C stops the app, runner and previews. Terminal hangup or loss of the launcher also shuts down its managed services. Restarting the launcher retains saved source and receipts.
 
 Do not delete `.stellar-local` to troubleshoot an ordinary startup problem: it contains saved work. To intentionally start over, stop the launcher and preserve or rename that directory before starting again. A fresh directory creates fresh copies. Only one runner can own the same data directory at a time.
 
@@ -35,3 +35,9 @@ Run `npm run verify:projects` after the production build for named creation, ind
 ## Development-server conflicts
 
 The complete local editor uses port 3210 and a separate `.next-local` development cache. A web-only `npm run dev` server on port 3000 can remain running; the two modes no longer share a development lock. If port 3210 itself is already occupied, stop the existing local launcher with Ctrl-C in its terminal before starting another. Use the fresh connection link from the new launcher. Do not delete `.stellar-local`; it holds saved project copies and history.
+
+The launcher checks both app and runner ports before starting, waits for runner initialization, then waits for the web app before printing the connection link. An occupied port is reported as a conflict; it does not mean the fixture is broken. A runner holding the same saved-project directory reports its PID separately. The launcher never kills an unknown listener automatically.
+
+Laptop sleep can leave an existing session running. Try its existing window first; if you need a fresh authenticated session, stop that launcher and run `npm run dev:local` again. After closing its terminal, run the command from a new terminal. Older launchers started before the lifecycle fix may need one verified manual shutdown because they do not contain the new cleanup behavior.
+
+For an isolated developer worktree, `STELLAR_APP_PORT` and `STELLAR_RUNNER_PORT` can select different loopback ports, together with a separate `STELLAR_DATA_DIR`. Changing ports alone never authorizes sharing the same saved-project directory or Next development cache between launchers.

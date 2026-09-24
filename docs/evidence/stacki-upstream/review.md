@@ -1,0 +1,9 @@
+# Independent review
+
+2026-09-16. Three bounded SOL (`gpt-5.6-sol`) high-reasoning agents provided upstream semantics analysis, queue/preview comparison, and independent implementation review. They used read-only access and did not edit files, install dependencies, start services or change saved project data.
+
+The independent reviewer identified one P2: escaped CSS declaration identifiers could hide duplicate standard or custom property owners despite literal ASCII case folding. A failing public-boundary regression was added ([pre-fix evidence](review-regression-before.log)). The engine now refuses escaped declaration names in owned rules and conservatively disables token edits when escaped properties prevent proving global token uniqueness. This is deliberately narrower than a general CSS escape decoder.
+
+On re-review, the reviewer found no residual actionable defects in `packages/editor-core/src/index.ts`, `packages/editor-core/src/preservation.test.ts`, or `test/editor-e2e/upstream-preservation.mjs`. Independently executed `node --test packages/editor-core/dist/preservation.test.js`: 37/37 tests/subtests passed. The full editor package includes five earlier tests for a total of 42. The reviewer inspected the browser assertions and recorded passing evidence but did not rerun a browser or services. After review, the browser harness received only a fresh reselection/wait before its screenshot so the inspector's computed observation reflects the new frame; runtime code did not change.
+
+Root verification independently covers all root suites, production packages/Next/Astro build, authenticated runner acceptance and the dedicated real browser proof. This agent review is not the user's integration review. The slow-refresh watcher queue finding remains explicitly outside the approved first batch; it does not invalidate ordinary editing acceptance or establish a platform blocker.

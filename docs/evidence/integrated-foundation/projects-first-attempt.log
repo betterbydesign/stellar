@@ -1,0 +1,13 @@
+
+> stellar@0.0.0 verify:projects
+> node test/editor-e2e/projects.mjs
+
+file:///Users/scottfoster/.codex/worktrees/b63d/stellar/test/editor-e2e/runtime.mjs:18
+  throw new Error(`${description}: timed out`);
+        ^
+
+Error: Creation reached registry: timed out
+    at waitFor (file:///Users/scottfoster/.codex/worktrees/b63d/stellar/test/editor-e2e/runtime.mjs:18:9)
+    at async file:///Users/scottfoster/.codex/worktrees/b63d/stellar/test/editor-e2e/projects.mjs:88:3
+
+Node.js v22.23.2

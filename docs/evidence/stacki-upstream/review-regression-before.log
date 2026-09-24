@@ -1,0 +1,294 @@
+
+> @stellar/editor-core@0.1.0 test
+> npm run build && node --test dist/*.test.js
+
+
+> @stellar/editor-core@0.1.0 build
+> tsc -p tsconfig.json
+
+TAP version 13
+# Subtest: read preserves bytes, resolves authored source keys and refuses repeated component instances
+ok 1 - read preserves bytes, resolves authored source keys and refuses repeated component instances
+  ---
+  duration_ms: 55.8265
+  type: 'test'
+  ...
+# Subtest: base and mobile edits change one declaration, reset it and keep neighboring bytes
+ok 2 - base and mobile edits change one declaration, reset it and keep neighboring bytes
+  ---
+  duration_ms: 73.908875
+  type: 'test'
+  ...
+# Subtest: token leaf change leaves aliases intact, scoped duplicates separate, no-op unchanged
+ok 3 - token leaf change leaves aliases intact, scoped duplicates separate, no-op unchanged
+  ---
+  duration_ms: 43.608875
+  type: 'test'
+  ...
+# Subtest: invalid values, alias corruption, unsupported Astro and malformed CSS refuse edits
+ok 4 - invalid values, alias corruption, unsupported Astro and malformed CSS refuse edits
+  ---
+  duration_ms: 59.845292
+  type: 'test'
+  ...
+# Subtest: UTF-8 prefixes preserve exact byte offsets and inverse bytes
+ok 5 - UTF-8 prefixes preserve exact byte offsets and inverse bytes
+  ---
+  duration_ms: 18.18725
+  type: 'test'
+  ...
+# Subtest: standard property casing identifies the authored declaration and refuses duplicate owners
+ok 6 - standard property casing identifies the authored declaration and refuses duplicate owners
+  ---
+  duration_ms: 88.489458
+  type: 'test'
+  ...
+# Subtest: escaped declaration names cannot hide standard or custom property owners
+not ok 7 - escaped declaration names cannot hide standard or custom property owners
+  ---
+  duration_ms: 12.057541
+  type: 'test'
+  location: '/Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:39:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    c\6flor: #abcdef;
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core/dist/preservation.test.js:46:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: generated source variants preserve every byte outside the owned span and reverse exactly
+    # Subtest: seed 0
+    ok 1 - seed 0
+      ---
+      duration_ms: 140.0935
+      type: 'test'
+      ...
+    # Subtest: seed 1
+    ok 2 - seed 1
+      ---
+      duration_ms: 129.648416
+      type: 'test'
+      ...
+    # Subtest: seed 2
+    ok 3 - seed 2
+      ---
+      duration_ms: 126.643625
+      type: 'test'
+      ...
+    # Subtest: seed 3
+    ok 4 - seed 3
+      ---
+      duration_ms: 115.906208
+      type: 'test'
+      ...
+    # Subtest: seed 4
+    ok 5 - seed 4
+      ---
+      duration_ms: 115.466917
+      type: 'test'
+      ...
+    # Subtest: seed 5
+    ok 6 - seed 5
+      ---
+      duration_ms: 113.909667
+      type: 'test'
+      ...
+    # Subtest: seed 6
+    ok 7 - seed 6
+      ---
+      duration_ms: 117.036
+      type: 'test'
+      ...
+    # Subtest: seed 7
+    ok 8 - seed 7
+      ---
+      duration_ms: 114.723125
+      type: 'test'
+      ...
+    # Subtest: seed 8
+    ok 9 - seed 8
+      ---
+      duration_ms: 111.910375
+      type: 'test'
+      ...
+    # Subtest: seed 9
+    ok 10 - seed 9
+      ---
+      duration_ms: 113.637917
+      type: 'test'
+      ...
+    # Subtest: seed 10
+    ok 11 - seed 10
+      ---
+      duration_ms: 112.834625
+      type: 'test'
+      ...
+    # Subtest: seed 11
+    ok 12 - seed 11
+      ---
+      duration_ms: 112.046875
+      type: 'test'
+      ...
+    # Subtest: seed 12
+    ok 13 - seed 12
+      ---
+      duration_ms: 114.236042
+      type: 'test'
+      ...
+    # Subtest: seed 13
+    ok 14 - seed 13
+      ---
+      duration_ms: 110.898084
+      type: 'test'
+      ...
+    # Subtest: seed 14
+    ok 15 - seed 14
+      ---
+      duration_ms: 110.493708
+      type: 'test'
+      ...
+    # Subtest: seed 15
+    ok 16 - seed 15
+      ---
+      duration_ms: 110.41
+      type: 'test'
+      ...
+    # Subtest: seed 16
+    ok 17 - seed 16
+      ---
+      duration_ms: 110.861417
+      type: 'test'
+      ...
+    # Subtest: seed 17
+    ok 18 - seed 17
+      ---
+      duration_ms: 110.193208
+      type: 'test'
+      ...
+    # Subtest: seed 18
+    ok 19 - seed 18
+      ---
+      duration_ms: 110.7465
+      type: 'test'
+      ...
+    # Subtest: seed 19
+    ok 20 - seed 19
+      ---
+      duration_ms: 116.861
+      type: 'test'
+      ...
+    # Subtest: seed 20
+    ok 21 - seed 20
+      ---
+      duration_ms: 141.414125
+      type: 'test'
+      ...
+    # Subtest: seed 21
+    ok 22 - seed 21
+      ---
+      duration_ms: 136.599583
+      type: 'test'
+      ...
+    # Subtest: seed 22
+    ok 23 - seed 22
+      ---
+      duration_ms: 119.327542
+      type: 'test'
+      ...
+    # Subtest: seed 23
+    ok 24 - seed 23
+      ---
+      duration_ms: 115.116375
+      type: 'test'
+      ...
+    # Subtest: seed 24
+    ok 25 - seed 24
+      ---
+      duration_ms: 110.254042
+      type: 'test'
+      ...
+    # Subtest: seed 25
+    ok 26 - seed 25
+      ---
+      duration_ms: 111.488541
+      type: 'test'
+      ...
+    # Subtest: seed 26
+    ok 27 - seed 26
+      ---
+      duration_ms: 111.512334
+      type: 'test'
+      ...
+    # Subtest: seed 27
+    ok 28 - seed 27
+      ---
+      duration_ms: 110.158792
+      type: 'test'
+      ...
+    # Subtest: seed 28
+    ok 29 - seed 28
+      ---
+      duration_ms: 110.460417
+      type: 'test'
+      ...
+    # Subtest: seed 29
+    ok 30 - seed 29
+      ---
+      duration_ms: 127.200375
+      type: 'test'
+      ...
+    # Subtest: seed 30
+    ok 31 - seed 30
+      ---
+      duration_ms: 114.966792
+      type: 'test'
+      ...
+    # Subtest: seed 31
+    ok 32 - seed 31
+      ---
+      duration_ms: 111.897666
+      type: 'test'
+      ...
+    1..32
+ok 8 - generated source variants preserve every byte outside the owned span and reverse exactly
+  ---
+  duration_ms: 3741.573833
+  type: 'test'
+  ...
+# Subtest: a BOM-only source change invalidates the old target even if the revision is reused
+ok 9 - a BOM-only source change invalidates the old target even if the revision is reused
+  ---
+  duration_ms: 12.599875
+  type: 'test'
+  ...
+# Subtest: custom property names keep their case-sensitive ownership
+ok 10 - custom property names keep their case-sensitive ownership
+  ---
+  duration_ms: 14.056792
+  type: 'test'
+  ...
+1..10
+# tests 42
+# suites 0
+# pass 41
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4949.265416
+npm error Lifecycle script `test` failed with error:
+npm error code 1
+npm error path /Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core
+npm error workspace @stellar/editor-core@0.1.0
+npm error location /Users/scottfoster/.codex/worktrees/5f1e/stellar/packages/editor-core
+npm error command failed
+npm error command sh -c npm run build && node --test dist/*.test.js

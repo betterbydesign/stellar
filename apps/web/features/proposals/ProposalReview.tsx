@@ -48,7 +48,7 @@ export function ProposalReview({ projectId, transport = accountReviewTransport, 
       const id = saved?.proposalId ?? wantedId ?? first.page[0]?.id;
       const selected = id ? await transport.get(projectId, id) : null;
       if (selected && (selected.tenantId !== first.tenantId || selected.actor.subject !== first.actor.subject || selected.proposal.projectId !== projectId)) throw new Error("Scope changed");
-      if (saved && selected && reconciledPending(saved, selected.proposal.decisionHistory, first.actor.subject)) {
+      if (saved && selected && reconciledPending(saved, selected.proposal.decisionHistory, first.actor.subject, selected.proposal)) {
         sessionStorage.removeItem(key);
         setPending(null);
         setNotice(`Recovered the recorded ${saved.action} decision after reload. No second decision was sent. The proposal's current state may have changed since that decision.`);
@@ -100,7 +100,7 @@ export function ProposalReview({ projectId, transport = accountReviewTransport, 
     setPending(intent); setDeciding(true); setNotice("");
     try {
       const updated = await transport.decide(projectId, current.id, intent);
-      if (updated.projectId !== projectId || updated.id !== current.id || !reconciledPending(intent, updated.decisionHistory, page.actor.subject)) throw new Error("Outcome needs reconciliation");
+      if (updated.projectId !== projectId || updated.id !== current.id || !reconciledPending(intent, updated.decisionHistory, page.actor.subject, updated)) throw new Error("Outcome needs reconciliation");
       sessionStorage.removeItem(storageKey);
       setPending(null);
       setDetail({ ...detail, proposal: updated });
@@ -140,7 +140,7 @@ export function ProposalReview({ projectId, transport = accountReviewTransport, 
           <details><summary>Adapter provenance</summary><pre>{exact(proposal.provenance)}</pre></details>
           {!!proposal.decisionHistory.length && <details open><summary>Recorded decision history</summary><pre>{exact(proposal.decisionHistory)}</pre></details>}
           <div className={styles.disconnected}><strong>Application unavailable · RUNNER_DISCONNECTED</strong><p>Approval is a review record only. A future authenticated runner must check current grants, source revision, and the exact command before any source change.</p></div>
-          {pending && <p className={styles.notice} role="status">Pending {pending.action} request {pending.requestId}. {reconciledPending(pending, proposal.decisionHistory, page.actor.subject) ? "Reload to reconcile its recorded result and current state." : "Retrying will use the same request ID if this proposal still accepts the action."}</p>}
+          {pending && <p className={styles.notice} role="status">Pending {pending.action} request {pending.requestId}. {reconciledPending(pending, proposal.decisionHistory, page.actor.subject, proposal) ? "Reload to reconcile its recorded result and current state." : "Retrying will use the same request ID if this proposal still accepts the action."}</p>}
           {canDecide && <div className={styles.actions}>
             {(canWithdraw(proposal) ? ["cancel"] as const : ["approve", "reject", "cancel"] as const).map((action) => <button key={action} className={action === "approve" ? styles.primary : styles.secondary} type="button" onClick={() => void decide(action)} disabled={Boolean(pending && pending.action !== action)}>{pending?.action === action ? `Retry ${action} request` : canWithdraw(proposal) && action === "cancel" ? "Withdraw approval" : actionLabels[action]}</button>)}
           </div>}

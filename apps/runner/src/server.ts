@@ -6,6 +6,7 @@ import { CreateProjectRequestSchema, CreateProjectResponseSchema, ListBlueprints
 import { Registry, RegistryError, type RegisteredProject } from "./registry.js";
 import { DataLease } from "./lease.js";
 import { WorkspaceRuntime } from "./workspace.js";
+import { startupErrorMessage } from "./startup-error.js";
 
 export type RunnerConfig = {
   seed: string; data: string; url: URL; secret: string; operatorId: string;
@@ -195,6 +196,7 @@ async function main(): Promise<void> {
   try { await new Promise<void>((resolve, reject) => server.once("error", reject).listen(Number(config.url.port), "127.0.0.1", resolve)); }
   catch (failure) { await runner.shutdown(); throw failure; }
   process.stdout.write(`Stellar local runner ready at ${config.url.origin}\n`);
+  process.send?.({ type: "stellar-runner-ready" });
   let closing = false;
   const close = () => {
     if (closing) return;
@@ -206,8 +208,12 @@ async function main(): Promise<void> {
   };
   process.on("SIGINT", close);
   process.on("SIGTERM", close);
+  process.on("SIGHUP", close);
+  // Defense in depth when launched with IPC; preview workers have the same rule.
+  process.on("disconnect", close);
+  if (process.send && !process.connected) close();
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  main().catch(() => { process.stderr.write("Local runner could not initialize. Check the fixture and local data directory.\n"); process.exitCode = 1; });
+  main().catch((failure: unknown) => { process.stderr.write(`${startupErrorMessage(failure)}\n`); process.exitCode = 1; });
 }

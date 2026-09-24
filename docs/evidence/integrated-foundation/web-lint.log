@@ -1,0 +1,3 @@
+
+> @stellar/web@0.0.0 lint
+> eslint app lib features test convex proxy.ts vitest.config.ts next.config.ts

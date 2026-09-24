@@ -1,0 +1,3 @@
+{"termination":"SIGTERM","ready":true,"listenersReleased":true,"leaseReleased":true,"registryPreserved":true}
+{"termination":"SIGKILL","ready":true,"listenersReleased":true,"leaseReleased":true,"registryPreserved":true}
+{"termination":"SIGTERM","ready":true,"listenersReleased":true,"leaseReleased":true,"registryPreserved":true}

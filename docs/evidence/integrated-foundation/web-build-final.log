@@ -1,0 +1,41 @@
+
+> @stellar/web@0.0.0 build
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+✓ Running next.config.ts took 115ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 564ms
+  Running TypeScript ...
+  Finished TypeScript in 318ms ...
+  Collecting page data using 13 workers ...
+  Generating static pages using 13 workers (0/5) ...
+  Generating static pages using 13 workers (1/5)
+  Generating static pages using 13 workers (2/5)
+  Generating static pages using 13 workers (3/5)
+✓ Generating static pages using 13 workers (5/5) in 104ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/operator/bootstrap
+├ ƒ /api/operator/session
+├ ƒ /api/platform/[...segments]
+├ ƒ /api/projects
+├ ƒ /api/projects/[...segments]
+├ ƒ /auth/callback
+├ ƒ /auth/sign-in
+├ ○ /connect
+├ ƒ /dev/proposal-review
+├ ƒ /platform
+├ ƒ /platform/projects/[projectId]
+├ ƒ /projects
+└ ƒ /projects/[projectId]/studio
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand

@@ -1,4 +1,4 @@
-import type { ReviewAction, ReviewDecision } from "./types";
+import type { ProposalDetail, ReviewAction, ReviewDecision } from "./types";
 
 export type PendingReview = ReviewDecision & { proposalId: string };
 
@@ -26,7 +26,10 @@ export function reconciledPending(
   pending: PendingReview,
   decisionHistory: ReadonlyArray<{ action: ReviewAction; actorSubject: string; requestId: string }>,
   actorSubject: string,
+  proposal: Pick<ProposalDetail, "id" | "digest" | "sourceRevision">,
 ): boolean {
+  if (pending.proposalId !== proposal.id || pending.expectedDigest !== proposal.digest ||
+    pending.expectedRevision !== proposal.sourceRevision) return false;
   return decisionHistory.some((receipt) => receipt.action === pending.action &&
     receipt.requestId === pending.requestId && receipt.actorSubject === actorSubject);
 }

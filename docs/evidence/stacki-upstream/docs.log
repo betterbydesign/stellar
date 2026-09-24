@@ -1,0 +1,11 @@
+
+> stellar@0.0.0 verify:docs
+> node scripts/check-docs.mjs --all
+
+Docs check — consumer repo at /Users/scottfoster/.codex/worktrees/5f1e/stellar
+
+note: --all: tracked Markdown (102) and untracked commit candidates (3).
+
+Markdown files scanned: 105
+Checks run: placeholders, secrets, absolute local paths, relative links
+OK — no findings.

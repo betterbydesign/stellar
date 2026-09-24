@@ -5,6 +5,13 @@ import { durableJson, syncDirectory } from "./storage.js";
 
 type Owner = { version: 1; pid: number; token: string };
 
+export class RunnerInUseError extends Error {
+  constructor(readonly ownerPid: number) {
+    super("Another local runner owns this data directory");
+    this.name = "RunnerInUseError";
+  }
+}
+
 function alive(pid: number): boolean {
   if (!Number.isInteger(pid) || pid <= 0) return false;
   try { process.kill(pid, 0); return true; }
@@ -42,7 +49,7 @@ export class DataLease {
           } catch (readFailure) {
             if ((readFailure as NodeJS.ErrnoException).code !== "ENOENT" && !(readFailure instanceof SyntaxError)) throw readFailure;
           }
-          if (owner?.version === 1 && alive(owner.pid)) throw new Error("Another local runner owns this data directory");
+          if (owner?.version === 1 && alive(owner.pid)) throw new RunnerInUseError(owner.pid);
           if (!owner) {
             const age = Date.now() - (await stat(directory)).mtimeMs;
             if (age < 10_000) throw new Error("Another local runner is acquiring this data directory");
