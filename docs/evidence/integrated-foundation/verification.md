@@ -14,6 +14,8 @@ Date: 2026-09-24. Isolated integration worktree: `codex/integrated-foundation`. 
 - `npm run verify:proposals` passed synthetic browser recovery/permissions/cancellation, with no account requests or browser errors. This is explicitly not live Convex persistence or agent execution.
 - Real launcher proof (`node test/editor-e2e/launcher-lifecycle.mjs`, first run from an identical temporary script) passed SIGTERM, SIGKILL and restart: each returned its listeners, released its data lease and preserved the registry.
 - After the review-driven proposal fix, web lint, typecheck, all 59 CJS + 21 Convex tests and production web rebuild passed. The added regression means the component test counts now total 203; the initial aggregate pass was 202, not a claimed second full aggregate run.
+- Final `npm run verify:proposals` rerun after the recovery fix passed; see `proposals-final.log`. Docs/harness checks and staged whitespace checks passed.
+- Saved checkout synchronization preserved all eight lifecycle files byte-for-byte and left no tracked modifications. Offline dependency synchronization added the required packages without changing the lockfile.
 - Independent fresh review and re-review passed after the fix; see [review](review.md).
 
 The editor/projects/preservation JSON records retain the source hashes at each run. Subsequent changes were the proposal recovery fix and its regression plus a copy of the exercised launcher proof script. Final proposal browser validation covers the recovery fix. Historical evidence directories are preserved; compact fresh JSON, logs and two inspected screenshots are stored here. Full fresh browser media is archived locally under `/tmp/stellar-integration-browser-evidence` and is ephemeral.

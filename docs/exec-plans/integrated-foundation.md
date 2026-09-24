@@ -29,6 +29,8 @@ Completed branch changes, runner lifecycle files, conflict resolution, integrati
 
 - 2026-09-24: Full verification passed 202 tests and production build; follow-up web verification after a review fix passed 80 tests (59 CJS + 21 Convex). Real editor, projects, source-preservation, local runner and synthetic proposal browser checks passed. Launcher graceful/forced termination and restart proof passed.
 
+- 2026-09-24: Committed integration as `7dbc7d3`, synchronized the saved checkout through a scoped safety stash, verified all original lifecycle bytes and a clean checkout, and synchronized offline dependencies. Final documentation closeout is shared by both worktrees before the authorized branch push.
+
 ## Surprises & Discoveries
 
 Proposal review already contains the platform branch, so no duplicate cherry-picks are necessary. Only the operations log conflicted; both historical entries were retained.
@@ -43,4 +45,4 @@ Combined verification/build and all browser/launcher acceptance checks passed. F
 
 ## Outcomes & Retrospective
 
-Implementation and validation complete; commit, saved-checkout synchronization and push are the remaining closeout steps. Live provider and hosted runner prerequisites remain open.
+Implementation and validation complete. Integration commit `7dbc7d3` combines both branch histories; the saved checkout was safely fast-forwarded with all eight original lifecycle files verified byte-for-byte, and dependencies synchronized without lockfile changes. Delivery uses `codex/integrated-foundation`; main is unchanged. Live provider and hosted runner prerequisites remain open.
