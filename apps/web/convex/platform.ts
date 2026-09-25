@@ -411,7 +411,7 @@ export const createProject = mutation({
     const previous = await ctx.db
       .query("projectCreateRequests")
       .withIndex(
-        "by_tenant_and_identity_namespace_and_actor_subject_and_request_id",
+        "by_tenant_namespace_actor_request",
         (q) =>
           q
             .eq("tenantId", workspace.tenant._id)

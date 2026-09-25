@@ -89,7 +89,7 @@ export default defineSchema({
     projectName: v.string(),
     projectId: v.id("projects"),
     createdAt: v.number(),
-  }).index("by_tenant_and_identity_namespace_and_actor_subject_and_request_id", [
+  }).index("by_tenant_namespace_actor_request", [
     "tenantId",
     "identityNamespace",
     "actorSubject",
