@@ -12,15 +12,17 @@ Configure the same callback URL in the WorkOS application, `/auth/sign-in` as th
 
 Deploying the Convex functions or provisioning either provider requires separately authorized development setup; neither occurred in this task. With that setup complete, run the web app on an available non-default development port, open `/platform` and sign in. [AuthKit setup documentation](https://github.com/workos/authkit-nextjs/blob/main/README.md) and [Convex WorkOS setup](https://docs.convex.dev/auth/authkit) describe provider-specific configuration.
 
-## Create and reopen
+## First use and existing websites
 
-1. Sign in. A personal account can choose **Set up my workspace**. Organization accounts require an administrator-provisioned Stellar workspace and a matching active membership grant.
-2. Enter a project name and choose **Create project**. This saves the named record; it does not create website files.
-3. Select the project to reopen its details. **Workspace not connected** means Studio cannot edit source from this account view yet.
+1. Sign in. Stellar sets up a missing personal account automatically. It never restores revoked access. Organization accounts still require an administrator-provisioned account and active membership.
+2. Choose **Set up website editing** to read the computer prerequisite. This version does not yet connect account records to local website files, so it no longer offers ordinary metadata-only creation as a website-building action.
+3. Existing records such as Test remain listed with **Setup incomplete**. Open one and choose **View setup steps**. Nothing is deleted or attached by name.
 
-A lost connection retains the original creation request in the current tab. Choose **Retry creation** to recover the same result. Do not manually clear browser session storage to retry an ambiguous creation; that loses the request identity. **Refresh projects** retrieves current membership and visible projects. If an unresolved request needs to be abandoned, refresh and reconcile first, then use **Discard unresolved request** and acknowledge that a new request can create another project; existing records are not deleted. If access has changed, previously listed projects may no longer open.
+An unresolved creation request from the previous version can still be recovered with **Recover saved request**. This uses its original request identity and may recover a saved name; it does not prepare source files. Do not clear session storage to retry an ambiguous request. **Refresh projects** checks current access. Discarding a pending request does not delete any account record.
 
-If the session ends, sign in again. Missing configuration shows a setup screen. A backend outage shows a retry message without claiming that source or project creation succeeded. Source files and local editing history remain under the existing local workspace runner.
+To create and edit a real local website now, follow [the local editor guide](local-projects.md) using the launcher's connection link. That website remains separate from your account record until authenticated account connection is implemented. The setup screen explains this distinction before promising a usable website.
+
+If your session ends, sign in again. Missing configuration shows a setup screen. A backend outage exposes retry without claiming success. Source files and editing history remain on the computer that created them.
 
 ## Current limits
 

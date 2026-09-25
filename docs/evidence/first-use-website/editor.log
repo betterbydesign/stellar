@@ -1,0 +1,5 @@
+
+> stellar@0.0.0 verify:editor
+> node test/editor-e2e/run.mjs
+
+Editor browser proof passed: responsive canvas, pointer selection, base/mobile/reset/token writes, undo/redo, reopen, isolation and independent build.

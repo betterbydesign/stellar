@@ -10,6 +10,7 @@ import { HistoryControls } from "../history/HistoryControls";
 import { acceptFrameMessage, isFrameHello, previewOrigin } from "./bridge";
 import { installStudioBackGuard } from "./history-guard";
 import { closeSession, getProject, getSession, listPages, openSession, restartSession, sourceModel, StudioApiError } from "./api";
+import { startTiming, finishTiming } from "./timing";
 import styles from "./studio.module.css";
 
 type Mode = "inspect" | "interact";
@@ -58,6 +59,7 @@ export function Studio({ projectId }: { projectId: string }) {
   const skipGuardOccurrenceRef = useRef<string | null>(null);
   const initializedFrameIdRef = useRef<string | null>(null);
   const pendingRemapRef = useRef<{ projectId: string; pageId: string; anchor: string } | null>(null);
+  const acknowledgedRevisionRef = useRef<string | null>(null);
   const historyBlockedRef = useRef(false);
   const activeScopeRef = useRef("");
   const frameOrigin = session?.previewUrl ? previewOrigin(session.previewUrl) : null;
@@ -68,6 +70,15 @@ export function Studio({ projectId }: { projectId: string }) {
   const scale = scaleMode === "fit" ? Math.min(1, Math.max(1, availableWidth - 40) / width) : 1;
   const frameHeight = 850;
 
+  useEffect(() => {
+    if (!ready) return;
+    finishTiming(`create:${projectId}`, "create-to-edit");
+    finishTiming(`recovery:${projectId}`, "creation-recovery-to-edit");
+    if (acknowledgedRevisionRef.current === previewRevision) {
+      finishTiming(`save:${projectId}`, "acknowledged-save-to-preview");
+      acknowledgedRevisionRef.current = null;
+    }
+  }, [ready, previewRevision, projectId]);
   useEffect(() => { selectedRef.current = selected; }, [selected]);
   useLayoutEffect(() => { activeScopeRef.current = activeScope; }, [activeScope]);
   useEffect(() => {
@@ -307,6 +318,8 @@ export function Studio({ projectId }: { projectId: string }) {
   };
   const refreshAfterReceipt = useCallback((receipt: ChangeReceipt) => {
     if (receipt.projectId !== projectId || !session) return;
+    acknowledgedRevisionRef.current = receipt.newRevision;
+    startTiming(`save:${projectId}`);
     if (selectedRef.current && pageId) pendingRemapRef.current = { projectId, pageId, anchor: selectedRef.current.target.anchor };
     invalidate();
     void getSession(projectId, session.id).then((latest) => {

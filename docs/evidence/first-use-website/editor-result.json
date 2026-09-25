@@ -1,0 +1,57 @@
+{
+  "baseCommit": "c93c803d046dd16fbb28df9a149c38d05710dcc4",
+  "sourceSha256": "1376ac860fbbc601ebdb63dcfbd8666f6e95c6de995860e24de90df42c98df71",
+  "fileCount": 184,
+  "completedAt": "2026-09-25T01:10:37.515Z",
+  "startupMs": 8719,
+  "applyToPreviewMs": [
+    210,
+    257,
+    250,
+    240
+  ],
+  "browser": "153.0.8010.12",
+  "websiteWidths": [
+    390,
+    768,
+    1024,
+    1440
+  ],
+  "studioWidths": [
+    1600,
+    390
+  ],
+  "screenshots": [
+    "projects-dashboard.png",
+    "studio-390.png",
+    "studio-768.png",
+    "studio-1024.png",
+    "studio-1440.png",
+    "studio-100-percent.png",
+    "mobile-override-applied.png",
+    "contact-shared-token.png",
+    "saved-source-preview-unavailable.png",
+    "studio-narrow-inspector.png",
+    "studio-narrow-canvas.png",
+    "studio-narrow-window.png",
+    "independent-site-build.png"
+  ],
+  "baseReceipt": "receipt-afc45d0d-39d8-4824-885e-04d8e2609bf7",
+  "tokenReceipt": "receipt-ff075827-7575-4d91-86c0-e45db54295b6",
+  "finalRevision": "revision-85d85a6f-5629-4128-959e-61a7540e7b47",
+  "historyEntries": 5,
+  "recoveryChecks": [
+    "invalid input and rapid duplicate Apply",
+    "draft navigation, browser Back and keyboard",
+    "failed compilation and retry",
+    "read-only shared target",
+    "inspect/interact and Escape",
+    "lost apply response across reload",
+    "5xx undo response across reload",
+    "saved source with failed preview",
+    "stale apply and undo"
+  ],
+  "independentBuild": true,
+  "sourceIsolation": true,
+  "browserErrors": []
+}

@@ -22,7 +22,7 @@ If dependencies are missing, stop the launcher, run `npm run fixture:install` fr
 
 ## Creation and retry
 
-The available blueprint shows its version, renderer, design system and editing capabilities. Creation does not fetch remote templates or install dependencies. If the connection fails while creating a project, retain the pending request and retry it; the same request returns the same saved project. A preview failure is separate from creation: reopen the saved project and use the Studio preview recovery controls.
+The available blueprint shows its version, renderer, design system and editing capabilities. Creation does not fetch remote templates or install dependencies. If the connection fails while creating a project, retain the pending request and retry it; the same request returns the same saved project. The name and template stay locked while a request is unresolved, including after reload. Browser session storage must be available before creation is sent. Requests that time out retain the same recovery identity. A preview failure is separate from creation: reopen the saved project and use the Studio preview recovery controls.
 
 ## Development checks
 
@@ -41,3 +41,7 @@ The launcher checks both app and runner ports before starting, waits for runner 
 Laptop sleep can leave an existing session running. Try its existing window first; if you need a fresh authenticated session, stop that launcher and run `npm run dev:local` again. After closing its terminal, run the command from a new terminal. Older launchers started before the lifecycle fix may need one verified manual shutdown because they do not contain the new cleanup behavior.
 
 For an isolated developer worktree, `STELLAR_APP_PORT` and `STELLAR_RUNNER_PORT` can select different loopback ports, together with a separate `STELLAR_DATA_DIR`. Changing ports alone never authorizes sharing the same saved-project directory or Next development cache between launchers.
+
+## Local timing diagnostics
+
+The browser records `stellar.creation-ack`, `stellar.create-to-edit` and `stellar.acknowledged-save-to-preview` performance measures. Recovery uses separate `stellar.creation-recovery-ack` and `stellar.creation-recovery-to-edit` names. These measure actual local activity; they do not claim account connectivity or change save acknowledgement rules. Browser acceptance records samples in its result file. Samples are local, bounded and contain no names, credentials or source contents; a full page reload clears them.

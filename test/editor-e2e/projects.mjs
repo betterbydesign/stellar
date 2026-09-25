@@ -17,6 +17,10 @@ const page = await context.newPage();
 page.setDefaultTimeout(25000);
 const api = editorApi(context, runtime.appOrigin);
 const errors = [];
+const timings = [];
+const collectTimings = async () => {
+  timings.push(...await page.evaluate(() => window.performance.getEntriesByType("measure").filter((item) => item.name.startsWith("stellar.")).map(({ name, duration }) => ({ name, durationMs: Math.round(duration) }))));
+};
 page.on("pageerror", (error) => errors.push(error.message));
 const shot = (name) => page.screenshot({ path: join(output, name + ".png") });
 const frame = () => page.frameLocator("iframe");
@@ -33,6 +37,9 @@ async function openHistory(projectId) {
 let site;
 let passed = false;
 try {
+  await page.goto(runtime.appOrigin + "/platform/setup");
+  await page.getByRole("heading", { name: "Account connection is not available yet" }).waitFor();
+  await shot("account-setup-prerequisite");
   await page.goto(runtime.connectUrl);
   await page.getByRole("link", { name: "Open Stellar" }).click();
   await page.getByRole("link", { name: /Fieldnote Studio style lab A/ }).waitFor();
@@ -52,7 +59,30 @@ try {
     await preview();
     return result.workspace.project.id;
   };
-  const first = await create("North garden");
+  // A denied recovery store must prevent sending any creation request.
+  let creationRequests = 0;
+  const countCreation = (request) => {
+    if (new URL(request.url()).pathname === "/api/projects" && request.method() === "POST") creationRequests++;
+  };
+  page.on("request", countCreation);
+  await page.evaluate(() => {
+    const original = window.Storage.prototype.setItem;
+    window.restoreCreationStorage = () => { window.Storage.prototype.setItem = original; };
+    window.Storage.prototype.setItem = function(key, value) {
+      if (key === "stellar.pending-project-create") throw new Error("Storage blocked for acceptance");
+      return original.call(this, key, value);
+    };
+  });
+  await page.getByRole("textbox", { name: "Project name", exact: true }).fill("North garden");
+  await page.getByRole("button", { name: "Create project", exact: true }).click();
+  await page.getByText("Allow browser session storage, then retry. No creation request was sent.").waitFor();
+  assert.equal(creationRequests, 0);
+  await page.evaluate(() => { window.restoreCreationStorage(); delete window.restoreCreationStorage; });
+  await page.getByRole("button", { name: "Retry creation", exact: true }).click();
+  await preview();
+  const first = new URL(page.url()).pathname.split("/")[2];
+  assert.equal(creationRequests, 1);
+  page.off("request", countCreation);
   await shot("named-project-studio");
   await page.getByRole("button", { name: /home-primary-cta/ }).click();
   await page.getByRole("button", { name: /^--lab-color-action-base/ }).click();
@@ -68,6 +98,7 @@ try {
     await style("rgb(35, 91, 109)");
     await shot(`named-project-${width}`);
   }
+  await collectTimings();
   await page.reload(); await preview(); await style("rgb(35, 91, 109)");
   const firstHistory = await openHistory(first);
   assert.equal(firstHistory.entries.length, 1);
@@ -75,6 +106,7 @@ try {
   const second = await create("South garden");
   assert.notEqual(first, second);
   await style("rgb(20, 109, 105)");
+  await collectTimings();
   assert.equal((await openHistory(second)).entries.length, 0);
   await page.goto(runtime.appOrigin + "/projects");
   // Lose a successful response, then reload and retry the persisted request.
@@ -88,12 +120,31 @@ try {
   await page.getByRole("textbox", { name: "Project name", exact: true }).fill("Retry garden");
   await page.getByRole("button", { name: "Create project", exact: true }).click();
   await waitFor(async () => Boolean(uncertain), "Creation reached registry");
+  await page.getByRole("button", { name: "Retry creation", exact: true }).waitFor();
+  assert.equal(await page.getByRole("textbox", { name: "Project name", exact: true }).isDisabled(), true, "Unresolved creation must retain its original name");
+  assert.equal(await page.getByRole("radio").first().isDisabled(), true, "Unresolved creation must retain its template");
+  await page.evaluate(() => {
+    const original = window.Storage.prototype.setItem;
+    window.restoreCreationStorage = () => { window.Storage.prototype.setItem = original; };
+    window.Storage.prototype.setItem = function(key, value) {
+      if (key === "stellar.pending-project-create") throw new Error("Storage blocked for acceptance");
+      return original.call(this, key, value);
+    };
+  });
+  await page.getByRole("button", { name: "Retry creation", exact: true }).click();
+  await page.getByText("Allow browser session storage, then retry. No creation request was sent.").waitFor();
+  assert.equal(await page.getByRole("textbox", { name: "Project name", exact: true }).isDisabled(), true, "Storage failure during recovery must not unlock an already-sent intent");
+  await page.evaluate(() => { window.restoreCreationStorage(); delete window.restoreCreationStorage; });
   await page.unroute("**/api/projects?*", loseCreationResponse);
   await page.reload();
   await page.getByRole("button", { name: /Retry|Check creation/ }).click();
   await preview();
   assert.equal(new URL(page.url()).pathname, `/projects/${uncertain.workspace.project.id}/studio`);
   assert.equal((await api.list()).projects.length, 5);
+  await collectTimings();
+  assert.ok(timings.some((sample) => sample.name === "stellar.create-to-edit"));
+  assert.ok(timings.some((sample) => sample.name === "stellar.acknowledged-save-to-preview"));
+  assert.ok(timings.some((sample) => sample.name === "stellar.creation-recovery-to-edit"));
   await runtime.restartRunner();
   await page.goto(runtime.appOrigin + "/projects");
   await page.getByRole("link", { name: /North garden/ }).click();
@@ -119,7 +170,7 @@ try {
   assert.deepEqual(errors, []);
   await writeFile(join(output, "result.json"), JSON.stringify({ ...identity, completedAt: new Date().toISOString(), first, second,
     legacyPreserved: true, seedPreserved: true, independentHistory: true, restartPersistence: true, lostCreationResponseReconciled: true,
-    responsiveWidths: [390, 768, 1440], independentBuild: true, browserErrors: errors }, null, 2) + "\n");
+    timings, timingEvidence: "Single local samples, not p95 or live account proof", responsiveWidths: [390, 768, 1440], independentBuild: true, browserErrors: errors }, null, 2) + "\n");
   passed = true;
   console.log("Named project browser proof passed: create, edit, responsive preview, independent history, reload/restart, lost response retry, legacy preservation and independent build.");
 } finally {

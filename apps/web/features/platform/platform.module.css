@@ -8,6 +8,7 @@
 .formRow { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 .formRow input { flex: 1; min-width: 12rem; font: inherit; background: var(--studio-paper); color: var(--ink); border: 1px solid var(--line); border-radius: 0.4rem; padding: 0.75rem; }
 .primary, .secondary { font: inherit; font-weight: 600; padding: 0.75rem 1rem; border-radius: 0.4rem; cursor: pointer; width: fit-content; }
+.content a.primary { color: var(--studio-paper); display: inline-block; text-decoration: none; }
 .primary { color: var(--studio-paper); background: var(--accent); border: 1px solid var(--accent); }
 .secondary { color: var(--ink); background: var(--surface); border: 1px solid var(--line); }
 .primary:disabled, .secondary:disabled { cursor: default; opacity: 0.6; }

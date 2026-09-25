@@ -1,0 +1,1391 @@
+
+> stellar@0.0.0 verify
+> npm run verify:harness && npm run verify:docs && npm run lint && npm run typecheck && npm run test && npm run verify:fixture
+
+
+> stellar@0.0.0 verify:harness
+> node scripts/check-harness-profile.mjs && node scripts/check-harness-drift.mjs --strict
+
+Harness profile: valid schema, paths, package scripts, and CI commands.
+Harness drift check — consumer repo at /Users/scottfoster/.codex/worktrees/933d/stellar
+
+Checks run: denied strings, absolute local paths, denied paths, relative links, forbidden lockfiles, vendored skills are pinned, closeout commands agree across hosts, profile invariants (harness.json), harness files against the template lock
+OK — no hard failures and no drift.
+
+> stellar@0.0.0 verify:docs
+> node scripts/check-docs.mjs --all
+
+Docs check — consumer repo at /Users/scottfoster/.codex/worktrees/933d/stellar
+
+note: --all: tracked Markdown (125) and untracked commit candidates (2).
+
+Markdown files scanned: 127
+Checks run: placeholders, secrets, absolute local paths, relative links
+OK — no findings.
+
+> stellar@0.0.0 lint
+> npm run lint --workspaces --if-present && eslint scripts/check-fixture.mjs scripts/verify-local-runner.mjs scripts/plan-content-import.mjs scripts/audit-company-content-map.mjs test/content-plan-cli.test.mjs test/company-content-map.test.mjs test/fixture.test.mjs eslint.config.mjs test/editor-e2e test/proposal-review-e2e
+
+
+> @stellar/runner@0.1.0 lint
+> eslint src
+
+
+> @stellar/web@0.0.0 lint
+> eslint app lib features test convex proxy.ts vitest.config.ts next.config.ts
+
+
+/Users/scottfoster/.codex/worktrees/933d/stellar/apps/web/convex/_generated/api.js
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+/Users/scottfoster/.codex/worktrees/933d/stellar/apps/web/convex/_generated/dataModel.d.ts
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+/Users/scottfoster/.codex/worktrees/933d/stellar/apps/web/convex/_generated/server.d.ts
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+/Users/scottfoster/.codex/worktrees/933d/stellar/apps/web/convex/_generated/server.js
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+✖ 4 problems (0 errors, 4 warnings)
+  0 errors and 4 warnings potentially fixable with the `--fix` option.
+
+
+> @stellar/content-import@0.1.0 lint
+> eslint src
+
+
+> @stellar/contracts@0.1.0 lint
+> eslint src
+
+
+> @stellar/editor-core@0.1.0 lint
+> eslint src
+
+
+> stellar@0.0.0 typecheck
+> npm run build:packages && npm run typecheck --workspaces --if-present
+
+
+> stellar@0.0.0 build:packages
+> npm run build:contracts && npm run build --workspace=@stellar/content-import && npm run build --workspace=@stellar/editor-core && npm run build --workspace=@stellar/runner
+
+
+> stellar@0.0.0 build:contracts
+> npm run build --workspace=@stellar/contracts
+
+
+> @stellar/contracts@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/content-import@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/editor-core@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/runner@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/runner@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @stellar/web@0.0.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully
+
+> @stellar/content-import@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @stellar/contracts@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @stellar/editor-core@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> stellar@0.0.0 test
+> npm run build:packages && npm run test --workspace=@stellar/contracts && npm run test --workspace=@stellar/content-import && npm run test --workspace=@stellar/editor-core && npm run test --workspace=@stellar/runner && npm run test --workspace=@stellar/web && npm run test --workspace=@stellar/astro-editor-integration && node --test test/*.test.mjs
+
+
+> stellar@0.0.0 build:packages
+> npm run build:contracts && npm run build --workspace=@stellar/content-import && npm run build --workspace=@stellar/editor-core && npm run build --workspace=@stellar/runner
+
+
+> stellar@0.0.0 build:contracts
+> npm run build --workspace=@stellar/contracts
+
+
+> @stellar/contracts@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/content-import@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/editor-core@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/runner@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/contracts@0.1.0 test
+> npm run build && node --test dist/*.test.js
+
+
+> @stellar/contracts@0.1.0 build
+> tsc -p tsconfig.json
+
+TAP version 13
+# Subtest: every exported example validates
+ok 1 - every exported example validates
+  ---
+  duration_ms: 3.211
+  type: 'test'
+  ...
+# Subtest: standalone controls and token definitions reject incoherent type, scope and bounds
+ok 2 - standalone controls and token definitions reject incoherent type, scope and bounds
+  ---
+  duration_ms: 1.093625
+  type: 'test'
+  ...
+# Subtest: manifest rejects unknown fields, hostile paths, invalid renderer and responsive scope
+ok 3 - manifest rejects unknown fields, hostile paths, invalid renderer and responsive scope
+  ---
+  duration_ms: 1.95625
+  type: 'test'
+  ...
+# Subtest: manifest rejects cycles, missing and wrong-type token references, owner and impact mismatches
+ok 4 - manifest rejects cycles, missing and wrong-type token references, owner and impact mismatches
+  ---
+  duration_ms: 1.576042
+  type: 'test'
+  ...
+# Subtest: prepare checks project, session, revision, target kind and rule-bound values
+ok 5 - prepare checks project, session, revision, target kind and rule-bound values
+  ---
+  duration_ms: 1.616458
+  type: 'test'
+  ...
+# Subtest: mobile edit scope is explicit and may fall back to a base rule
+ok 6 - mobile edit scope is explicit and may fall back to a base rule
+  ---
+  duration_ms: 0.245584
+  type: 'test'
+  ...
+# Subtest: token.set checks the concrete target and approved bounds
+ok 7 - token.set checks the concrete target and approved bounds
+  ---
+  duration_ms: 0.578208
+  type: 'test'
+  ...
+# Subtest: apply, history and preview validation bind to current scope and revision
+ok 8 - apply, history and preview validation bind to current scope and revision
+  ---
+  duration_ms: 1.832
+  type: 'test'
+  ...
+# Subtest: responses keep status and nested scope coherent; errors have stable HTTP semantics
+ok 9 - responses keep status and nested scope coherent; errors have stable HTTP semantics
+  ---
+  duration_ms: 1.93425
+  type: 'test'
+  ...
+# Subtest: project creation contracts keep names separate from paths and bind blueprint identity
+ok 10 - project creation contracts keep names separate from paths and bind blueprint identity
+  ---
+  duration_ms: 0.679541
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 115.087792
+
+> @stellar/content-import@0.1.0 test
+> npm run build && node --test dist/*.test.js
+
+
+> @stellar/content-import@0.1.0 build
+> tsc -p tsconfig.json
+
+TAP version 13
+# Subtest: synthetic fixture plans only selected roots and forward dependencies in stable order
+ok 1 - synthetic fixture plans only selected roots and forward dependencies in stable order
+  ---
+  duration_ms: 14.315542
+  type: 'test'
+  ...
+# Subtest: declaration and snapshot ordering is canonical while declared relationship order is preserved
+ok 2 - declaration and snapshot ordering is canonical while declared relationship order is preserved
+  ---
+  duration_ms: 11.288167
+  type: 'test'
+  ...
+# Subtest: strict schemas reject versions, unknown keys, transforms, duplicates and unknown targets without leaking values
+ok 3 - strict schemas reject versions, unknown keys, transforms, duplicates and unknown targets without leaking values
+  ---
+  duration_ms: 3.347542
+  type: 'test'
+  ...
+# Subtest: non-view root links, missing links, duplicate links and cardinality violations block safely
+ok 4 - non-view root links, missing links, duplicate links and cardinality violations block safely
+  ---
+  duration_ms: 5.13
+  type: 'test'
+  ...
+# Subtest: term cycles and missing parents are distinct blocked diagnostics
+ok 5 - term cycles and missing parents are distinct blocked diagnostics
+  ---
+  duration_ms: 2.901083
+  type: 'test'
+  ...
+# Subtest: blocked media or shared records propagate through noop and create dependents
+ok 6 - blocked media or shared records propagate through noop and create dependents
+  ---
+  duration_ms: 0.982125
+  type: 'test'
+  ...
+# Subtest: production blocks non-draftable work and prevents dependent post readiness
+ok 7 - production blocks non-draftable work and prevents dependent post readiness
+  ---
+  duration_ms: 1.040416
+  type: 'test'
+  ...
+# Subtest: a complete managed rerun is noop; drift is revision-guarded and ownership-safe
+ok 8 - a complete managed rerun is noop; drift is revision-guarded and ownership-safe
+  ---
+  duration_ms: 7.040333
+  type: 'test'
+  ...
+# Subtest: unordered multi-media values remain noop when target member order differs
+ok 9 - unordered multi-media values remain noop when target member order differs
+  ---
+  duration_ms: 2.920708
+  type: 'test'
+  ...
+# Subtest: identity collisions block without choosing an ambiguous target precondition
+ok 10 - identity collisions block without choosing an ambiguous target precondition
+  ---
+  duration_ms: 2.353667
+  type: 'test'
+  ...
+# Subtest: unapproved, mismatched schema and incomplete snapshots return blocked plans
+ok 11 - unapproved, mismatched schema and incomplete snapshots return blocked plans
+  ---
+  duration_ms: 3.342083
+  type: 'test'
+  ...
+# Subtest: plan-level blockers propagate from newly blocked updates to noop dependents
+ok 12 - plan-level blockers propagate from newly blocked updates to noop dependents
+  ---
+  duration_ms: 1.734333
+  type: 'test'
+  ...
+# Subtest: wordpress-owned bindings do not broaden source scope or emit desired values
+ok 13 - wordpress-owned bindings do not broaden source scope or emit desired values
+  ---
+  duration_ms: 0.602667
+  type: 'test'
+  ...
+# Subtest: multiple selected roots may reuse one mapping-level taxonomy binding without identity ambiguity
+ok 14 - multiple selected roots may reuse one mapping-level taxonomy binding without identity ambiguity
+  ---
+  duration_ms: 1.6375
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 129.436083
+
+> @stellar/editor-core@0.1.0 test
+> npm run build && node --test dist/*.test.js
+
+
+> @stellar/editor-core@0.1.0 build
+> tsc -p tsconfig.json
+
+TAP version 13
+# Subtest: read preserves bytes, resolves authored source keys and refuses repeated component instances
+ok 1 - read preserves bytes, resolves authored source keys and refuses repeated component instances
+  ---
+  duration_ms: 65.850584
+  type: 'test'
+  ...
+# Subtest: base and mobile edits change one declaration, reset it and keep neighboring bytes
+ok 2 - base and mobile edits change one declaration, reset it and keep neighboring bytes
+  ---
+  duration_ms: 78.285917
+  type: 'test'
+  ...
+# Subtest: token leaf change leaves aliases intact, scoped duplicates separate, no-op unchanged
+ok 3 - token leaf change leaves aliases intact, scoped duplicates separate, no-op unchanged
+  ---
+  duration_ms: 46.796083
+  type: 'test'
+  ...
+# Subtest: invalid values, alias corruption, unsupported Astro and malformed CSS refuse edits
+ok 4 - invalid values, alias corruption, unsupported Astro and malformed CSS refuse edits
+  ---
+  duration_ms: 65.713333
+  type: 'test'
+  ...
+# Subtest: UTF-8 prefixes preserve exact byte offsets and inverse bytes
+ok 5 - UTF-8 prefixes preserve exact byte offsets and inverse bytes
+  ---
+  duration_ms: 21.052667
+  type: 'test'
+  ...
+# Subtest: standard property casing identifies the authored declaration and refuses duplicate owners
+ok 6 - standard property casing identifies the authored declaration and refuses duplicate owners
+  ---
+  duration_ms: 96.620375
+  type: 'test'
+  ...
+# Subtest: escaped declaration names cannot hide standard or custom property owners
+ok 7 - escaped declaration names cannot hide standard or custom property owners
+  ---
+  duration_ms: 52.844584
+  type: 'test'
+  ...
+# Subtest: generated source variants preserve every byte outside the owned span and reverse exactly
+    # Subtest: seed 0
+    ok 1 - seed 0
+      ---
+      duration_ms: 149.046333
+      type: 'test'
+      ...
+    # Subtest: seed 1
+    ok 2 - seed 1
+      ---
+      duration_ms: 134.446417
+      type: 'test'
+      ...
+    # Subtest: seed 2
+    ok 3 - seed 2
+      ---
+      duration_ms: 131.214625
+      type: 'test'
+      ...
+    # Subtest: seed 3
+    ok 4 - seed 3
+      ---
+      duration_ms: 128.493333
+      type: 'test'
+      ...
+    # Subtest: seed 4
+    ok 5 - seed 4
+      ---
+      duration_ms: 129.423667
+      type: 'test'
+      ...
+    # Subtest: seed 5
+    ok 6 - seed 5
+      ---
+      duration_ms: 129.484125
+      type: 'test'
+      ...
+    # Subtest: seed 6
+    ok 7 - seed 6
+      ---
+      duration_ms: 128.779625
+      type: 'test'
+      ...
+    # Subtest: seed 7
+    ok 8 - seed 7
+      ---
+      duration_ms: 132.508292
+      type: 'test'
+      ...
+    # Subtest: seed 8
+    ok 9 - seed 8
+      ---
+      duration_ms: 126.882041
+      type: 'test'
+      ...
+    # Subtest: seed 9
+    ok 10 - seed 9
+      ---
+      duration_ms: 125.513209
+      type: 'test'
+      ...
+    # Subtest: seed 10
+    ok 11 - seed 10
+      ---
+      duration_ms: 126.790167
+      type: 'test'
+      ...
+    # Subtest: seed 11
+    ok 12 - seed 11
+      ---
+      duration_ms: 123.393167
+      type: 'test'
+      ...
+    # Subtest: seed 12
+    ok 13 - seed 12
+      ---
+      duration_ms: 137.473
+      type: 'test'
+      ...
+    # Subtest: seed 13
+    ok 14 - seed 13
+      ---
+      duration_ms: 131.359875
+      type: 'test'
+      ...
+    # Subtest: seed 14
+    ok 15 - seed 14
+      ---
+      duration_ms: 127.129083
+      type: 'test'
+      ...
+    # Subtest: seed 15
+    ok 16 - seed 15
+      ---
+      duration_ms: 138.140667
+      type: 'test'
+      ...
+    # Subtest: seed 16
+    ok 17 - seed 16
+      ---
+      duration_ms: 143.354125
+      type: 'test'
+      ...
+    # Subtest: seed 17
+    ok 18 - seed 17
+      ---
+      duration_ms: 129.899792
+      type: 'test'
+      ...
+    # Subtest: seed 18
+    ok 19 - seed 18
+      ---
+      duration_ms: 129.146708
+      type: 'test'
+      ...
+    # Subtest: seed 19
+    ok 20 - seed 19
+      ---
+      duration_ms: 134.6635
+      type: 'test'
+      ...
+    # Subtest: seed 20
+    ok 21 - seed 20
+      ---
+      duration_ms: 134.837875
+      type: 'test'
+      ...
+    # Subtest: seed 21
+    ok 22 - seed 21
+      ---
+      duration_ms: 139.669875
+      type: 'test'
+      ...
+    # Subtest: seed 22
+    ok 23 - seed 22
+      ---
+      duration_ms: 140.9055
+      type: 'test'
+      ...
+    # Subtest: seed 23
+    ok 24 - seed 23
+      ---
+      duration_ms: 132.378458
+      type: 'test'
+      ...
+    # Subtest: seed 24
+    ok 25 - seed 24
+      ---
+      duration_ms: 128.985125
+      type: 'test'
+      ...
+    # Subtest: seed 25
+    ok 26 - seed 25
+      ---
+      duration_ms: 132.3465
+      type: 'test'
+      ...
+    # Subtest: seed 26
+    ok 27 - seed 26
+      ---
+      duration_ms: 134.219167
+      type: 'test'
+      ...
+    # Subtest: seed 27
+    ok 28 - seed 27
+      ---
+      duration_ms: 135.34625
+      type: 'test'
+      ...
+    # Subtest: seed 28
+    ok 29 - seed 28
+      ---
+      duration_ms: 131.910791
+      type: 'test'
+      ...
+    # Subtest: seed 29
+    ok 30 - seed 29
+      ---
+      duration_ms: 133.753042
+      type: 'test'
+      ...
+    # Subtest: seed 30
+    ok 31 - seed 30
+      ---
+      duration_ms: 130.718375
+      type: 'test'
+      ...
+    # Subtest: seed 31
+    ok 32 - seed 31
+      ---
+      duration_ms: 123.643167
+      type: 'test'
+      ...
+    1..32
+ok 8 - generated source variants preserve every byte outside the owned span and reverse exactly
+  ---
+  duration_ms: 4238.731125
+  type: 'test'
+  ...
+# Subtest: a BOM-only source change invalidates the old target even if the revision is reused
+ok 9 - a BOM-only source change invalidates the old target even if the revision is reused
+  ---
+  duration_ms: 14.611041
+  type: 'test'
+  ...
+# Subtest: custom property names keep their case-sensitive ownership
+ok 10 - custom property names keep their case-sensitive ownership
+  ---
+  duration_ms: 16.085
+  type: 'test'
+  ...
+1..10
+# tests 42
+# suites 0
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5508.742834
+
+> @stellar/runner@0.1.0 test
+> npm run build && node --test dist/*.test.js
+
+
+> @stellar/runner@0.1.0 build
+> tsc -p tsconfig.json
+
+TAP version 13
+# Subtest: multi-file history is LIFO, durable, idempotent and keeps token impact shared
+ok 1 - multi-file history is LIFO, durable, idempotent and keeps token impact shared
+  ---
+  duration_ms: 2927.524792
+  type: 'test'
+  ...
+# Subtest: new apply cuts redo, external source drift blocks history, and 21 edits remain undoable
+ok 2 - new apply cuts redo, external source drift blocks history, and 21 edits remain undoable
+  ---
+  duration_ms: 6940.660083
+  type: 'test'
+  ...
+# Subtest: interrupted undo reconciles before and after source replacement
+ok 3 - interrupted undo reconciles before and after source replacement
+  ---
+  duration_ms: 7784.032416
+  type: 'test'
+  ...
+# Subtest: managed service retires its child and descendant after disconnect
+ok 4 - managed service retires its child and descendant after disconnect
+  ---
+  duration_ms: 114.485959
+  type: 'test'
+  ...
+# Subtest: managed service retires its child and descendant after SIGTERM
+ok 5 - managed service retires its child and descendant after SIGTERM
+  ---
+  duration_ms: 108.0265
+  type: 'test'
+  ...
+# Subtest: managed service retires its child and descendant after SIGHUP
+ok 6 - managed service retires its child and descendant after SIGHUP
+  ---
+  duration_ms: 107.899875
+  type: 'test'
+  ...
+# Subtest: managed service retires its child and descendant after parent-death
+ok 7 - managed service retires its child and descendant after parent-death
+  ---
+  duration_ms: 207.587875
+  type: 'test'
+  ...
+# Subtest: startup diagnostics identify the lease owner and never print unknown values
+ok 8 - startup diagnostics identify the lease owner and never print unknown values
+  ---
+  duration_ms: 0.472708
+  type: 'test'
+  ...
+# Subtest: duplicate app port refuses startup before touching saved data or printing a link
+ok 9 - duplicate app port refuses startup before touching saved data or printing a link
+  ---
+  duration_ms: 44.408625
+  type: 'test'
+  ...
+# Subtest: runner initialization failure prevents the web server and connection link
+ok 10 - runner initialization failure prevents the web server and connection link
+  ---
+  duration_ms: 219.26375
+  type: 'test'
+  ...
+# Subtest: runner authenticates creation and replays concurrent creation into one usable runtime
+ok 11 - runner authenticates creation and replays concurrent creation into one usable runtime
+  ---
+  duration_ms: 245.99825
+  type: 'test'
+  ...
+# Subtest: v1 migration preserves legacy source and metadata while adding blueprint identity
+ok 12 - v1 migration preserves legacy source and metadata while adding blueprint identity
+  ---
+  duration_ms: 108.750834
+  type: 'test'
+  ...
+# Subtest: named creation is isolated, persistent and idempotent with changed-intent refusal
+ok 13 - named creation is isolated, persistent and idempotent with changed-intent refusal
+  ---
+  duration_ms: 201.5775
+  type: 'test'
+  ...
+# Subtest: pending journal recovery removes only owned staging and binds one creation to one entry
+ok 14 - pending journal recovery removes only owned staging and binds one creation to one entry
+  ---
+  duration_ms: 114.287791
+  type: 'test'
+  ...
+# Subtest: a pending request with only partial staging resumes without duplicating the project
+ok 15 - a pending request with only partial staging resumes without duplicating the project
+  ---
+  duration_ms: 127.344834
+  type: 'test'
+  ...
+# Subtest: same-process retry registers a durably completed creation after metadata setup fails
+ok 16 - same-process retry registers a durably completed creation after metadata setup fails
+  ---
+  duration_ms: 102.805375
+  type: 'test'
+  ...
+# Subtest: registry, copies and metadata symlinks are refused without touching targets
+ok 17 - registry, copies and metadata symlinks are refused without touching targets
+  ---
+  duration_ms: 87.5675
+  type: 'test'
+  ...
+# Subtest: created projects refuse source files outside the reviewed blueprint inventory
+ok 18 - created projects refuse source files outside the reviewed blueprint inventory
+  ---
+  duration_ms: 113.000125
+  type: 'test'
+  ...
+# Subtest: two independent copies preserve seed and reject source symlink escape
+ok 19 - two independent copies preserve seed and reject source symlink escape
+  ---
+  duration_ms: 85.499
+  type: 'test'
+  ...
+# Subtest: manifest byte drift rotates revision but refuses cached edit rules
+ok 20 - manifest byte drift rotates revision but refuses cached edit rules
+  ---
+  duration_ms: 163.035583
+  type: 'test'
+  ...
+# Subtest: real Astro readiness, duplicate open, locked-down /@fs/, close and generation rotation
+ok 21 - real Astro readiness, duplicate open, locked-down /@fs/, close and generation rotation
+  ---
+  duration_ms: 2374.756959
+  type: 'test'
+  ...
+# Subtest: occupied preview port cannot be mistaken for our ready worker and retry recovers
+ok 22 - occupied preview port cannot be mistaken for our ready worker and retry recovers
+  ---
+  duration_ms: 4300.962125
+  type: 'test'
+  ...
+# Subtest: closing during startup never leaves a late Astro listener
+ok 23 - closing during startup never leaves a late Astro listener
+  ---
+  duration_ms: 830.362042
+  type: 'test'
+  ...
+# Subtest: compiler failure and missing pinned dependencies remain failed until repaired
+ok 24 - compiler failure and missing pinned dependencies remain failed until repaired
+  ---
+  duration_ms: 2403.673292
+  type: 'test'
+  ...
+# Subtest: real engine writes once, stale external edit rejects, receipts reconcile after new session
+ok 25 - real engine writes once, stale external edit rejects, receipts reconcile after new session
+  ---
+  duration_ms: 2818.759208
+  type: 'test'
+  ...
+# Subtest: write-ahead recovery distinguishes before, after, and third-state bytes
+ok 26 - write-ahead recovery distinguishes before, after, and third-state bytes
+  ---
+  duration_ms: 6361.860667
+  type: 'test'
+  ...
+# Subtest: queued apply rechecks session after close wins the project lock
+ok 27 - queued apply rechecks session after close wins the project lock
+  ---
+  duration_ms: 1156.606083
+  type: 'test'
+  ...
+# Subtest: HTTP runner requires bearer and stable operator, rejects browser origin
+ok 28 - HTTP runner requires bearer and stable operator, rejects browser origin
+  ---
+  duration_ms: 70.961083
+  type: 'test'
+  ...
+# Subtest: one runner owns a data directory and a dead owner's lease can be reclaimed
+ok 29 - one runner owns a data directory and a dead owner's lease can be reclaimed
+  ---
+  duration_ms: 205.581792
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22597.948709
+
+> @stellar/web@0.0.0 test
+> node --conditions=react-server -r ./test/register.cjs --test test/*.test.cjs && vitest run
+
+TAP version 13
+# Subtest: launcher config fails closed on unsafe host, mode, secret and preview URL
+ok 1 - launcher config fails closed on unsafe host, mode, secret and preview URL
+  ---
+  duration_ms: 0.820625
+  type: 'test'
+  ...
+# Subtest: bootstrap is one-use under concurrent requests and cookie is signed and expiring
+ok 2 - bootstrap is one-use under concurrent requests and cookie is signed and expiring
+  ---
+  duration_ms: 13.435334
+  type: 'test'
+  ...
+# Subtest: broker sends one authenticated loopback RPC and normalizes runner errors
+ok 3 - broker sends one authenticated loopback RPC and normalizes runner errors
+  ---
+  duration_ms: 3.545208
+  type: 'test'
+  ...
+# Subtest: restart accepts a new coherent session ID but other reads retain the requested session scope
+ok 4 - restart accepts a new coherent session ID but other reads retain the requested session scope
+  ---
+  duration_ms: 0.868458
+  type: 'test'
+  ...
+# Subtest: all project reads require operator and mutations require exact Origin plus CSRF
+ok 5 - all project reads require operator and mutations require exact Origin plus CSRF
+  ---
+  duration_ms: 5.748584
+  type: 'test'
+  ...
+# Subtest: NextURL loopback normalization preserves exact incoming Host and Origin gates
+ok 6 - NextURL loopback normalization preserves exact incoming Host and Origin gates
+  ---
+  duration_ms: 0.282917
+  type: 'test'
+  ...
+# Subtest: history broker checks command receipt operation and request scope
+ok 7 - history broker checks command receipt operation and request scope
+  ---
+  duration_ms: 0.50625
+  type: 'test'
+  ...
+# Subtest: history POST requires operator, exact origin and CSRF before forwarding
+ok 8 - history POST requires operator, exact origin and CSRF before forwarding
+  ---
+  duration_ms: 2.079542
+  type: 'test'
+  ...
+# Subtest: named project creation requires authentication, origin, CSRF and a strict reviewed blueprint request
+ok 9 - named project creation requires authentication, origin, CSRF and a strict reviewed blueprint request
+  ---
+  duration_ms: 1.550667
+  type: 'test'
+  ...
+# Subtest: creation broker rejects a different request or blueprint identity
+ok 10 - creation broker rejects a different request or blueprint identity
+  ---
+  duration_ms: 0.850416
+  type: 'test'
+  ...
+# Subtest: history shortcuts respect native editing and map platform redo
+ok 11 - history shortcuts respect native editing and map platform redo
+  ---
+  duration_ms: 0.424
+  type: 'test'
+  ...
+# Subtest: history controls use only server-designated visible stack entries
+ok 12 - history controls use only server-designated visible stack entries
+  ---
+  duration_ms: 0.150084
+  type: 'test'
+  ...
+# Subtest: history lookup accepts a prior-session receipt but rejects mismatched scope and missing outcomes
+ok 13 - history lookup accepts a prior-session receipt but rejects mismatched scope and missing outcomes
+  ---
+  duration_ms: 2.002
+  type: 'test'
+  ...
+# Subtest: missing history may retry only the original command in the same session, revision, and stack position
+ok 14 - missing history may retry only the original command in the same session, revision, and stack position
+  ---
+  duration_ms: 0.564834
+  type: 'test'
+  ...
+# Subtest: all 5xx history responses retain the original request for reconciliation
+ok 15 - all 5xx history responses retain the original request for reconciliation
+  ---
+  duration_ms: 0.375334
+  type: 'test'
+  ...
+# Subtest: pending history marker persists only scoped command metadata and rejects stale or malformed state
+ok 16 - pending history marker persists only scoped command metadata and rejects stale or malformed state
+  ---
+  duration_ms: 4.447292
+  type: 'test'
+  ...
+# Subtest: local and concrete token controls reject invalid values before API calls
+ok 17 - local and concrete token controls reject invalid values before API calls
+  ---
+  duration_ms: 0.585375
+  type: 'test'
+  ...
+# Subtest: late prepare response cannot replace a changed draft or authorize a stale proposal
+ok 18 - late prepare response cannot replace a changed draft or authorize a stale proposal
+  ---
+  duration_ms: 0.226041
+  type: 'test'
+  ...
+# Subtest: uncertain apply preserves request identity and blocks new drafts or discard until reconciliation
+ok 19 - uncertain apply preserves request identity and blocks new drafts or discard until reconciliation
+  ---
+  duration_ms: 0.098708
+  type: 'test'
+  ...
+# Subtest: a definite failed apply can be reviewed again without reusing the old apply request ID
+ok 20 - a definite failed apply can be reviewed again without reusing the old apply request ID
+  ---
+  duration_ms: 0.05925
+  type: 'test'
+  ...
+# Subtest: malformed, mismatched and 5xx apply responses are uncertain after request dispatch
+ok 21 - malformed, mismatched and 5xx apply responses are uncertain after request dispatch
+  ---
+  duration_ms: 9.562334
+  type: 'test'
+  ...
+# Subtest: missing outcome permits only original-request retry and rejects mismatched lookup scope
+ok 22 - missing outcome permits only original-request retry and rejects mismatched lookup scope
+  ---
+  duration_ms: 0.644125
+  type: 'test'
+  ...
+# Subtest: pending apply marker stores only bounded logical identity and never grants stale retry authority
+ok 23 - pending apply marker stores only bounded logical identity and never grants stale retry authority
+  ---
+  duration_ms: 5.002125
+  type: 'test'
+  ...
+# Subtest: reconciled reload receipt remains visible while source and preview refresh independently
+ok 24 - reconciled reload receipt remains visible while source and preview refresh independently
+  ---
+  duration_ms: 0.207167
+  type: 'test'
+  ...
+# Subtest: local development isolates its lock while production keeps the built output
+ok 25 - local development isolates its lock while production keeps the built output
+  ---
+  duration_ms: 0.547917
+  type: 'test'
+  ...
+# Subtest: missing personal account is initialized and reread once
+ok 26 - missing personal account is initialized and reread once
+  ---
+  duration_ms: 2.185041
+  type: 'test'
+  ...
+# Subtest: existing accounts require no bootstrap
+ok 27 - existing accounts require no bootstrap
+  ---
+  duration_ms: 0.081041
+  type: 'test'
+  ...
+# Subtest: organization, revoked access, ended sessions and outages never trigger bootstrap
+ok 28 - organization, revoked access, ended sessions and outages never trigger bootstrap
+  ---
+  duration_ms: 0.232917
+  type: 'test'
+  ...
+# Subtest: lost bootstrap response can be retried without inferring success
+ok 29 - lost bootstrap response can be retried without inferring success
+  ---
+  duration_ms: 0.088792
+  type: 'test'
+  ...
+# Subtest: platform mode is explicit and unknown or mixed modes fail closed
+ok 30 - platform mode is explicit and unknown or mixed modes fail closed
+  ---
+  duration_ms: 0.737875
+  type: 'test'
+  ...
+# Subtest: missing setup reports names only and never returns partial credentials
+ok 31 - missing setup reports names only and never returns partial credentials
+  ---
+  duration_ms: 0.106708
+  type: 'test'
+  ...
+# Subtest: ready config exposes only validated public URLs and derives the app origin
+ok 32 - ready config exposes only validated public URLs and derives the app origin
+  ---
+  duration_ms: 0.251833
+  type: 'test'
+  ...
+# Subtest: unsafe credentials, URLs, and provider endpoint overrides are rejected by name
+ok 33 - unsafe credentials, URLs, and provider endpoint overrides are rejected by name
+  ---
+  duration_ms: 0.152041
+  type: 'test'
+  ...
+# Subtest: callback and Convex URLs accept HTTPS or loopback HTTP only at their fixed paths
+ok 34 - callback and Convex URLs accept HTTPS or loopback HTTP only at their fixed paths
+  ---
+  duration_ms: 0.178583
+  type: 'test'
+  ...
+# Subtest: an unavailable platform strips spoofed AuthKit request headers
+ok 35 - an unavailable platform strips spoofed AuthKit request headers
+  ---
+  duration_ms: 2.284125
+  type: 'test'
+  ...
+# Subtest: disabled configuration never reads session or calls backend
+ok 36 - disabled configuration never reads session or calls backend
+  ---
+  duration_ms: 12.360958
+  type: 'test'
+  ...
+# Subtest: anonymous sessions and auth service failures cannot reach platform data
+ok 37 - anonymous sessions and auth service failures cannot reach platform data
+  ---
+  duration_ms: 0.605958
+  type: 'test'
+  ...
+# Subtest: mutation origins are exact and never trust forwarded hosts or local cookies
+ok 38 - mutation origins are exact and never trust forwarded hosts or local cookies
+  ---
+  duration_ms: 1.218125
+  type: 'test'
+  ...
+# Subtest: project create forwards only validated intent and private token
+ok 39 - project create forwards only validated intent and private token
+  ---
+  duration_ms: 1.584542
+  type: 'test'
+  ...
+# Subtest: bootstrap cannot accept client-selected organization or actor
+ok 40 - bootstrap cannot accept client-selected organization or actor
+  ---
+  duration_ms: 0.336291
+  type: 'test'
+  ...
+# Subtest: authorization failures pass safe codes and backend outage redacts details
+ok 41 - authorization failures pass safe codes and backend outage redacts details
+  ---
+  duration_ms: 0.68675
+  type: 'test'
+  ...
+# Subtest: runner attempt authorizes through backend and remains disconnected
+ok 42 - runner attempt authorizes through backend and remains disconnected
+  ---
+  duration_ms: 0.391458
+  type: 'test'
+  ...
+# Subtest: request identity survives serialization and is isolated by actor and tenant
+ok 43 - request identity survives serialization and is isolated by actor and tenant
+  ---
+  duration_ms: 0.114666
+  type: 'test'
+  ...
+# Subtest: platform or unknown mode disables all local broker configuration
+ok 44 - platform or unknown mode disables all local broker configuration
+  ---
+  duration_ms: 0.407875
+  type: 'test'
+  ...
+# Subtest: explicit resolution clears only the current actor and tenant intent
+ok 45 - explicit resolution clears only the current actor and tenant intent
+  ---
+  duration_ms: 0.346917
+  type: 'test'
+  ...
+# Subtest: proposal reads forward exact project scope and bounded pagination
+ok 46 - proposal reads forward exact project scope and bounded pagination
+  ---
+  duration_ms: 0.606083
+  type: 'test'
+  ...
+# Subtest: proposal decisions require exact reviewed bindings and reject identity injection
+ok 47 - proposal decisions require exact reviewed bindings and reject identity injection
+  ---
+  duration_ms: 3.042459
+  type: 'test'
+  ...
+# Subtest: proposal submission remains disconnected and no apply route exists
+ok 48 - proposal submission remains disconnected and no apply route exists
+  ---
+  duration_ms: 0.421042
+  type: 'test'
+  ...
+# Subtest: account proposal transport and HTTP agree on exact decision payload
+ok 49 - account proposal transport and HTTP agree on exact decision payload
+  ---
+  duration_ms: 14.287584
+  type: 'test'
+  ...
+# Subtest: pending review keys isolate tenant, actor and project
+ok 50 - pending review keys isolate tenant, actor and project
+  ---
+  duration_ms: 0.391959
+  type: 'test'
+  ...
+# Subtest: pending review reload accepts only a bounded exact request
+ok 51 - pending review reload accepts only a bounded exact request
+  ---
+  duration_ms: 0.463459
+  type: 'test'
+  ...
+# Subtest: lost response reconciliation binds proposal, digest, revision, actor, action and request ID even after later cancellation
+ok 52 - lost response reconciliation binds proposal, digest, revision, actor, action and request ID even after later cancellation
+  ---
+  duration_ms: 0.13275
+  type: 'test'
+  ...
+# Subtest: mismatched sealed bindings never clear a pending decision
+ok 53 - mismatched sealed bindings never clear a pending decision
+  ---
+  duration_ms: 0.059416
+  type: 'test'
+  ...
+# Subtest: current exact frame selection resolves only against current source model
+ok 54 - current exact frame selection resolves only against current source model
+  ---
+  duration_ms: 0.636667
+  type: 'test'
+  ...
+# Subtest: wrong origin, window, scope, route and stale revision cannot select
+ok 55 - wrong origin, window, scope, route and stale revision cannot select
+  ---
+  duration_ms: 1.316917
+  type: 'test'
+  ...
+# Subtest: malformed frame payload and spoofed target cannot select
+ok 56 - malformed frame payload and spoofed target cannot select
+  ---
+  duration_ms: 0.518666
+  type: 'test'
+  ...
+# Subtest: hello only reveals a route from the exact frame
+ok 57 - hello only reveals a route from the exact frame
+  ---
+  duration_ms: 0.124542
+  type: 'test'
+  ...
+# Subtest: preview origin accepts only exact local preview hostname
+ok 58 - preview origin accepts only exact local preview hostname
+  ---
+  duration_ms: 0.120666
+  type: 'test'
+  ...
+# Subtest: browser Back waits for dirty draft resolution and repeated Back cannot skip it
+ok 59 - browser Back waits for dirty draft resolution and repeated Back cannot skip it
+  ---
+  duration_ms: 0.463667
+  type: 'test'
+  ...
+# Subtest: browser Back from a deep link falls back to Projects after guard approval
+ok 60 - browser Back from a deep link falls back to Projects after guard approval
+  ---
+  duration_ms: 0.077625
+  type: 'test'
+  ...
+# Subtest: remount and reload reuse the existing Studio sentinel
+ok 61 - remount and reload reuse the existing Studio sentinel
+  ---
+  duration_ms: 0.125625
+  type: 'test'
+  ...
+# Subtest: deep-link remount retains fallback behavior instead of navigating to an unknown prior entry
+ok 62 - deep-link remount retains fallback behavior instead of navigating to an unknown prior entry
+  ---
+  duration_ms: 0.276875
+  type: 'test'
+  ...
+# Subtest: Keep editing then reload preserves the dashboard as the Back destination
+ok 63 - Keep editing then reload preserves the dashboard as the Back destination
+  ---
+  duration_ms: 0.289959
+  type: 'test'
+  ...
+1..63
+# tests 63
+# suites 0
+# pass 63
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 491.994333
+
+ RUN  v5.0.1 /Users/scottfoster/.codex/worktrees/933d/stellar/apps/web
+
+
+ Test Files  2 passed (2)
+      Tests  21 passed (21)
+   Start at  21:10:37
+   Duration  274ms (tests 37%, transform 33%, import 28%, worker 1%)
+
+
+> @stellar/astro-editor-integration@0.1.0 test
+> node --test test/*.test.mjs
+
+TAP version 13
+# Subtest: only an explicit local app origin and Astro dev command inject the editor
+ok 1 - only an explicit local app origin and Astro dev command inject the editor
+  ---
+  duration_ms: 0.462042
+  type: 'test'
+  ...
+# Subtest: same-preview navigation announces its new route without trusting a foreign parent
+ok 2 - same-preview navigation announces its new route without trusting a foreign parent
+  ---
+  duration_ms: 2.016125
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 41.417834
+TAP version 13
+# Subtest: committed company mapping is structurally sound but explicitly blocked
+ok 1 - committed company mapping is structurally sound but explicitly blocked
+  ---
+  duration_ms: 8.003125
+  type: 'test'
+  ...
+# Subtest: legacy evidence cannot be promoted to executable by injecting approval-shaped fields
+ok 2 - legacy evidence cannot be promoted to executable by injecting approval-shaped fields
+  ---
+  duration_ms: 0.696792
+  type: 'test'
+  ...
+# Subtest: legacy status and required collection shapes cannot be removed or promoted
+ok 3 - legacy status and required collection shapes cannot be removed or promoted
+  ---
+  duration_ms: 0.845583
+  type: 'test'
+  ...
+# Subtest: untrusted layout keys never appear in sanitized report paths
+ok 4 - untrusted layout keys never appear in sanitized report paths
+  ---
+  duration_ms: 0.421166
+  type: 'test'
+  ...
+# Subtest: unknown field references and unsupported versions are invalid without leaking input
+ok 5 - unknown field references and unsupported versions are invalid without leaking input
+  ---
+  duration_ms: 0.285833
+  type: 'test'
+  ...
+# Subtest: duplicate bindings and source type mismatches are rejected
+ok 6 - duplicate bindings and source type mismatches are rejected
+  ---
+  duration_ms: 0.313333
+  type: 'test'
+  ...
+# Subtest: via fields must be linked-record fields aimed at the referenced child table
+ok 7 - via fields must be linked-record fields aimed at the referenced child table
+  ---
+  duration_ms: 0.356166
+  type: 'test'
+  ...
+# Subtest: entity tables and stable source identity are validated independently of bindings
+ok 8 - entity tables and stable source identity are validated independently of bindings
+  ---
+  duration_ms: 0.242
+  type: 'test'
+  ...
+# Subtest: entity and global bindings cannot escape their declared owner tables
+ok 9 - entity and global bindings cannot escape their declared owner tables
+  ---
+  duration_ms: 0.434125
+  type: 'test'
+  ...
+# Subtest: root exclusions and section ordering preserve the bounded view scope
+ok 10 - root exclusions and section ordering preserve the bounded view scope
+  ---
+  duration_ms: 0.659375
+  type: 'test'
+  ...
+# Subtest: standalone CLI defaults to the committed evidence and exits two when blocked
+ok 11 - standalone CLI defaults to the committed evidence and exits two when blocked
+  ---
+  duration_ms: 34.005583
+  type: 'test'
+  ...
+# Subtest: standalone CLI exits one for invalid usage
+ok 12 - standalone CLI exits one for invalid usage
+  ---
+  duration_ms: 26.242791
+  type: 'test'
+  ...
+# Subtest: offline CLI reproduces the synthetic plan without changing its inputs or requiring repo cwd
+ok 13 - offline CLI reproduces the synthetic plan without changing its inputs or requiring repo cwd
+  ---
+  duration_ms: 159.2335
+  type: 'test'
+  ...
+# Subtest: CLI returns sanitized machine-readable usage, missing-file and JSON failures
+ok 14 - CLI returns sanitized machine-readable usage, missing-file and JSON failures
+  ---
+  duration_ms: 320.49375
+  type: 'test'
+  ...
+# Subtest: CLI rejects an unknown contract version and oversized file without leaking values
+ok 15 - CLI rejects an unknown contract version and oversized file without leaking values
+  ---
+  duration_ms: 121.713375
+  type: 'test'
+  ...
+# Subtest: a valid incomplete source snapshot returns a blocked plan and exit two
+ok 16 - a valid incomplete source snapshot returns a blocked plan and exit two
+  ---
+  duration_ms: 65.353167
+  type: 'test'
+  ...
+# Subtest: --all scans untracked Markdown and accepts structural source citations
+ok 17 - --all scans untracked Markdown and accepts structural source citations
+  ---
+  duration_ms: 65.178666
+  type: 'test'
+  ...
+# Subtest: structural links do not hide query secrets, explicit tokens, or unrelated entropy
+ok 18 - structural links do not hide query secrets, explicit tokens, or unrelated entropy
+  ---
+  duration_ms: 74.185
+  type: 'test'
+  ...
+# Subtest: fixture manifest agrees with actual authored source
+ok 19 - fixture manifest agrees with actual authored source
+  ---
+  duration_ms: 81.018042
+  type: 'test'
+  ...
+# Subtest: schema-valid CSS identity cannot silently select a different element
+ok 20 - schema-valid CSS identity cannot silently select a different element
+  ---
+  duration_ms: 34.8225
+  type: 'test'
+  ...
+# Subtest: missing fallback and additional token definition fail source validation
+ok 21 - missing fallback and additional token definition fail source validation
+  ---
+  duration_ms: 24.712334
+  type: 'test'
+  ...
+# Subtest: alias source must retain the manifest's declared reference
+ok 22 - alias source must retain the manifest's declared reference
+  ---
+  duration_ms: 27.813375
+  type: 'test'
+  ...
+# Subtest: CSS media identity includes the actual authored condition
+ok 23 - CSS media identity includes the actual authored condition
+  ---
+  duration_ms: 23.314291
+  type: 'test'
+  ...
+# Subtest: source symlink cannot escape the fixture root
+ok 24 - source symlink cannot escape the fixture root
+  ---
+  duration_ms: 20.105042
+  type: 'test'
+  ...
+# Subtest: Stellar profile validates; unsupported integration and branch claims fail
+ok 25 - Stellar profile validates; unsupported integration and branch claims fail
+  ---
+  duration_ms: 95.437584
+  type: 'test'
+  ...
+# Subtest: profile file check identifies missing declared artifacts
+ok 26 - profile file check identifies missing declared artifacts
+  ---
+  duration_ms: 0.919042
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1266.976167
+
+> stellar@0.0.0 verify:fixture
+> npm run build:contracts && node scripts/check-fixture.mjs
+
+
+> stellar@0.0.0 build:contracts
+> npm run build --workspace=@stellar/contracts
+
+
+> @stellar/contracts@0.1.0 build
+> tsc -p tsconfig.json
+
+Fixture source validation passed: 2 pages, 11 targets, 15 style rules.

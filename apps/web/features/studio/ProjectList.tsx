@@ -8,6 +8,7 @@ import {
   type BlueprintCatalogEntry, type RegisteredWorkspace,
 } from "@stellar/contracts";
 import { createProject, listBlueprints, listProjects, requestId, StudioApiError } from "./api";
+import { startTiming, finishTiming, moveTiming } from "./timing";
 import styles from "./projects.module.css";
 
 type PendingCreate = { requestId: string; name: string; blueprintId: string; blueprintVersion: string };
@@ -30,7 +31,7 @@ function creationMessage(cause: unknown): CreationIssue {
     message: "Your local connection expired. Reconnect, then retry this same creation request.", uncertain: false,
   };
   if (cause.code === "IDEMPOTENCY_CONFLICT") return {
-    message: "This request no longer matches its original name or blueprint. Change the name to start a new request.", uncertain: false,
+    message: "This request no longer matches its saved name or template. Check the saved websites below and reopen the original website.", uncertain: false,
   };
   if (cause.code === "INVALID_REQUEST" || cause.code === "INVALID_VALUE")
     return { message: cause.message || "Check the project name and try again.", uncertain: false };
@@ -116,13 +117,21 @@ export function ProjectList() {
       blueprintId: blueprint.blueprint.id, blueprintVersion: blueprint.blueprint.version,
     };
     setPendingCreate(request);
-    window.sessionStorage.setItem(PENDING_CREATE_KEY, JSON.stringify(request));
+    try { window.sessionStorage.setItem(PENDING_CREATE_KEY, JSON.stringify(request)); }
+    catch {
+      setCreationIssue({ message: "Allow browser session storage, then retry. No creation request was sent.", uncertain: false });
+      return;
+    }
     setCreationIssue(null);
     createInFlight.current = true;
     setCreating(true);
     try {
+      startTiming("creation");
+      startTiming("allocation");
       const result = await createProject({ protocolVersion: PROTOCOL_VERSION, ...request });
-      window.sessionStorage.removeItem(PENDING_CREATE_KEY);
+      finishTiming("allocation", sameIntent ? "creation-recovery-ack" : "creation-ack");
+      moveTiming("creation", `${sameIntent ? "recovery" : "create"}:${result.workspace.project.id}`);
+      try { window.sessionStorage.removeItem(PENDING_CREATE_KEY); } catch { /* A retained receipt safely replays. */ }
       router.push(`/projects/${encodeURIComponent(result.workspace.project.id)}/studio`);
     } catch (cause) {
       setCreationIssue(creationMessage(cause));
@@ -133,12 +142,10 @@ export function ProjectList() {
   }
 
   function updateName(value: string) {
+    if (pendingCreate) return;
     setName(value);
     setCreationIssue(null);
-    if (pendingCreate && value.trim() !== pendingCreate.name) {
-      setPendingCreate(null);
-      window.sessionStorage.removeItem(PENDING_CREATE_KEY);
-    }
+
   }
 
   const connected = !error && projects !== null && blueprints !== null;
@@ -148,13 +155,13 @@ export function ProjectList() {
     <header className={styles.header}>
       <span className={styles.brand}>Stellar<span aria-hidden="true">✳</span></span>
       <span className={`${styles.modeBadge} ${error ? styles.modeBadgeError : connected ? "" : styles.modeBadgePending}`} role="status">
-        <span className={styles.statusDot} /> {error ? "Connection needed" : connected ? "Local workspace connected" : "Connecting…"}
+        <span className={styles.statusDot} /> {error ? "Connection needed" : connected ? "Computer connected" : "Connecting…"}
       </span>
     </header>
 
     <section className={styles.intro}>
-      <p className={styles.eyebrow}>Workspace / Sites</p>
-      <h1>Projects</h1>
+      <p className={styles.eyebrow}>On this computer</p>
+      <h1>Your websites</h1>
       <p>Create an independent site from a reviewed blueprint, or reopen a working copy with its source and history intact.</p>
     </section>
 
@@ -167,22 +174,22 @@ export function ProjectList() {
     </section> : <>
       <section className={styles.createSection} aria-labelledby="create-heading">
         <div className={styles.createHeading}>
-          <div><p className={styles.eyebrow}>New working copy</p><h2 id="create-heading">Start from a reviewed blueprint</h2></div>
+          <div><p className={styles.eyebrow}>New website</p><h2 id="create-heading">Start from a reviewed template</h2></div>
           <span>{blueprints === null ? "Loading catalog…" : `${blueprints.length} available`}</span>
         </div>
         <form className={styles.createForm} onSubmit={submit}>
           <div className={styles.nameColumn}>
             <label htmlFor="project-name">Project name</label>
-            <input id="project-name" name="name" value={name} maxLength={80} autoComplete="off" disabled={creating}
+            <input id="project-name" name="name" value={name} maxLength={80} autoComplete="off" disabled={creating || (!!pendingCreate)}
               placeholder="e.g. Northstar campaign" onChange={(event) => updateName(event.target.value)} />
             <p>Choose a clear display name. Your new project will be an independent working copy.</p>
             <button type="submit" disabled={creating || loadedBlueprints.length === 0}>
-              {creating ? "Creating project…" : creationIssue?.uncertain ? "Retry creation" : "Create project"}<span aria-hidden="true">→</span>
+              {creating ? "Preparing website…" : pendingCreate ? "Retry creation" : "Create project"}<span aria-hidden="true">→</span>
             </button>
             {creationIssue ? <div className={`${styles.creationIssue} ${creationIssue.uncertain ? styles.uncertainIssue : ""}`} role="alert">
               <strong>{creationIssue.uncertain ? "Result needs confirmation" : "Project not created"}</strong>
               <p>{creationIssue.message}</p>
-              {creationIssue.uncertain && pendingCreate ? <small>Retry checks the original request, so it will not create a duplicate.</small> : null}
+              {pendingCreate ? <small>Retry checks the original request, so it will not create a duplicate.</small> : null}
             </div> : null}
           </div>
 
@@ -191,14 +198,11 @@ export function ProjectList() {
             {blueprints === null ? <div className={styles.blueprintLoading}>Loading the reviewed catalog…</div>
               : loadedBlueprints.length === 0 ? <div className={styles.blueprintLoading}>No compatible blueprints are registered in this workspace.</div>
                 : loadedBlueprints.map((entry) => <label className={styles.blueprintCard} key={`${entry.blueprint.id}:${entry.blueprint.version}`}>
-                  <input type="radio" name="blueprint" value={entry.blueprint.id} checked={blueprintId === entry.blueprint.id} disabled={creating}
+                  <input type="radio" name="blueprint" value={entry.blueprint.id} checked={blueprintId === entry.blueprint.id} disabled={creating || (!!pendingCreate)}
                     onChange={() => {
                       setBlueprintId(entry.blueprint.id);
                       setCreationIssue(null);
-                      if (pendingCreate?.blueprintId !== entry.blueprint.id) {
-                        setPendingCreate(null);
-                        window.sessionStorage.removeItem(PENDING_CREATE_KEY);
-                      }
+
                     }} />
                   <span className={styles.blueprintVisual} aria-hidden="true"><i /><i /><b>f<span>.</span></b></span>
                   <span className={styles.blueprintCopy}>
@@ -221,7 +225,7 @@ export function ProjectList() {
       </section>
 
       <section className={styles.projectSection} aria-labelledby="project-heading">
-        <div className={styles.sectionHeading}><h2 id="project-heading">Your working copies</h2><span>{projects?.length ?? "—"} available</span></div>
+        <div className={styles.sectionHeading}><h2 id="project-heading">Your websites on this computer</h2><span>{projects?.length ?? "—"} available</span></div>
         {projects === null ? <div className={styles.projectEmpty} role="status">Loading registered projects…</div>
           : projects.length === 0 ? <div className={styles.projectEmpty}><strong>No working copies yet</strong><p>Name a project above to create the first independent copy.</p></div>
             : <div className={styles.projectGrid}>{projects.map((workspace, index) => <Link className={styles.projectCard} href={`/projects/${encodeURIComponent(workspace.project.id)}/studio`} key={workspace.id}>

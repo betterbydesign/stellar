@@ -33,7 +33,7 @@ async function csrf(): Promise<string> {
   return value.csrfToken;
 }
 const mutation = async (path: string, method: "POST" | "DELETE", body?: Record<string, unknown>, id?: string) => responseData(await fetch(endpoint(path, id), {
-  method, credentials: "same-origin", cache: "no-store",
+  method, credentials: "same-origin", cache: "no-store", signal: AbortSignal.timeout(20_000),
   headers: { "content-type": "application/json", "x-stellar-csrf": await csrf() },
   ...(body ? { body: JSON.stringify(body) } : {}),
 }));

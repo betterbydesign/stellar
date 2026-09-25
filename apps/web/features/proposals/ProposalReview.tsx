@@ -27,8 +27,8 @@ function readStored(key: string): PendingReview | null {
   try { return parsePendingReview(sessionStorage.getItem(key)); } catch { return null; }
 }
 
-export function ProposalReview({ projectId, transport = accountReviewTransport, heading = "Proposals" }: {
-  projectId: string; transport?: ReviewTransport; heading?: string;
+export function ProposalReview({ projectId, transport = accountReviewTransport, heading = "Proposals", hideWhenEmpty = false }: {
+  projectId: string; transport?: ReviewTransport; heading?: string; hideWhenEmpty?: boolean;
 }) {
   const [page, setPage] = useState<ProposalPage | null>(null);
   const [detail, setDetail] = useState<ProposalRead | null>(null);
@@ -122,6 +122,9 @@ export function ProposalReview({ projectId, transport = accountReviewTransport, 
 
   const proposal = detail?.proposal;
   const canDecide = Boolean(page?.canReview && detail?.canReview && proposal && (proposal.status === "proposed" || canWithdraw(proposal)) && !loading && !deciding);
+  if (hideWhenEmpty && loading && !page && !notice) return null;
+  if (hideWhenEmpty && !loading && page?.isDone && page.page.length === 0 && !pending && !notice) return null;
+
   return <section className={styles.review} aria-labelledby="proposal-review-heading">
     <div className={styles.heading}><div><p className={styles.eyebrow}>Project review</p><h2 id="proposal-review-heading">{heading}</h2></div><button className={styles.secondary} type="button" onClick={() => void load(proposal?.id)} disabled={loading || deciding}>Reload proposals</button></div>
     <p className={styles.muted}>Review records are scoped to this project. Recording approval does not apply a change. Source application is unavailable until a connected runner can revalidate the exact command and current source.</p>

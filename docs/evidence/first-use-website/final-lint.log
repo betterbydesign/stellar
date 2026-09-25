@@ -1,0 +1,39 @@
+
+> stellar@0.0.0 lint
+> npm run lint --workspaces --if-present && eslint scripts/check-fixture.mjs scripts/verify-local-runner.mjs scripts/plan-content-import.mjs scripts/audit-company-content-map.mjs test/content-plan-cli.test.mjs test/company-content-map.test.mjs test/fixture.test.mjs eslint.config.mjs test/editor-e2e test/proposal-review-e2e
+
+
+> @stellar/runner@0.1.0 lint
+> eslint src
+
+
+> @stellar/web@0.0.0 lint
+> eslint app lib features test convex proxy.ts vitest.config.ts next.config.ts
+
+
+/Users/scottfoster/.codex/worktrees/933d/stellar/apps/web/convex/_generated/api.js
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+/Users/scottfoster/.codex/worktrees/933d/stellar/apps/web/convex/_generated/dataModel.d.ts
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+/Users/scottfoster/.codex/worktrees/933d/stellar/apps/web/convex/_generated/server.d.ts
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+/Users/scottfoster/.codex/worktrees/933d/stellar/apps/web/convex/_generated/server.js
+  1:1  warning  Unused eslint-disable directive (no problems were reported)
+
+✖ 4 problems (0 errors, 4 warnings)
+  0 errors and 4 warnings potentially fixable with the `--fix` option.
+
+
+> @stellar/content-import@0.1.0 lint
+> eslint src
+
+
+> @stellar/contracts@0.1.0 lint
+> eslint src
+
+
+> @stellar/editor-core@0.1.0 lint
+> eslint src

@@ -36,3 +36,9 @@ Local project creation and Studio continue through their existing signed operato
 Creation request IDs are retained in browser session storage under actor/tenant scope and reused with the original name after ambiguous failures. Convex checks current grants before returning an existing receipt. Unknown provider errors are reduced to service-unavailable responses, with no raw provider detail. Session storage preserves requests across reload in the same tab; it is not cross-device recovery. Project records and receipts remain in Convex.
 
 See the [platform setup guide](../user-guide/platform-projects.md) and [evidence](../evidence/e01-platform/verification.md) for actual offline verification and remaining live checks. WorkOS organization removal is not yet synchronized through webhooks: revoke the corresponding Stellar grant as well, and verify provider expiry/session behavior in the live acceptance pass.
+
+## First-use prerequisite gate
+
+The dashboard now bootstraps a missing personal account through the existing origin-protected mutation, then rereads the authorized viewer. It only attempts this for `WORKSPACE_NOT_PROVISIONED` without an organization; revoked, unauthenticated and unavailable responses never trigger grants. Existing backend idempotency and revocation checks remain authoritative.
+
+The normal account UI no longer offers metadata creation as a usable website. It presents `/platform/setup` first; old pending creation receipts remain recoverable, and existing records remain readable. Empty proposal sections are hidden after an authorized empty result, while errors and existing decisions remain accessible. Local website creation continues independently with a locked pending intent and existing registry receipts. This does not implement account pairing; its required ownership and recovery protocol is in the [first-use PRD](../prds/first-use-website.md).

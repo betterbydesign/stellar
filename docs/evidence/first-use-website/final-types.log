@@ -1,0 +1,49 @@
+
+> stellar@0.0.0 typecheck
+> npm run build:packages && npm run typecheck --workspaces --if-present
+
+
+> stellar@0.0.0 build:packages
+> npm run build:contracts && npm run build --workspace=@stellar/content-import && npm run build --workspace=@stellar/editor-core && npm run build --workspace=@stellar/runner
+
+
+> stellar@0.0.0 build:contracts
+> npm run build --workspace=@stellar/contracts
+
+
+> @stellar/contracts@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/content-import@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/editor-core@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/runner@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/runner@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @stellar/web@0.0.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully
+
+> @stellar/content-import@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @stellar/contracts@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @stellar/editor-core@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
