@@ -1,5 +1,7 @@
 # First-use slice verification
 
+Historical first-slice evidence. The [connected-computer continuation](connected-verification.md) supersedes the implementation gaps below.
+
 Date: 2026-09-24 (browser completion 2026-09-25 UTC). Branch `codex/first-use-website`, baseline `c93c803`. Worktree `933d`. Node 22.23.2, local macOS, Chromium, production Next app and real Astro previews; temporary source directories and independently allocated loopback ports. No credentials copied, no provider deployment and no existing service stopped.
 
 ## Results

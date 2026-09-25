@@ -34,7 +34,9 @@
     "content:plan": "node scripts/plan-content-import.mjs",
     "content:plan:example": "node scripts/plan-content-import.mjs --mapping packages/content-import/fixtures/mapping.json --source packages/content-import/fixtures/source.json --target packages/content-import/fixtures/target.json",
     "content:audit:company": "node scripts/audit-company-content-map.mjs",
-    "verify:proposals": "node test/proposal-review-e2e/run.mjs"
+    "verify:proposals": "node test/proposal-review-e2e/run.mjs",
+    "dev:connected": "npm run build:packages && STELLAR_CONNECTED_MODE=1 npm run launch --workspace=@stellar/runner",
+    "verify:connected": "vitest run --config test/connected-e2e/vitest.config.mjs"
   },
   "devDependencies": {
     "@astrojs/compiler": "4.0.0",

@@ -95,7 +95,7 @@ test("a definite failed apply can be reviewed again without reusing the old appl
 test("malformed, mismatched and 5xx apply responses are uncertain after request dispatch", async () => {
   const priorWindow = global.window;
   const priorFetch = global.fetch;
-  global.window = { sessionStorage: { getItem: () => "csrf-token", setItem: () => {} } };
+  global.window = { location: { pathname: "/projects/local/studio" }, sessionStorage: { getItem: () => "csrf-token", setItem: () => {} } };
   const request = { protocolVersion: "stellar.editor.v1", projectId: "project-a", sessionId: "session-a",
     requestId: "apply-1", proposalId: exampleProposal.proposalId, expectedRevision: exampleProposal.baseRevision };
   const calls = [];

@@ -1,0 +1,101 @@
+
+> stellar@0.0.0 build
+> npm run build:packages && npm run build --workspace=@stellar/web && npm run build:fixture
+
+
+> stellar@0.0.0 build:packages
+> npm run build:contracts && npm run build --workspace=@stellar/content-import && npm run build --workspace=@stellar/editor-core && npm run build --workspace=@stellar/runner
+
+
+> stellar@0.0.0 build:contracts
+> npm run build --workspace=@stellar/contracts
+
+
+> @stellar/contracts@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/content-import@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/editor-core@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/runner@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @stellar/web@0.0.0 build
+> next build
+
+▲ Next.js 16.3.5 (Turbopack)
+✓ Running next.config.ts took 53ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 549ms
+  Running TypeScript ...
+  Finished TypeScript in 397ms ...
+  Collecting page data using 13 workers ...
+  Generating static pages using 13 workers (0/5) ...
+  Generating static pages using 13 workers (1/5)
+  Generating static pages using 13 workers (2/5)
+  Generating static pages using 13 workers (3/5)
+✓ Generating static pages using 13 workers (5/5) in 111ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/connected/[...segments]
+├ ƒ /api/operator/bootstrap
+├ ƒ /api/operator/session
+├ ƒ /api/platform/[...segments]
+├ ƒ /api/projects
+├ ƒ /api/projects/[...segments]
+├ ƒ /auth/callback
+├ ƒ /auth/sign-in
+├ ○ /connect
+├ ƒ /dev/proposal-review
+├ ƒ /platform
+├ ƒ /platform/projects/[projectId]
+├ ƒ /platform/projects/[projectId]/studio
+├ ƒ /platform/setup
+├ ƒ /projects
+└ ƒ /projects/[projectId]/studio
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+> stellar@0.0.0 build:fixture
+> npm run build --prefix fixtures/astro-style-lab
+
+
+> astro-style-lab@1.0.0 build
+> astro build
+
+21:57:57 [vite] Re-optimizing dependencies because vite config has changed
+21:57:57 [types] Generated 96ms
+21:57:57 [build] output: "static"
+21:57:57 [build] mode: "static"
+21:57:57 [build] directory: /Users/scottfoster/.codex/worktrees/933d/stellar/fixtures/astro-style-lab/dist/
+21:57:57 [build] Collecting build info...
+21:57:57 [build] ✓ Completed in 103ms.
+21:57:57 [build] Building static entrypoints...
+21:57:57 [vite] ✓ built in 89ms
+21:57:57 [vite] ✓ built in 10ms
+21:57:57 [build] Rearranging server assets...
+
+ generating static routes
+21:57:57   ├─ /contact/index.html (+6ms)
+21:57:57   ├─ /index.html (+1ms)
+21:57:57 ✓ Completed in 14ms.
+
+21:57:57 [build] ✓ Completed in 126ms.
+21:57:57 [build] 2 page(s) built in 231ms
+21:57:57 [build] Complete!

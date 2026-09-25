@@ -2,22 +2,22 @@
 
 Branch: `codex/first-use-website`, based on integrated foundation `c93c803`. Main and saved checkout were not merged, reset or synchronized. No credentials were copied; no services or databases were deployed.
 
-## Delivered slice
+## Delivered
 
-[PRD](../prds/first-use-website.md), [ExecPlan](../exec-plans/first-use-website.md) and [verification](../evidence/first-use-website/verification.md). Personal setup is automatic with the existing current-grant checks. New account metadata creation is removed from normal onboarding; old pending receipts can still be recovered. Existing records such as Test show incomplete setup and link to usable guidance rather than a disabled Studio button. Empty proposal controls are hidden; existing history remains accessible.
+The user requested implementation with agents. SOL/high agents implemented the runner connection/binding, Convex pairing/provisioning and account UI, followed by integration review. Root implemented the connected HTTP gate and Studio integration. See the [PRD](../prds/first-use-website.md), [ExecPlan](../exec-plans/first-use-website.md), [architecture](../architecture/connected-computer.md) and [verification](../evidence/first-use-website/connected-verification.md).
 
-The actual local creation flow retains its reviewed Astro registry and guarded source/history writer. Pending name/template are locked until recovery, blocked storage prevents sends, and requests time out without discarding identity. Browser measures record actual creation-to-edit and acknowledged-save-to-preview latency. Real browser proof covers creation, editing, reload, runner restart, lost responses and independent source builds.
+The account-enabled server now connects to the computer's runner through explicit local control and account confirmation. It creates source from a reviewed template, binds the account project to the exact registry entry, opens Studio, saves through existing guarded commands and reopens the same source. Metadata-only records such as Test can finish setup on their original ID. Failed/lost responses retain the operation and pinned template for retry; no source is attached by name. The local-only API gate remains closed in account mode.
 
-## Open product work
+Source/history remain on the computer. Current account/project grants and exact backend/runner bindings are checked before every command. New confirmations rotate the tenant's active computer connection; disconnection blocks new account commands without deleting files. Ambiguous connection-store writes disable authority until restart reloads disk. Empty proposal UI remains hidden and provider execution remains disabled.
 
-This is not the complete signed-in journey. Authenticated installation pairing and reconciled account-to-source provisioning are still unimplemented. They are engineering prerequisites, not missing user settings. Do not enable the local broker in platform mode or attach a source by matching its name. Use the PRD's handshake, exact binding, live grant/revocation and operation reconciliation requirements for the next milestone. No live account session was supplied in this worktree, and offline backend tests do not prove WorkOS/Convex live isolation or revocation.
+## Verification and remaining live gate
 
-A user can use the separate local editor now: start the existing development checkout's local launcher, open its exact connection link, create from the reviewed template and reopen through that same local website list. This does not finish Test. Once pairing is implemented, secure Stellar-only configuration and user sign-in will be required to validate the joined journey; no secrets should be sent in chat.
+Full repository verification passed 227 tests, plus production build and original local/editor/projects/proposal regressions. The new connected browser acceptance proves brand-new account bootstrap, explicit pairing, real source creation, guarded save, runner restart/reopen, account return navigation, disconnect/reconnect, metadata completion after a lost response, and an independent edited-site build. Its identity is synthetic and its backend uses real functions inside `convex-test`; this is not live WorkOS/Convex evidence. Independent review found no remaining release-blocking defect in the supported same-computer environment.
 
-## Integration
+Before live use, follow the [setup guide](../user-guide/platform-projects.md): securely configure the account-enabled local web server, deploy the updated Convex schema/functions, set a matching dedicated `STELLAR_CONNECTION_SECRET` on web and Convex, configure the exact `127.0.0.1` callback and run `npm run dev:connected`. Then sign in and validate the real Test record, session expiry, persistent cloud state and revocation. No secrets should be sent in chat. This task did not deploy or modify the existing configured checkout, so merely refreshing that old instance will not enable these changes.
 
-Use the completed task branch commits after inspecting the saved checkout's then-current branch, dirty files, environment and saved source. Do not overwrite its `.vscode`, environment or `.stellar-local` data. Merge/synchronize only with authorization for that current state; this task only publishes its own branch. The implementation and evidence are reviewable without copying credentials.
+Hosted relay, managed execution, automatic local-project import, account transfer and publishing remain outside this implementation. One active connection per tenant/computer is supported. WorkOS membership synchronization is still separate from Stellar grants. A request already authorized may finish while revocation is in flight.
 
-## Delivery status
+## Integration and delivery
 
-Verified implementation commit: `fa132dc`. The branch is committed locally. Automatic approval review rejected the attempted push to the configured GitHub remote (`betterbydesign/stellar`) because repository source/evidence egress to that destination was not verified as trusted. No push or remote update occurred; explicit destination approval is needed before retrying. Do not bypass this restriction.
+The first-slice commits `fa132dc` and `bbd0ab7` were pushed after explicit approval of `https://github.com/betterbydesign/stellar`. The connected continuation is published on that same task branch after verification. Merge/synchronize only with authorization for the saved checkout's then-current state. Preserve its `.vscode`, environment and `.stellar-local` source/history; do not reset or copy credentials automatically.

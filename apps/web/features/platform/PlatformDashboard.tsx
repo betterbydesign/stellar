@@ -4,13 +4,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ProjectPage, ProjectSummary, Workspace } from "../../lib/platform/http";
 import { discardIntent, intentStorageKey, parseIntent, type CreateIntent } from "./create-intent";
 import { failureMessage, platformRequest, PlatformRequestError } from "./client";
+import { connectedRequest } from "./connected-client";
 import { loadAccount } from "./onboarding";
+import { WebsiteSetup } from "./WebsiteSetup";
 import styles from "./platform.module.css";
+
+type ConnectedStatus = { available: boolean; connected: boolean; label?: string; needsLocalConfirmation?: boolean };
+type AccountProject = Omit<ProjectSummary, "sourceState"> & { sourceState: "unlinked" | "preparing" | "provisioning" | "ready" };
 
 export function PlatformDashboard({ organizationId }: { organizationId: string | null }) {
   const createInFlight = useRef(false);
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
-  const [projects, setProjects] = useState<ProjectSummary[]>([]);
+  const [projects, setProjects] = useState<AccountProject[]>([]);
+  const [connection, setConnection] = useState<ConnectedStatus | null>(null);
   const [cursor, setCursor] = useState<string | null>(null);
   const [needsSetup, setNeedsSetup] = useState(false);
   const [busy, setBusy] = useState(true);
@@ -26,7 +32,9 @@ export function PlatformDashboard({ organizationId }: { organizationId: string |
         setIntent(pending); setStorageReady(true);
       } catch { setStorageReady(false); }
       const page = await platformRequest<ProjectPage>("projects");
-      setProjects(page.page); setCursor(page.isDone ? null : page.continueCursor);
+      setProjects(page.page as AccountProject[]); setCursor(page.isDone ? null : page.continueCursor);
+      try { setConnection(await connectedRequest<ConnectedStatus>("status")); }
+      catch { setConnection({ available: false, connected: false }); }
     } catch (error) {
       setWorkspace(null); setProjects([]);
       setNeedsSetup(error instanceof PlatformRequestError && error.code === "WORKSPACE_NOT_PROVISIONED");
@@ -46,7 +54,7 @@ export function PlatformDashboard({ organizationId }: { organizationId: string |
     createInFlight.current = true;
     setIntent(pending); setBusy(true); setMessage("");
     try {
-      const project = await platformRequest<ProjectSummary>("projects", pending);
+      const project = await platformRequest<ProjectSummary>("projects", pending) as AccountProject;
       sessionStorage.removeItem(key); setIntent(null);
       setProjects((items) => [project, ...items.filter((item) => item._id !== project._id)]);
       setMessage(`Recovered ${project.name}. Its name is saved; website setup is still incomplete.`);
@@ -66,7 +74,7 @@ export function PlatformDashboard({ organizationId }: { organizationId: string |
     setBusy(true); setMessage("");
     try {
       const page = await platformRequest<ProjectPage>(`projects?cursor=${encodeURIComponent(cursor)}`);
-      setProjects((items) => [...items, ...page.page.filter((next) => !items.some((item) => item._id === next._id))]);
+      setProjects((items) => [...items, ...(page.page as AccountProject[]).filter((next) => !items.some((item) => item._id === next._id))]);
       setCursor(page.isDone ? null : page.continueCursor);
     } catch (error) { setMessage(failureMessage(error)); }
     finally { setBusy(false); }
@@ -77,11 +85,13 @@ export function PlatformDashboard({ organizationId }: { organizationId: string |
     {needsSetup && <p>{organizationId ? "Your organization needs access from its Stellar administrator." : "Account setup could not finish. Retry below; your existing access will be checked again."}</p>}
     {workspace && <>
       <p className={styles.eyebrow}>{workspace.tenant.kind === "personal" ? "Personal account" : workspace.tenant.name}</p>
-      <section className={styles.notice}>
-        <h2>Build on your computer</h2>
-        <p>Website editing currently runs in the local Stellar preview. Connecting it to your account is still being built. Check the setup steps before starting a website.</p>
-        <Link className={styles.primary} href="/platform/setup">Set up website editing</Link>
+      <section className={`${styles.connectionBanner} ${connection?.connected ? styles.connectionBannerReady : ""}`}>
+        <div><p className={styles.eyebrow}>Website editing</p>
+          <h2>{connection?.connected ? `${connection.label ?? "This computer"} is connected` : "Connect a computer to build"}</h2>
+          <p>{connection?.connected ? "New websites can be prepared from reviewed source and opened in Studio." : "Source files and edit history stay on the computer you explicitly connect to this account."}</p></div>
+        <Link className={connection?.connected ? styles.secondaryLink : styles.primary} href="/platform/setup">{connection?.connected ? "Connection settings" : "Connect this computer"}</Link>
       </section>
+      {connection?.connected && workspace.tenant.role !== "viewer" && <div id="new-website"><WebsiteSetup workspace={workspace} /></div>}
       {workspace.tenant.role !== "viewer" && intent && <form onSubmit={(event) => void create(event)} className={styles.form}>
         <label htmlFor="project-name">Project name</label>
         <div className={styles.formRow}>
@@ -95,7 +105,9 @@ export function PlatformDashboard({ organizationId }: { organizationId: string |
       <ul className={styles.projects}>
         {projects.map((project) => <li key={project._id}>
           <Link className={styles.projectLink} href={`/platform/projects/${encodeURIComponent(project._id)}`}>
-            <span>{project.name}</span><span className={styles.badge}>Setup incomplete</span>
+            <span>{project.name}</span><span className={`${styles.badge} ${project.sourceState === "ready" ? styles.badgeReady : ""}`}>
+              {project.sourceState === "ready" ? "Ready to edit" : project.sourceState === "preparing" || project.sourceState === "provisioning" ? "Preparing" : "Setup incomplete"}
+            </span>
           </Link>
         </li>)}
       </ul>

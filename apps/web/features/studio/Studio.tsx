@@ -25,7 +25,7 @@ const errorText = (cause: unknown) => cause instanceof StudioApiError && cause.c
   ? "Connect to the local workspace before opening this project."
   : cause instanceof Error ? cause.message : "The local workspace is unavailable.";
 
-export function Studio({ projectId }: { projectId: string }) {
+export function Studio({ projectId, projectsHref = "/projects" }: { projectId: string; projectsHref?: "/projects" | "/platform" }) {
   const router = useRouter();
   const [workspace, setWorkspace] = useState<RegisteredWorkspace | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -179,7 +179,7 @@ export function Studio({ projectId }: { projectId: string }) {
     initializedFrameIdRef.current = null;
   }, []);
   const acceptNavigation = useCallback(async () => !historyBlockedRef.current && (!guardRef.current || await guardRef.current()), []);
-  useEffect(() => installStudioBackGuard(window, acceptNavigation, () => router.replace("/projects")), [acceptNavigation, router]);
+  useEffect(() => installStudioBackGuard(window, acceptNavigation, () => router.replace(projectsHref)), [acceptNavigation, router, projectsHref]);
   const goPage = useCallback(async (nextPageId: string): Promise<boolean> => {
     if (nextPageId === pageId) return true;
     if (!pages.some((item) => item.id === nextPageId) || !await acceptNavigation()) return false;
@@ -191,8 +191,8 @@ export function Studio({ projectId }: { projectId: string }) {
   }, [acceptNavigation, invalidate, pageId, pages, projectId]);
 
   const leaveStudio = useCallback(async () => {
-    if (await acceptNavigation()) router.push("/projects");
-  }, [acceptNavigation, router]);
+    if (await acceptNavigation()) router.push(projectsHref);
+  }, [acceptNavigation, router, projectsHref]);
 
   useEffect(() => {
     if (!session || !page || !frameOrigin) return;
@@ -379,8 +379,8 @@ export function Studio({ projectId }: { projectId: string }) {
 
   return <main className={styles.studio}>
     <header className={styles.studioHeader}>
-      <div className={styles.headerIdentity}><Link href="/projects" onClick={(event) => { event.preventDefault(); void leaveStudio(); }} className={styles.brand} aria-label="Back to projects">Stellar<span aria-hidden="true">✳</span></Link><span className={styles.headerDivider} /><div className={styles.projectIdentity}><span className={styles.headerEyebrow}>Working copy / Design</span><strong>{workspace?.project.name ?? "Opening project…"}</strong></div></div>
-      <div className={styles.headerActions}><span className={`${styles.connection} ${session?.state === "ready" ? styles.connectionReady : ""}`}><span className={styles.statusDot} />{session?.state ?? "connecting"}</span><button type="button" onClick={() => setPagesOpen((current) => !current)} className={styles.mobilePanelButton} aria-expanded={pagesOpen}>Pages</button><button type="button" onClick={() => setInspectorOpen((current) => !current)} className={styles.mobilePanelButton} aria-expanded={inspectorOpen}>Inspect</button><Link href="/projects" onClick={(event) => { event.preventDefault(); void leaveStudio(); }} className={styles.allProjects}>All projects ↗</Link></div>
+      <div className={styles.headerIdentity}><Link href={projectsHref} onClick={(event) => { event.preventDefault(); void leaveStudio(); }} className={styles.brand} aria-label="Back to projects">Stellar<span aria-hidden="true">✳</span></Link><span className={styles.headerDivider} /><div className={styles.projectIdentity}><span className={styles.headerEyebrow}>Working copy / Design</span><strong>{workspace?.project.name ?? "Opening project…"}</strong></div></div>
+      <div className={styles.headerActions}><span className={`${styles.connection} ${session?.state === "ready" ? styles.connectionReady : ""}`}><span className={styles.statusDot} />{session?.state ?? "connecting"}</span><button type="button" onClick={() => setPagesOpen((current) => !current)} className={styles.mobilePanelButton} aria-expanded={pagesOpen}>Pages</button><button type="button" onClick={() => setInspectorOpen((current) => !current)} className={styles.mobilePanelButton} aria-expanded={inspectorOpen}>Inspect</button><Link href={projectsHref} onClick={(event) => { event.preventDefault(); void leaveStudio(); }} className={styles.allProjects}>All projects ↗</Link></div>
     </header>
     <div className={styles.studioBody}>
       <aside className={`${styles.pagesPanel} ${pagesOpen ? styles.panelOpen : ""}`} aria-label="Project pages">

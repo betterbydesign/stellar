@@ -1,6 +1,6 @@
 import type { GenericId } from "convex/values";
 
-export type ProjectSummary = { _id: string; name: string; createdAt: number; sourceState: "unlinked" };
+export type ProjectSummary = { _id: string; name: string; createdAt: number; sourceState: "unlinked" | "provisioning" | "ready" };
 export type Workspace = {
   actor: { subject: string };
   tenant: { _id: string; kind: "personal" | "organization"; name: string; role: "owner" | "editor" | "viewer" };

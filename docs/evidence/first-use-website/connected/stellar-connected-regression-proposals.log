@@ -1,0 +1,5 @@
+
+> stellar@0.0.0 verify:proposals
+> node test/proposal-review-e2e/run.mjs
+
+Synthetic proposal review browser checks passed. Evidence: /Users/scottfoster/.codex/worktrees/933d/stellar/output/playwright/proposal-review

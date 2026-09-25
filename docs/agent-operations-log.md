@@ -121,3 +121,10 @@ Diagnosed the account dashboard error as a missing `platform:viewer` function on
 ## 2026-09-24 — First-use prerequisite and local creation slice
 
 Created `codex/first-use-website` from integrated c93c803 in isolated worktree 933d. Added first-use PRD/ExecPlan, automatic personal setup, honest account prerequisites with preserved metadata, locked local creation recovery and local performance measures. Full verify passed 207 tests; production build and real local/editor/projects acceptance passed, with final affected-browser rerun for storage retry. See [evidence](evidence/first-use-website/verification.md) and [handoff](handoffs/first-use-website.md). Authenticated account pairing remains engineering work; no provider deployment, live identity acceptance, main merge or saved-checkout change occurred.
+
+
+## 2026-09-24 — Connected-computer first-use implementation
+
+Continued the first-use task with three SOL/high agents and disjoint runner, Convex and UI workstreams. Root integrated the explicit connected web gate and guarded Studio routing. Implemented short-lived pairing, current-grant revalidation, exact account/installation/registry bindings, recoverable provisioning, original-ID metadata completion, save/reopen and account return navigation. Review fixes cover actor connection rotation, account CSRF refresh, bootstrap ordering, offer expiry, reconnect and fail-closed ambiguous disk persistence.
+
+Full verify passed 227 tests; production build and existing local/editor/projects/proposal browser regressions passed. The new opt-in connected browser suite passes real-source creation/save/restart/reconnect/recovery and independent build using synthetic identity and real offline backend functions. Final independent review found no remaining release-blocking defect for the same-computer environment. See [handoff](handoffs/first-use-website.md) and [evidence](evidence/first-use-website/connected-verification.md). Updated live backend deployment, secure configuration and real identity lifecycle acceptance remain pending. No credentials copied, main merge, saved-checkout synchronization or provider deployment occurred.

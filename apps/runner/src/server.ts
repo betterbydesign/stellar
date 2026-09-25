@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { CreateProjectRequestSchema, CreateProjectResponseSchema, ListBlueprintsResponseSchema, GetProjectResponseSchema, IdentifierSchema, ListProjectsResponseSchema, PROTOCOL_VERSION, SessionResponseSchema, makeError, type ErrorEnvelope } from "@stellar/contracts";
 import { Registry, RegistryError, type RegisteredProject } from "./registry.js";
+import { AccountConnectionError, AccountConnectionStore } from "./account-connection.js";
 import { DataLease } from "./lease.js";
 import { WorkspaceRuntime } from "./workspace.js";
 import { startupErrorMessage } from "./startup-error.js";
@@ -34,14 +35,19 @@ export function configFromEnvironment(env: NodeJS.ProcessEnv = process.env): Run
 
 export class Runner {
   readonly registry: Registry;
+  readonly accountConnections: AccountConnectionStore;
   readonly workspaces = new Map<string, WorkspaceRuntime>();
   private lease: DataLease | null = null;
   private readonly initializingWorkspaces = new Map<string, Promise<WorkspaceRuntime>>();
-  constructor(readonly config: RunnerConfig) { this.registry = new Registry(config.seed, config.data); }
+  constructor(readonly config: RunnerConfig) {
+    this.registry = new Registry(config.seed, config.data);
+    this.accountConnections = new AccountConnectionStore(config.data, this.registry);
+  }
   async initialize(): Promise<void> {
     this.lease = await DataLease.acquire(this.config.data);
     try {
       await this.registry.initialize();
+      await this.accountConnections.initialize();
       for (const project of this.registry.list()) {
         await this.ensureWorkspace(project);
       }
@@ -78,6 +84,25 @@ export class Runner {
     const body = params as Record<string, unknown>;
     const requestId = IdentifierSchema.safeParse(body.requestId).success ? body.requestId as string : null;
     if (!requestId) return makeError({}, "INVALID_REQUEST");
+    if (["installationStatus", "checkInstallationConnection", "offerInstallationChallenge", "confirmInstallationChallenge",
+      "revokeInstallationConnection", "provisionAccountProject", "dispatchAccountProject"].includes(String(method))) {
+      try {
+        if (method === "installationStatus") return this.accountConnections.installationStatus(body);
+        if (method === "checkInstallationConnection") return this.accountConnections.checkConnection(body);
+        if (method === "offerInstallationChallenge") return await this.accountConnections.offerChallenge(body);
+        if (method === "confirmInstallationChallenge") return await this.accountConnections.confirmChallenge(body);
+        if (method === "revokeInstallationConnection") return await this.accountConnections.revokeConnection(body);
+        if (method === "provisionAccountProject") {
+          const provisioned = await this.accountConnections.provisionProject(body);
+          await this.ensureWorkspace(provisioned.project);
+          return provisioned.response;
+        }
+        if (method === "dispatchAccountProject") return await this.dispatchAccountProject(body, operatorId);
+      } catch (failure) {
+        const code = failure instanceof AccountConnectionError ? failure.code : "RUNNER_UNAVAILABLE";
+        return makeError({ requestId }, code);
+      }
+    }
     if (method === "listProjects") return ListProjectsResponseSchema.parse({ protocolVersion: PROTOCOL_VERSION,
       requestId, projects: this.registry.list().map((project) => project.workspace) });
     if (method === "listBlueprints") {
@@ -129,6 +154,22 @@ export class Runner {
     if (method === "history") return workspace.history(body);
     if (method === "historyCommand") return workspace.historyCommand(body);
     return makeError({ projectId, sessionId, requestId }, "INVALID_REQUEST");
+  }
+
+  private async dispatchAccountProject(body: Record<string, unknown>, operatorId: string): Promise<unknown> {
+    if (Object.keys(body).sort().join(",") !== "binding,method,params,requestId" ||
+      typeof body.method !== "string" || !body.params || typeof body.params !== "object" || Array.isArray(body.params)) {
+      throw new AccountConnectionError("INVALID_REQUEST", "Invalid account project dispatch");
+    }
+    const allowed = new Set(["getProject", "openSession", "getSession", "closeSession", "restartSession",
+      "listPages", "sourceModel", "prepareChange", "applyChange", "requestOutcome", "history", "historyCommand"]);
+    if (!allowed.has(body.method)) throw new AccountConnectionError("INVALID_REQUEST", "Unsupported account project method");
+    const project = this.accountConnections.assertBinding(body.binding);
+    const inner = body.params as Record<string, unknown>;
+    if (inner.requestId !== body.requestId || inner.projectId !== undefined && inner.projectId !== project.id) {
+      throw new AccountConnectionError("INVALID_SCOPE", "Account project command scope does not match its binding");
+    }
+    return this.dispatch(body.method, { ...inner, projectId: project.id }, operatorId);
   }
 }
 

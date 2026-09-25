@@ -1,4 +1,5 @@
 "use client";
+import { editorSessionEndpoint, editorCsrfKey } from "../studio/endpoints";
 
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import {
@@ -114,13 +115,13 @@ export function Inspector(props: InspectorProps) {
     let active = true;
     void (async () => {
       try {
-        const operatorResponse = await fetch("/api/operator/session", { credentials: "same-origin", cache: "no-store" });
+        const operatorResponse = await fetch(editorSessionEndpoint(), { credentials: "same-origin", cache: "no-store" });
         if (!operatorResponse.ok) throw new Error("Operator session unavailable");
         const operator: unknown = await operatorResponse.json();
         const csrf = typeof operator === "object" && operator !== null && "csrfToken" in operator &&
           typeof operator.csrfToken === "string" ? operator.csrfToken : null;
         if (!csrf) throw new Error("Operator session unavailable");
-        window.sessionStorage.setItem("stellar.csrf", csrf);
+        window.sessionStorage.setItem(editorCsrfKey(), csrf);
         const key = await pendingApplyKey(csrf, projectId);
         if (!active) return;
         pendingMarkerKeyRef.current = key;

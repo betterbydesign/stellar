@@ -7,7 +7,8 @@ export default function nextConfig(phase: string): NextConfig {
     agentRules: false,
     // Separate the authenticated launcher from a web-only dev server's lock and
     // generated output. Build/start still share the ordinary production directory.
-    distDir: phase === PHASE_DEVELOPMENT_SERVER && process.env.STELLAR_LOCAL_MODE === "1"
-      ? ".next-local" : ".next",
+    distDir: phase !== PHASE_DEVELOPMENT_SERVER ? ".next"
+      : process.env.STELLAR_CONNECTED_MODE === "1" ? ".next-connected"
+      : process.env.STELLAR_LOCAL_MODE === "1" ? ".next-local" : ".next",
   };
 }

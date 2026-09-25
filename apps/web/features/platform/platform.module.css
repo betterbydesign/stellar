@@ -3,10 +3,14 @@
 .content a { color: var(--accent); }
 .eyebrow { color: var(--muted); font-size: 0.875rem; }
 .notice { border-left: 3px solid var(--accent); background: var(--surface); padding: 1rem; line-height: 1.6; overflow-wrap: anywhere; }
-.form { display: grid; gap: 0.65rem; padding: 1.5rem; border: 1px solid var(--line); border-radius: 0.75rem; }
+.form { display: grid; gap: 0.65rem; padding: clamp(1.25rem, 4vw, 2rem); border: 1px solid var(--line); border-radius: 0.75rem; background: color-mix(in srgb, var(--studio-paper) 65%, transparent); }
 .form label { font-weight: 600; }
 .formRow { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-.formRow input { flex: 1; min-width: 12rem; font: inherit; background: var(--studio-paper); color: var(--ink); border: 1px solid var(--line); border-radius: 0.4rem; padding: 0.75rem; }
+.form :is(input,select), .formRow input { min-width: 0; width: 100%; font: inherit; background: var(--studio-paper); color: var(--ink); border: 1px solid var(--line); border-radius: 0.4rem; padding: 0.75rem; }
+.formRow input { flex: 1; min-width: 12rem; width: auto; }
+.form :is(input,select):disabled { color: var(--muted); background: var(--surface); }
+.formHeading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-bottom: 0.75rem; border-bottom: 1px solid var(--line); }
+.formHeading :is(h2,p) { margin-top: 0; }
 .primary, .secondary { font: inherit; font-weight: 600; padding: 0.75rem 1rem; border-radius: 0.4rem; cursor: pointer; width: fit-content; }
 .content a.primary { color: var(--studio-paper); display: inline-block; text-decoration: none; }
 .primary { color: var(--studio-paper); background: var(--accent); border: 1px solid var(--accent); }
@@ -15,5 +19,28 @@
 .projects { display: grid; list-style: none; margin: 0; padding: 0; gap: 0.75rem; }
 .projectLink { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.25rem; border: 1px solid var(--line); border-radius: 0.5rem; text-decoration: none; font-weight: 600; }
 .badge { font-size: 0.75rem; font-weight: 500; border: 1px solid var(--line); padding: 0.35rem 0.6rem; border-radius: 0.4rem; width: fit-content; color: var(--muted); }
+.badgeReady { color: #08776f; border-color: color-mix(in srgb, var(--studio-teal) 48%, var(--line)); background: color-mix(in srgb, var(--studio-teal) 9%, var(--studio-paper)); }
 .muted { color: var(--muted); font-size: 0.875rem; line-height: 1.6; }
-.content :is(button,input,a):focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.content :is(button,input,select,a):focus-visible, .setupGrid :is(button,a):focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.connectionBanner { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2rem; padding: clamp(1.25rem, 4vw, 2rem); border: 1px solid var(--line); border-radius: 0.75rem; background: var(--studio-paper); }
+.connectionBanner h2, .connectionBanner p { margin-top: 0; }
+.connectionBannerReady { border-color: color-mix(in srgb, var(--studio-teal) 42%, var(--line)); box-shadow: inset 4px 0 0 var(--studio-teal); }
+.secondaryLink { display: inline-block; color: var(--ink) !important; background: var(--surface); border: 1px solid var(--line); border-radius: 0.4rem; padding: 0.75rem 1rem; text-decoration: none; font-weight: 600; white-space: nowrap; }
+.setupGrid { display: grid; gap: 1rem; width: min(100%, 52rem); margin-top: 2.5rem; }
+.connectionCard { position: relative; padding: clamp(1.25rem, 4vw, 2rem); border: 1px solid var(--line); border-radius: 0.75rem; background: var(--studio-paper); overflow: hidden; }
+.connectionCard::after { content: ""; position: absolute; width: 7rem; height: 7rem; right: -4rem; bottom: -4rem; border: 1px solid var(--line); border-radius: 50%; }
+.connectionCard > * { position: relative; z-index: 1; }
+.connectionCard h2 { font-size: clamp(1.35rem, 3vw, 2rem); letter-spacing: -0.025em; }
+.connectionCard p { max-width: 40rem; color: var(--muted); line-height: 1.6; }
+.confirmCard { border-color: var(--accent); box-shadow: 0 1rem 3rem color-mix(in srgb, var(--ink) 8%, transparent); }
+.stepIndex, .connectionState { display: inline-flex; align-items: center; min-height: 1.75rem; padding: 0 0.55rem; border: 1px solid var(--line); border-radius: 999px; color: var(--accent); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.connectionReady { color: #08776f; border-color: var(--studio-teal); }
+.connectionFacts { display: grid; gap: 0; margin: 1.25rem 0; border-top: 1px solid var(--line); }
+.connectionFacts div { display: grid; grid-template-columns: minmax(8rem, 0.4fr) minmax(0, 1fr); gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid var(--line); }
+.connectionFacts dt { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.connectionFacts dd { margin: 0; overflow-wrap: anywhere; }
+.command { display: inline-block; padding: 0.6rem 0.8rem; border: 1px solid var(--line); border-radius: 0.35rem; background: var(--surface); color: var(--ink); }
+@media (max-width: 40rem) {
+  .connectionBanner { grid-template-columns: 1fr; gap: 1rem; }
+  .connectionFacts div { grid-template-columns: 1fr; gap: 0.25rem; }
+}

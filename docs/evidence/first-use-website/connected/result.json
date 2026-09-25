@@ -1,0 +1,25 @@
+{
+  "evidence": "offline synthetic WorkOS identity with real convex-test functions, connected HTTP handlers, runner source and Chromium",
+  "completedAt": "2026-09-25T01:58:22.950Z",
+  "totalMs": 9614,
+  "createToEditMs": 1964,
+  "saveToPreviewMs": 301,
+  "accountProjectId": "000000000000000000010010projects",
+  "registryProjectId": "project-065ae4918c4dd28a6e156feb",
+  "existingProjectId": "000000000000000000010006projects",
+  "workspaceBootstrappedByConnectionSetup": true,
+  "sourcePersistedAcrossRunnerRestart": true,
+  "reconnectedWithSameOperatorCookie": true,
+  "sourceReopenedAfterReconnect": true,
+  "independentEditedBuild": true,
+  "lostProvisioningResponseRecovered": true,
+  "screenshots": [
+    "01-connected-computer.png",
+    "02-created-in-studio.png",
+    "03-guarded-edit-saved.png",
+    "04-reopened-after-runner-restart.png",
+    "05-reconnected-and-reopened-same-source.png",
+    "06-existing-test-finished-after-lost-response.png",
+    "07-independent-edited-site-build.png"
+  ]
+}

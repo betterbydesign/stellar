@@ -1,3 +1,4 @@
+import { editorApiBase, editorSessionEndpoint, editorCsrfKey, freshEditorCsrf } from "../studio/endpoints";
 import {
   ApplyChangeResponseSchema, ErrorEnvelopeSchema, PrepareChangeResponseSchema,
   RequestOutcomeSchema, type ApplyChange, type ApplyChangeResponse,
@@ -29,17 +30,17 @@ export function newRequestId(): string {
 }
 
 function prefix(projectId: string, sessionId: string): string {
-  return `/api/projects/${encodeURIComponent(projectId)}/sessions/${encodeURIComponent(sessionId)}`;
+  return `${editorApiBase()}/${encodeURIComponent(projectId)}/sessions/${encodeURIComponent(sessionId)}`;
 }
 
 async function csrfToken(): Promise<string> {
-  const saved = window.sessionStorage.getItem("stellar.csrf");
+  const saved = await freshEditorCsrf();
   if (saved) return saved;
-  const response = await fetch("/api/operator/session", { credentials: "same-origin", cache: "no-store" });
+  const response = await fetch(editorSessionEndpoint(), { credentials: "same-origin", cache: "no-store" });
   if (!response.ok) throw new EditApiError(unavailable);
   const value = await response.json() as { csrfToken?: unknown };
   if (typeof value.csrfToken !== "string" || !value.csrfToken) throw new EditApiError(invalid);
-  window.sessionStorage.setItem("stellar.csrf", value.csrfToken);
+  window.sessionStorage.setItem(editorCsrfKey(), value.csrfToken);
   return value.csrfToken;
 }
 

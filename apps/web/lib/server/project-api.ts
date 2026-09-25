@@ -9,7 +9,7 @@ import { callRunner, type RunnerMethod } from "./runner-broker";
 import { readLocalConfig } from "./local-config";
 import { hasValidCsrf, isAllowedOrigin, isAppRequest, readOperator } from "./operator-auth";
 
-type Scope = { projectId?: string; sessionId?: string; requestId?: string; pageId?: string };
+export type ProjectApiScope = { projectId?: string; sessionId?: string; requestId?: string; pageId?: string };
 const commonHeaders = {
   "cache-control": "no-store", "content-type": "application/json; charset=utf-8",
   "referrer-policy": "no-referrer", "x-content-type-options": "nosniff",
@@ -18,7 +18,7 @@ const commonHeaders = {
 function json(value: unknown, status = 200): Response {
   return new Response(JSON.stringify(value), { status, headers: commonHeaders });
 }
-function error(scope: Scope, code: ErrorCode): Response {
+function error(scope: ProjectApiScope, code: ErrorCode): Response {
   const envelope = makeError(scope, code);
   return json(envelope, envelope.error.httpStatus);
 }
@@ -49,14 +49,19 @@ export async function handleProjectApi(request: Request, segments: string[]): Pr
   if (!operator) return error({}, "UNAUTHORIZED");
   if (mutation && !hasValidCsrf(request, operator)) return error({}, "FORBIDDEN");
 
+  return dispatchProjectApi(request, segments, (method, params, scope) => callRunner(config, operator.id, method, params, scope));
+}
+
+/** Validates the editor protocol independently of the separately required auth gate. */
+export async function dispatchProjectApi(request: Request, segments: string[], call: (
+  method: RunnerMethod, params: Record<string, unknown>, scope: ProjectApiScope,
+) => Promise<unknown>): Promise<Response> {
   const url = new URL(request.url);
   const projectId = id(segments[0]);
   const sessionId = id(segments[2]);
   const requestId = id(url.searchParams.get("requestId"));
-  const scope: Scope = { projectId: projectId ?? undefined, sessionId: sessionId ?? undefined, requestId: requestId ?? undefined };
-
-  const invoke = async (method: RunnerMethod, params: Record<string, unknown>, callScope: Scope = scope) =>
-    result(await callRunner(config, operator.id, method, params, callScope));
+  const scope: ProjectApiScope = { projectId: projectId ?? undefined, sessionId: sessionId ?? undefined, requestId: requestId ?? undefined };
+  const invoke = async (method: RunnerMethod, params: Record<string, unknown>, callScope: ProjectApiScope = scope) => result(await call(method, params, callScope));
   const scopedQuery = () => {
     const parsed = RequestScopeSchema.safeParse({ protocolVersion: PROTOCOL_VERSION, projectId, sessionId, requestId });
     return parsed.success ? parsed.data : null;

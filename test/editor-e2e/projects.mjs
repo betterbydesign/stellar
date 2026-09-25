@@ -38,7 +38,7 @@ let site;
 let passed = false;
 try {
   await page.goto(runtime.appOrigin + "/platform/setup");
-  await page.getByRole("heading", { name: "Account connection is not available yet" }).waitFor();
+  await page.getByRole("heading", { name: "Connect this computer." }).waitFor();
   await shot("account-setup-prerequisite");
   await page.goto(runtime.connectUrl);
   await page.getByRole("link", { name: "Open Stellar" }).click();

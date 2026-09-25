@@ -1,3 +1,4 @@
+import { editorApiBase, editorSessionEndpoint, editorCsrfKey, freshEditorCsrf } from "./endpoints";
 import {
   CreateProjectRequestSchema, CreateProjectResponseSchema, ErrorEnvelopeSchema,
   GetProjectResponseSchema, ListBlueprintsResponseSchema, ListPagesResponseSchema,
@@ -21,15 +22,15 @@ async function responseData(response: Response): Promise<unknown> {
   return value;
 }
 
-const endpoint = (path: string, id = requestId()) => `/api/projects${path}${path.includes("?") ? "&" : "?"}requestId=${encodeURIComponent(id)}`;
+const endpoint = (path: string, id = requestId()) => `${editorApiBase()}${path}${path.includes("?") ? "&" : "?"}requestId=${encodeURIComponent(id)}`;
 async function csrf(): Promise<string> {
-  const saved = window.sessionStorage.getItem("stellar.csrf");
+  const saved = await freshEditorCsrf();
   if (saved) return saved;
-  const response = await fetch("/api/operator/session", { credentials: "same-origin", cache: "no-store" });
+  const response = await fetch(editorSessionEndpoint(), { credentials: "same-origin", cache: "no-store" });
   if (!response.ok) throw new StudioApiError("Connect to the local workspace before changing a session.", "UNAUTHORIZED", true);
   const value = await response.json() as { csrfToken?: unknown };
   if (typeof value.csrfToken !== "string" || !value.csrfToken) throw new StudioApiError("The local connection is unavailable.", "UNAUTHORIZED", true);
-  window.sessionStorage.setItem("stellar.csrf", value.csrfToken);
+  window.sessionStorage.setItem(editorCsrfKey(), value.csrfToken);
   return value.csrfToken;
 }
 const mutation = async (path: string, method: "POST" | "DELETE", body?: Record<string, unknown>, id?: string) => responseData(await fetch(endpoint(path, id), {

@@ -1,0 +1,51 @@
+{
+  "baseCommit": "bbd0ab7ec3dba858e30ed26855c27dfd0b53c058",
+  "sourceSha256": "b3bdb85dc15d56e36158afcd59d50d91bee9eb61f9ebe76ccd00ff3f49b35b51",
+  "fileCount": 208,
+  "completedAt": "2026-09-25T01:58:56.062Z",
+  "first": "project-e02e34d27e303e5dea9d73b7",
+  "second": "project-a32e5ff0c8f86bf75422d446",
+  "legacyPreserved": true,
+  "seedPreserved": true,
+  "independentHistory": true,
+  "restartPersistence": true,
+  "lostCreationResponseReconciled": true,
+  "timings": [
+    {
+      "name": "stellar.creation-recovery-ack",
+      "durationMs": 141
+    },
+    {
+      "name": "stellar.creation-recovery-to-edit",
+      "durationMs": 1809
+    },
+    {
+      "name": "stellar.acknowledged-save-to-preview",
+      "durationMs": 61
+    },
+    {
+      "name": "stellar.creation-ack",
+      "durationMs": 49
+    },
+    {
+      "name": "stellar.create-to-edit",
+      "durationMs": 1518
+    },
+    {
+      "name": "stellar.creation-recovery-ack",
+      "durationMs": 15
+    },
+    {
+      "name": "stellar.creation-recovery-to-edit",
+      "durationMs": 1479
+    }
+  ],
+  "timingEvidence": "Single local samples, not p95 or live account proof",
+  "responsiveWidths": [
+    390,
+    768,
+    1440
+  ],
+  "independentBuild": true,
+  "browserErrors": []
+}

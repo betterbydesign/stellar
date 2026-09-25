@@ -1,4 +1,5 @@
 "use client";
+import { editorApiBase, editorSessionEndpoint, editorCsrfKey, freshEditorCsrf } from "../studio/endpoints";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -32,7 +33,7 @@ export function HistoryControls({ projectId, sessionId, sourceRevision, previewG
   const refreshSequence = useRef(0);
   const [operationBlocked, setOperationBlocked] = useState(false);
   const restoringPending = restoredScopeState !== `${projectId}\0${sessionId}`;
-  const base = `/api/projects/${encodeURIComponent(projectId)}/sessions/${encodeURIComponent(sessionId)}`;
+  const base = `${editorApiBase()}/${encodeURIComponent(projectId)}/sessions/${encodeURIComponent(sessionId)}`;
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
     const sequence = ++refreshSequence.current;
@@ -130,12 +131,12 @@ export function HistoryControls({ projectId, sessionId, sourceRevision, previewG
     void (async () => {
       let csrf: string;
       try {
-        const response = await fetch("/api/operator/session", { credentials: "same-origin", cache: "no-store" });
+        const response = await fetch(editorSessionEndpoint(), { credentials: "same-origin", cache: "no-store" });
         const value: unknown = await response.json();
         if (!response.ok || !value || typeof value !== "object" || typeof (value as { csrfToken?: unknown }).csrfToken !== "string")
           throw new Error("Operator session unavailable");
         csrf = (value as { csrfToken: string }).csrfToken;
-        window.sessionStorage.setItem("stellar.csrf", csrf);
+        window.sessionStorage.setItem(editorCsrfKey(), csrf);
       } catch { if (!cancelled) setStorageError(true); finish(); return; }
       const key = await historyPendingKey(projectId, csrf);
       if (cancelled) return;
@@ -176,7 +177,7 @@ export function HistoryControls({ projectId, sessionId, sourceRevision, previewG
       if (onMutationStart && await onMutationStart() === false) return;
       setOperationBlocked(true);
       onOperationStateChange?.(true);
-      const csrf = window.sessionStorage.getItem("stellar.csrf");
+      const csrf = await freshEditorCsrf();
       if (!csrf) { setNotice("Reconnect the local operator before changing source."); return; }
       command = { protocolVersion: PROTOCOL_VERSION, projectId, sessionId, requestId: newId(`history-${action}`),
         operation: action, entryId, expectedRevision: history.projectRevision };
@@ -247,7 +248,7 @@ export function HistoryControls({ projectId, sessionId, sourceRevision, previewG
     inFlight.current = true;
     setBusy(true);
     try {
-      const csrf = window.sessionStorage.getItem("stellar.csrf");
+      const csrf = await freshEditorCsrf();
       if (!csrf) { setNotice("Reconnect the local operator before retrying the same request."); return; }
       // Reuse the stored logical operation without changing any body field.
       const response = await fetch(`${base}/history`, {

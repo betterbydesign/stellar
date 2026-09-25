@@ -6,7 +6,7 @@ User requested a PRD, implementation and verified handoff for the broken account
 
 ## Goals
 
-Make prerequisites honest before creation; remove unnecessary personal setup; harden and measure the real local create/edit/reopen slice; preserve existing account and local data. Document and retain the complete joined journey as an open acceptance gate.
+Make prerequisites honest before creation; remove unnecessary personal setup; harden and measure the real local create/edit/reopen slice; preserve existing account and local data. Implement the complete joined journey on the same computer, prove it with real source, and retain live-provider acceptance as an explicit gate.
 
 ## Non-Goals
 
@@ -14,7 +14,7 @@ Managed hosting, AI/provider execution, deployment, automatic credential copying
 
 ## Scope
 
-Account dashboard/project onboarding, local creation recovery and performance instrumentation, browser acceptance, user guide and evidence. Existing guarded source writer and authorization fences remain authoritative.
+Account dashboard/project onboarding, runner connection and binding, Convex pairing/provisioning, authenticated connected web adapter, Studio integration, recovery/performance instrumentation, browser acceptance, user guide and evidence. Existing guarded source writer and authorization fences remain authoritative.
 
 ## Plan
 
@@ -50,4 +50,12 @@ See [verification record](../evidence/first-use-website/verification.md) for exa
 
 ## Outcomes & Retrospective
 
-First slice is ready for integration review. Full signed-in creation/editing remains gated on implementation and validation of authenticated installation pairing; configuration alone cannot complete that feature. No false completion or source-link claim is made. Continue with PRD milestone 3, then live acceptance; retain Test unchanged until an authorized reconciled setup operation can bind it. See [handoff](../handoffs/first-use-website.md).
+The initial prerequisite slice was followed by the requested connected-computer implementation. Account pairing and reconciled creation/editing/reopen are implemented and covered by real-source offline acceptance. Live WorkOS/Convex sign-in and persistent-provider acceptance remain separate. Existing Test can be finished on its original ID after configuring the connected development environment. See [handoff](../handoffs/first-use-website.md).
+
+## Connected-computer implementation continuation
+
+User explicitly requested implementation with agents. The first slice was subsequently pushed after destination approval. Continue on the same isolated branch with SOL/high agents in disjoint paths: runner installation/binding and launcher; Convex account/provisioning proofs; connection/website UI following an initial security review. Root owns authenticated web adapter, Studio integration, docs and integrated verification.
+
+First supported environment is an account-enabled server running on the user's computer, with an independently configured loopback runner. `/api/projects` retains the original local-only fence. A separate `/api/connected` path requires verified account identity/current grants, local operator possession and account-scoped CSRF; its project-only dispatch uses an exact immutable backend and runner binding. Public source IDs are not authorization. Account project IDs remain URLs; guarded editor protocol retains its original registry IDs and digest semantics. A dedicated server/Convex attestation secret verifies runner allocation results; no provider token reaches the runner or preview. No remote relay or production hosting is introduced.
+
+Handshake, exact binding, signed provisioning, setup/create/finish/reopen UI, current-grant enforcement and real-source browser proof are implemented. Review identified and fixed connection rotation across actors, cached account CSRF, first-use bootstrap ordering, expired offers, reconnect state, account Studio return links and ambiguous runner persistence. Full verification passed 227 tests; production build and real local/editor/projects acceptance plus synthetic proposal regression passed. Final connected browser proof also passes with accurate global stylesheet handling, and independent review found no remaining release-blocking defect. Live identity acceptance still needs securely configured Stellar services and user sign-in; test identities remain labeled offline evidence.

@@ -8,6 +8,8 @@
  * @module
  */
 
+import type * as connected from "../connected.js";
+import type * as connectionProof from "../connectionProof.js";
 import type * as platform from "../platform.js";
 import type * as proposals from "../proposals.js";
 
@@ -18,6 +20,8 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  connected: typeof connected;
+  connectionProof: typeof connectionProof;
   platform: typeof platform;
   proposals: typeof proposals;
 }>;

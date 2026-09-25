@@ -6,6 +6,12 @@ import { ConvexError, v } from "convex/values";
 import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { internalMutation, mutation, query } from "./_generated/server";
+import {
+  ORGANIZATION_ID_PATTERN,
+  requireActor,
+  SUBJECT_PATTERN,
+  type VerifiedActor,
+} from "./identity";
 
 const tenantKindValidator = v.union(
   v.literal("personal"),
@@ -19,6 +25,11 @@ const tenantRoleValidator = v.union(
 const projectRoleValidator = v.union(v.literal("editor"), v.literal("viewer"));
 const nullableTenantRoleValidator = v.union(tenantRoleValidator, v.null());
 const nullableProjectRoleValidator = v.union(projectRoleValidator, v.null());
+const sourceStateValidator = v.union(
+  v.literal("unlinked"),
+  v.literal("provisioning"),
+  v.literal("ready"),
+);
 
 const tenantSummaryValidator = v.object({
   _id: v.id("tenants"),
@@ -30,7 +41,7 @@ const projectSummaryValidator = v.object({
   _id: v.id("projects"),
   name: v.string(),
   createdAt: v.number(),
-  sourceState: v.literal("unlinked"),
+  sourceState: sourceStateValidator,
 });
 
 type DatabaseCtx = Pick<QueryCtx, "db"> | Pick<MutationCtx, "db">;
@@ -41,19 +52,9 @@ type ProjectRole = "editor" | "viewer";
 const PROJECT_NAME_PATTERN =
   /^[A-Za-z0-9](?:[A-Za-z0-9 .,'&()_-]{0,78}[A-Za-z0-9])?$/;
 const REQUEST_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
-const SUBJECT_PATTERN = /^\S{1,512}$/;
-const ORGANIZATION_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$/;
 
 function fail(code: string): never {
   throw new ConvexError({ code });
-}
-
-function configuredNamespace(): string {
-  const clientId = process.env.WORKOS_CLIENT_ID?.trim();
-  if (!clientId) {
-    fail("AUTH_CONFIG_MISSING");
-  }
-  return clientId;
 }
 
 function validateSubject(subject: string): string {
@@ -84,37 +85,6 @@ function validateRequestId(requestId: string): string {
     fail("INVALID_REQUEST");
   }
   return requestId;
-}
-
-async function requireActor(ctx: AuthenticatedCtx) {
-  const identityNamespace = configuredNamespace();
-  const identity = await ctx.auth.getUserIdentity();
-  if (identity === null || !SUBJECT_PATTERN.test(identity.subject)) {
-    fail("UNAUTHENTICATED");
-  }
-
-  const allowedIssuers = new Set([
-    "https://api.workos.com/",
-    `https://api.workos.com/user_management/${identityNamespace}`,
-  ]);
-  if (!allowedIssuers.has(identity.issuer)) {
-    fail("UNAUTHENTICATED");
-  }
-
-  const organizationClaim = identity.org_id;
-  if (
-    organizationClaim !== undefined &&
-    (typeof organizationClaim !== "string" ||
-      !ORGANIZATION_ID_PATTERN.test(organizationClaim))
-  ) {
-    fail("UNAUTHENTICATED");
-  }
-
-  return {
-    identityNamespace,
-    subject: identity.subject,
-    organizationId: organizationClaim as string | undefined,
-  };
 }
 
 async function personalTenant(
@@ -162,8 +132,10 @@ async function tenantMembership(
     .unique();
 }
 
-async function requireWorkspace(ctx: AuthenticatedCtx) {
-  const actor = await requireActor(ctx);
+export async function requireWorkspaceForActor(
+  ctx: DatabaseCtx,
+  actor: VerifiedActor,
+) {
   const tenant = actor.organizationId
     ? await organizationTenant(
         ctx,
@@ -186,6 +158,10 @@ async function requireWorkspace(ctx: AuthenticatedCtx) {
   }
 
   return { actor, tenant, membership };
+}
+
+export async function requireWorkspace(ctx: AuthenticatedCtx) {
+  return await requireWorkspaceForActor(ctx, await requireActor(ctx));
 }
 
 function tenantSummary(
@@ -227,11 +203,12 @@ async function activeProjectMembership(
   return membership?.state === "active" ? membership : null;
 }
 
-export async function requireProject(
-  ctx: AuthenticatedCtx,
+export async function requireProjectForActor(
+  ctx: DatabaseCtx,
+  actor: VerifiedActor,
   projectId: Id<"projects">,
 ) {
-  const workspace = await requireWorkspace(ctx);
+  const workspace = await requireWorkspaceForActor(ctx, actor);
   const project = await ctx.db.get(projectId);
   if (project === null || project.tenantId !== workspace.tenant._id) {
     fail("PROJECT_ACCESS_DENIED");
@@ -250,6 +227,32 @@ export async function requireProject(
     projectRole = membership.role;
   }
   return { ...workspace, project, projectRole };
+}
+
+export async function requireProject(
+  ctx: AuthenticatedCtx,
+  projectId: Id<"projects">,
+) {
+  return await requireProjectForActor(ctx, await requireActor(ctx), projectId);
+}
+
+export async function requireProjectEditForActor(
+  ctx: DatabaseCtx,
+  actor: VerifiedActor,
+  projectId: Id<"projects">,
+) {
+  const access = await requireProjectForActor(ctx, actor, projectId);
+  if (access.membership.role === "viewer" || access.projectRole === "viewer") {
+    fail("READ_ONLY");
+  }
+  return access;
+}
+
+export async function requireProjectEdit(
+  ctx: AuthenticatedCtx,
+  projectId: Id<"projects">,
+) {
+  return await requireProjectEditForActor(ctx, await requireActor(ctx), projectId);
 }
 
 export const bootstrapWorkspace = mutation({
@@ -681,7 +684,8 @@ export const provisionOrganization = internalMutation({
   },
   returns: v.object({ tenant: tenantSummaryValidator }),
   handler: async (ctx, args) => {
-    const identityNamespace = configuredNamespace();
+    const identityNamespace = process.env.WORKOS_CLIENT_ID?.trim();
+    if (!identityNamespace) fail("AUTH_CONFIG_MISSING");
     const organizationId = validateOrganizationId(args.organizationId);
     const ownerSubject = validateSubject(args.ownerSubject);
     if (!PROJECT_NAME_PATTERN.test(args.name)) {
@@ -751,3 +755,5 @@ export const provisionOrganization = internalMutation({
 });
 
 export type { ProjectRole, TenantRole };
+export { requireActor } from "./identity";
+export type { VerifiedActor } from "./identity";

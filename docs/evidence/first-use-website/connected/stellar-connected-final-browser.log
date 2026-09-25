@@ -1,0 +1,12 @@
+
+> stellar@0.0.0 verify:connected
+> vitest run --config test/connected-e2e/vitest.config.mjs
+
+
+ RUN  v5.0.1 /Users/scottfoster/.codex/worktrees/933d/stellar
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  21:58:12
+   Duration  10.78s (tests 96%, import 3%, transform 1%)

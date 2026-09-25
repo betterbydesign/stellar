@@ -1,0 +1,5 @@
+
+> stellar@0.0.0 verify:local
+> node scripts/verify-local-runner.mjs
+
+Live acceptance passed: operator/Origin/CSRF gates, two real Astro copies, engine-backed edit, duplicate/stale checks, project isolation, durable restart/reconciliation and unchanged seed.

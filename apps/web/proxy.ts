@@ -30,5 +30,5 @@ export default async function proxy(request: NextRequest, event: NextFetchEvent)
 }
 
 export const config = {
-  matcher: ["/platform/:path*", "/api/platform/:path*", "/auth/:path*"],
+  matcher: ["/platform/:path*", "/api/platform/:path*", "/api/connected/:path*", "/auth/:path*"],
 };

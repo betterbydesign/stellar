@@ -9,6 +9,11 @@ const tenantRole = v.union(
 );
 const projectRole = v.union(v.literal("editor"), v.literal("viewer"));
 const grantState = v.union(v.literal("active"), v.literal("revoked"));
+const sourceState = v.union(
+  v.literal("unlinked"),
+  v.literal("provisioning"),
+  v.literal("ready"),
+);
 
 export default defineSchema({
   tenants: defineTable({
@@ -50,7 +55,7 @@ export default defineSchema({
     name: v.string(),
     createdAt: v.number(),
     createdBySubject: v.string(),
-    sourceState: v.literal("unlinked"),
+    sourceState,
     registryReference: v.optional(
       v.object({
         runnerInstallationId: v.string(),
@@ -95,6 +100,91 @@ export default defineSchema({
     "actorSubject",
     "requestId",
   ]),
+
+  connectionPairings: defineTable({
+    tenantId: v.id("tenants"),
+    identityNamespace: v.string(),
+    actorSubject: v.string(),
+    requestId: v.string(),
+    installationId: v.string(),
+    installationLabel: v.string(),
+    challengeId: v.string(),
+    challengeDigest: v.string(),
+    expiresAt: v.number(),
+    state: v.union(v.literal("pending"), v.literal("consumed")),
+    connectionId: v.optional(v.string()),
+    createdAt: v.number(),
+    consumedAt: v.optional(v.number()),
+  }).index("by_tenant_namespace_actor_request", [
+    "tenantId",
+    "identityNamespace",
+    "actorSubject",
+    "requestId",
+  ]),
+
+  computerConnections: defineTable({
+    tenantId: v.id("tenants"),
+    identityNamespace: v.string(),
+    pairedBySubject: v.string(),
+    installationId: v.string(),
+    installationLabel: v.string(),
+    connectionId: v.string(),
+    state: grantState,
+    revocationRequestId: v.optional(v.string()),
+    revokedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_tenant_and_installation_id", ["tenantId", "installationId"])
+    .index("by_tenant_and_connection_id", ["tenantId", "connectionId"]),
+
+  provisioningOperations: defineTable({
+    tenantId: v.id("tenants"),
+    projectId: v.id("projects"),
+    identityNamespace: v.string(),
+    initiatingSubject: v.string(),
+    requestId: v.string(),
+    installationId: v.string(),
+    connectionId: v.string(),
+    blueprintId: v.string(),
+    blueprintVersion: v.string(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("failed"),
+      v.literal("ready"),
+    ),
+    registryProjectId: v.optional(v.string()),
+    sourceRevision: v.optional(v.string()),
+    errorCode: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_project", ["projectId"])
+    .index("by_tenant_namespace_actor_request", [
+      "tenantId",
+      "identityNamespace",
+      "initiatingSubject",
+      "requestId",
+    ]),
+
+  projectRegistryBindings: defineTable({
+    tenantId: v.id("tenants"),
+    projectId: v.id("projects"),
+    operationId: v.id("provisioningOperations"),
+    identityNamespace: v.string(),
+    installationId: v.string(),
+    connectionId: v.string(),
+    registryProjectId: v.string(),
+    sourceRevision: v.string(),
+    acknowledgedBySubject: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_project", ["projectId"])
+    .index("by_namespace_installation_registry", [
+      "identityNamespace",
+      "installationId",
+      "registryProjectId",
+    ]),
 
   proposalJobs: defineTable({
     tenantId: v.id("tenants"),
@@ -159,6 +249,11 @@ export default defineSchema({
       v.literal("project_created"),
       v.literal("tenant_membership_set"),
       v.literal("project_membership_set"),
+      v.literal("computer_connected"),
+      v.literal("computer_connection_revoked"),
+      v.literal("project_provisioning_started"),
+      v.literal("project_provisioning_failed"),
+      v.literal("project_registry_bound"),
       v.literal("proposal_approved"),
       v.literal("proposal_rejected"),
       v.literal("proposal_cancelled"),

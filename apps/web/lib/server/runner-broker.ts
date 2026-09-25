@@ -35,7 +35,7 @@ const schemas: Record<RunnerMethod, Parseable> = {
   historyCommand: ApplyChangeResponseSchema,
 };
 
-function safeResponse(value: unknown, method: RunnerMethod, config: LocalConfig, scope: Scope): unknown | null {
+export function safeRunnerResponse(value: unknown, method: RunnerMethod, config: LocalConfig, scope: Scope): unknown | null {
   const parsed = schemas[method].safeParse(value);
   if (!parsed.success || !parsed.data || typeof parsed.data !== "object") return null;
   const object = parsed.data as Record<string, unknown>;
@@ -125,7 +125,7 @@ export async function callRunner(
       return makeError(scope, error.data.error.code);
     }
     if (response.status !== 200) return makeError(scope, "RUNNER_UNAVAILABLE");
-    const safe = safeResponse(value, method, config, scope);
+    const safe = safeRunnerResponse(value, method, config, scope);
     if (method === "createProject" && safe && typeof safe === "object" && "workspace" in safe) {
       const created = safe.workspace as { project: { name: string; blueprint?: { id: string; version: number | string } } };
       if (created.project.name !== params.name || created.project.blueprint?.id !== params.blueprintId ||
